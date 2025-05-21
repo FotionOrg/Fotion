@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/fe/utils/cn";
+import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,7 +18,7 @@ export default function LoginPage() {
         <div className={cn("flex flex-col gap-6")}>
           <Card>
             <CardHeader className="text-center">
-              <CardTitle className="text-xl">Welcome to Chirpify</CardTitle>
+              <CardTitle className="text-xl">Welcome to Fotion</CardTitle>
               <CardDescription>Sign up with SSO</CardDescription>
             </CardHeader>
             <CardContent>

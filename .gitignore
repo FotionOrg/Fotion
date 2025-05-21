@@ -45,3 +45,6 @@ next-env.d.ts
 
 # intellij
 .idea
+
+# prisma
+prisma/app/generated

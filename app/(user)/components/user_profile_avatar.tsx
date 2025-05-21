@@ -1,60 +1,49 @@
-"use client";
-import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+"use server";
+import {DropdownMenuItem} from "@radix-ui/react-dropdown-menu";
 import {
-  DropdownMenuContent,
-  DropdownMenu,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { createClient } from "@/lib/fe/superbase/client";
-import { signOutAction } from "@/lib/be/superbase/sign-out";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {createClient} from "@/lib/be/superbase/server";
+import {signOutAction} from "@/lib/be/superbase/sign-out";
 import Link from "next/link";
 
-export function UserProfile() {
-  const [user, setUser] = React.useState<any>(null);
-
-  React.useEffect(() => {
-    const supabase = createClient();
-    async function getUser() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
+export async function UserProfile() {
+    const supabase = await createClient();
+    const user = await supabase.auth.getUser().then((user) => user.data.user);
+    
+    if (!user) {
+        return null
     }
-    getUser();
-  }, []);
-
-  if (!user) {
-    return null;
-  }
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Avatar>
-          <AvatarImage src={user.user_metadata.avatar_url} />
-          <AvatarFallback>{user.user_metadata.name.charAt(0)}</AvatarFallback>
-        </Avatar>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        className="w-200"
-        side="bottom"
-        align="start"
-        sideOffset={3}
-        alignOffset={10}
-      >
-        <Link href="/profile">
-          <DropdownMenuItem className="pl-2 pt-1 pb-1">
-            👬 Profile
-          </DropdownMenuItem>
-        </Link>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="pl-2 pt-1 pb-1" onClick={signOutAction}>
-          🔓 Logout
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
+    
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Avatar className="size-8">
+                    <AvatarImage src={user.user_metadata.avatar_url} className="hover:cursor-pointer"/>
+                    <AvatarFallback>{user.user_metadata.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+                side="bottom"
+                align="start"
+                sideOffset={3}
+                alignOffset={10}
+            >
+                <DropdownMenuItem className="pl-2 pt-1 pb-1">
+                    <Link href="/profile" className="hover:cursor-pointer">
+                        👬 Profile
+                    </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator/>
+                <DropdownMenuItem className="pl-2 pt-1 pb-1 hover:cursor-pointer" onClick={signOutAction}>
+                    🔓 Logout
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
 }

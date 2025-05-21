@@ -1,21 +1,84 @@
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  directUrl    = env("DIRECT_URL")
+  relationMode = "prisma"
 }
 
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User?   @relation(fields: [authorId], references: [id])
-  authorId  Int?
+generator client {
+  provider = "prisma-client-js"
+  output   = "app/generated/prisma/client"
+}
+
+generator json {
+  provider = "prisma-json-types-generator"
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  NotionIntegartion NotionIntegartion[]
+  LinearIntegration LinearIntegration[]
+  Project           Project[]
+}
+
+enum ProjectSourceType {
+  SCRATCH
+  NOTION
+  LINEAR
+}
+
+model Project {
+  id         String            @id @default(uuid()) @db.Uuid
+  userId     String
+  sourceType ProjectSourceType
+  name       String
+
+  notionIntegrationId String?
+  notionDatabaseId    String?
+
+  linearIntegrationId String?
+
+  /// [NotionPropertyConfig]
+  notionPropertyConfig Json?
+
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @default(now())
+  notionIntegration NotionIntegartion? @relation(fields: [notionIntegrationId], references: [id], onDelete: Cascade)
+  linearIntegration LinearIntegration? @relation(fields: [linearIntegrationId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model NotionIntegartion {
+  id          String @id @default(uuid()) @db.Uuid
+  accessToken String
+  userId      String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projects Project[]
+
+  @@index([userId])
+}
+
+model LinearIntegration {
+  id          String @id @default(uuid()) @db.Uuid
+  accessToken String
+  userId      String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projects Project[]
+
+  @@index([userId])
 }
