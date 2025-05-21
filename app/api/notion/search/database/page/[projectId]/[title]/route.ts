@@ -49,7 +49,6 @@ export async function GET(request: Request, {params}: {
     })
 
     const titlePropertyId = project.notionPropertyConfig.titlePropertyId
-    console.log(titlePropertyId)
 
     const parsedPages = pages.results.map((page) => {
         if (page.object === "page" && "properties" in page) {
@@ -66,8 +65,6 @@ export async function GET(request: Request, {params}: {
         }
     })
     const parsed = getDatabasePagesSchema.parse(parsedPages)
-
-    console.log(parsed)
 
     return new Response(JSON.stringify(parsed), { status: 200 })
 }

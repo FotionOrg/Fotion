@@ -2,7 +2,6 @@ import { prisma } from "@/app/pkg/prisma"
 import { Client } from "@notionhq/client"
 
 export async function GET(request: Request) {
-    console.log("hihi")
     const { searchParams } = new URL(request.url)
     const code = searchParams.get('code')
     const userId = searchParams.get('state')

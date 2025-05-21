@@ -6,7 +6,6 @@ import { z } from "zod";
 export async function GET(request: Request, {params}: {
     params: Promise<{ title: string }>
 }) {
-    console.log("hihi")
     const user = await getDomainUserOrNull()
     if (!user) {
         return new Response("Unauthorized", { status: 401 })
@@ -37,8 +36,6 @@ export async function GET(request: Request, {params}: {
         },
     })
 
-    console.log(JSON.stringify(res, null, 2))
-
     const parsed = res.results
         .map(result => {
             if ("title" in result) {
@@ -50,8 +47,6 @@ export async function GET(request: Request, {params}: {
                         }
                     }
                 })
-
-                console.log("properties", properties)
 
                 return {
                     id: result.id,

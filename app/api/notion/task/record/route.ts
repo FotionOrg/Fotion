@@ -63,8 +63,6 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  console.log(focusedMinute, durationMinutes)
-
   const res = await notion.pages.update({
     page_id: pageId,
     properties: {

@@ -78,7 +78,6 @@ export default function FormNotionProject({
     }
 
     async function handleSubmit(data: z.infer<typeof formSchema>) {
-        console.log("hihi")
         const project = await createProject(data)
         if (project) {
             afterSubmitFn()

@@ -39,7 +39,6 @@ export default function Timer({
           (elapsed - recordedDurationMS) / 1000 + recordingBufferSec >
           recordingIntervalSeconds
         ) {
-          console.log("recordFocusTime for remaining time")
           recordFocusTime()
         }
   
@@ -49,7 +48,6 @@ export default function Timer({
         timerRef.current = setInterval(() => {
           const newElapsed = Date.now() - start
           setElapsed(newElapsed)
-          console.log(newElapsed)
   
           // 타이머 종료
           if (newElapsed >= duration) {
@@ -59,7 +57,6 @@ export default function Timer({
               (elapsed - recordedDurationMS) / 1000 + recordingBufferSec >
               recordingIntervalSeconds
             ) {
-              console.log("recordFocusTime for duration")
               recordFocusTime()
             }
             setElapsed(0)
