@@ -21,7 +21,7 @@ export default function FormCreateScratchProject({
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            type: "scratch",
+            type: "SCRATCH",
             name: "",
         },
     })

@@ -1,7 +1,7 @@
 import { getNotionIntegration } from "@/app/focus/actions";
 import { getDomainUserOrNull } from "@/lib/be/utils/user";
 import { Client } from "@notionhq/client";
-import { z } from "zod";
+import { responseSchema } from "./type";
 
 export async function GET(request: Request, {params}: {
     params: Promise<{ title: string }>
@@ -68,11 +68,3 @@ export async function GET(request: Request, {params}: {
     })
 }
 
-export const responseSchema = z.array(z.object({
-    id: z.string(),
-    name: z.string(),
-    properties: z.array(z.object({
-        name: z.string(),
-        id: z.string(),
-    })),
-}))

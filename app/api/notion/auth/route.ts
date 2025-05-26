@@ -1,6 +1,6 @@
 import { getDomainUserOrNull } from "@/lib/be/utils/user"
 
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
     const user = await getDomainUserOrNull()
     if (!user) {
         return new Response("Invalid request", { status: 400 })

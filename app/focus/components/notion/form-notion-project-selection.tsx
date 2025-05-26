@@ -1,7 +1,7 @@
 "use client"
 import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-import { responseSchema } from "@/app/api/notion/search/database/[title]/route"
+import { responseSchema } from "@/app/api/notion/search/database/[title]/type"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Command, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
