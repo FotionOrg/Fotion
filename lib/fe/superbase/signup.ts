@@ -8,7 +8,7 @@ export async function signUpWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/callback/google`,
+      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback/google`,
     },
   });
 
