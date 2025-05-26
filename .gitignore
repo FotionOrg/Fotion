@@ -48,3 +48,6 @@ next-env.d.ts
 
 # prisma
 prisma/app/generated
+
+# env
+.env.*
