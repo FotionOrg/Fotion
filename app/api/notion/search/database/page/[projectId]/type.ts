@@ -8,3 +8,11 @@ export const databasePageSchema = z.object({
 
 export const getDatabasePagesSchema = z.array(databasePageSchema)
 
+
+export const linearIssueSchema = z.object({
+    id: z.string(),
+    title: z.string(),
+    url: z.string(),
+})
+
+export const getLinearIssuesSchema = z.array(linearIssueSchema)

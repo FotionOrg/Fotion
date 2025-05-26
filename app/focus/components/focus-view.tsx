@@ -15,6 +15,7 @@ import {
   databasePageSchema
 } from "../../api/notion/search/database/page/[projectId]/type"
 import { projectSchema } from "../type"
+import LinearTaskSelect from "./linear/section-linear-task-select"
 import NotionTaskSelect from "./notion/section-notion-task-select"
 import CreateNewProject from "./section-create-new-project"
 import Timer from "./section-timer"
@@ -23,10 +24,12 @@ import ProjectSelect from "./select-project"
 export default function FocusView({
   projects,
   notionIntegrationId,
+  linearIntegrationId,
   userId,
 }: {
   projects: z.infer<typeof projectSchema>[]
   notionIntegrationId: string | null
+  linearIntegrationId: string | null
   userId: string
 }) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
@@ -70,6 +73,13 @@ export default function FocusView({
               />
             )}
 
+            {selectedProject && selectedProject.sourceType === "LINEAR" && (
+              <LinearTaskSelect
+                selectedTask={selectedTask}
+                setSelectedTask={setSelectedTask}
+              />
+            )}
+
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogContent>
                 <DialogHeader>
@@ -82,6 +92,7 @@ export default function FocusView({
                 <CreateNewProject
                   setIsDialogOpen={setIsDialogOpen}
                   notionIntegrationId={notionIntegrationId}
+                  linearIntegrationId={linearIntegrationId}
                   userId={userId}
                   projects={projects}
                 />

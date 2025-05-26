@@ -11,20 +11,23 @@ import Image from "next/image"
 import { useState } from "react"
 import { z } from "zod"
 import { projectSchema } from "../type"
+import SectionCreateLinearProject from "./linear/section-create-linear-project"
 import SectionCreateNotionProject from "./notion/section-create-notion-project"
 import FormCreateScratchProject from "./scratch/form-create-scratch-project"
 
 export default function CreateNewProject({
   setIsDialogOpen,
   notionIntegrationId,
+  linearIntegrationId,
   projects,
 }: {
   setIsDialogOpen: (open: boolean) => void
   notionIntegrationId: string | null
+  linearIntegrationId: string | null
   userId: string
   projects: z.infer<typeof projectSchema>[]
 }) {
-  const [type, setType] = useState<"scratch" | "notion">("scratch")
+  const [type, setType] = useState<"SCRATCH" | "NOTION" | "LINEAR">("SCRATCH")
 
   return (
     <div>
@@ -32,16 +35,27 @@ export default function CreateNewProject({
         <SelectProjectType type={type} setType={setType} />
 
         {
-          type === "scratch" &&
+          type === "SCRATCH" &&
           <FormCreateScratchProject afterSubmitFn={() => {
             setIsDialogOpen(false)
           }} />
         }
 
         {
-          type === "notion" &&
+          type === "NOTION" &&
           <SectionCreateNotionProject
             notionIntegrationId={notionIntegrationId}
+            projects={projects}
+            afterSubmitFn={() => {
+              setIsDialogOpen(false)
+            }}
+          />
+        }
+
+        {
+          type === "LINEAR" &&
+          <SectionCreateLinearProject
+            linearIntegrationId={linearIntegrationId}
             projects={projects}
             afterSubmitFn={() => {
               setIsDialogOpen(false)
@@ -53,13 +67,13 @@ export default function CreateNewProject({
   )
 }
 
-function SelectProjectType({ type, setType }: { type: "scratch" | "notion", setType: (type: "scratch" | "notion") => void }) {
+function SelectProjectType({ type, setType }: { type: "SCRATCH" | "NOTION" | "LINEAR", setType: (type: "SCRATCH" | "NOTION" | "LINEAR") => void }) {
   return (
     <div>
       <Select
         value={type}
         onValueChange={(value) => {
-          setType(value as "scratch" | "notion")
+          setType(value as "SCRATCH" | "NOTION" | "LINEAR")
         }}
       >
         <SelectTrigger className="w-full">
@@ -68,7 +82,7 @@ function SelectProjectType({ type, setType }: { type: "scratch" | "notion", setT
         <SelectContent>
           <SelectGroup>
             <SelectItem
-              value="scratch"
+              value="SCRATCH"
               className="hover:bg-primary/10"
             >
               <div className="flex items-center gap-2">
@@ -77,7 +91,7 @@ function SelectProjectType({ type, setType }: { type: "scratch" | "notion", setT
               </div>
             </SelectItem>
             <SelectItem
-              value="notion"
+              value="NOTION"
               className="hover:bg-primary/10"
             >
               <div className="flex items-center gap-2">
@@ -90,6 +104,22 @@ function SelectProjectType({ type, setType }: { type: "scratch" | "notion", setT
                   />
                 </div>
                 Notion
+              </div>
+            </SelectItem>
+            <SelectItem
+              value="LINEAR"
+              className="hover:bg-primary/10"
+            >
+              <div className="flex items-center gap-2">
+                <div className="relative w-4 h-4">
+                  <Image
+                    src={"/images/linear.png"}
+                    fill
+                    alt="Linear Logo"
+                    className="object-contain"
+                  />
+                </div>
+                Linear
               </div>
             </SelectItem>
           </SelectGroup>

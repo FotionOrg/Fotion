@@ -1,18 +1,23 @@
 "use client"
 
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectSeparator,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select"
 import { Pencil } from "lucide-react"
 import Image from "next/image"
 import { z } from "zod"
 import { projectSchema } from "../type"
+
+const projectIconMap = {
+  NOTION: {icon: "/images/notion.png", name: "Notion"},
+  LINEAR: {icon: "/images/linear.png", name: "Linear"},
+}
 
 export default function ProjectSelect({
     setIsDialogOpen,
@@ -47,12 +52,12 @@ export default function ProjectSelect({
                 className="flex items-center gap-2"
               >
                 <div className="flex items-center gap-2">
-                  {project.sourceType === "NOTION" ? (
+                  {project.sourceType !== "SCRATCH" ? (
                     <div className="relative w-4 h-4">
                       <Image
-                        src={"/images/notion.png"}
+                        src={projectIconMap[project.sourceType].icon}
                         fill
-                        alt="Notion Logo"
+                        alt={projectIconMap[project.sourceType].name}
                         className="object-contain"
                       />
                     </div>

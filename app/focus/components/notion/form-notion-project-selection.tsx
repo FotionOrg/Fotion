@@ -29,7 +29,7 @@ export default function FormNotionProject({
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            type: "notion",
+            type: "NOTION",
             notionIntegrationId: notionIntegrationId,
         },
     })

@@ -1,13 +1,13 @@
 import { z } from "zod"
 
 const scratchSchema = z.object({
-  type: z.literal("scratch"),
+  type: z.literal("SCRATCH"),
   name: z.string().min(1),
   description: z.string().optional(),
 })
 
 const notionSchema = z.object({
-  type: z.literal("notion"),
+  type: z.literal("NOTION"),
   name: z.string().min(1),
   databaseId: z.string().min(1),
   notionIntegrationId: z.string().min(1),
@@ -16,9 +16,16 @@ const notionSchema = z.object({
   titlePropertyId: z.string().min(1),
 })
 
+const linearSchema = z.object({
+  type: z.literal("LINEAR"),
+  name: z.string().min(1),
+  linearIntegrationId: z.string().min(1),
+})
+
 export const formSchema = z.discriminatedUnion("type", [
   scratchSchema,
   notionSchema,
+  linearSchema,
 ])
 
 export const projectSchema = z.discriminatedUnion("sourceType", [
@@ -32,5 +39,10 @@ export const projectSchema = z.discriminatedUnion("sourceType", [
     name: z.string(),
     sourceType: z.literal("NOTION"),
     databaseId: z.string(),
+  }),
+  z.object({
+    id: z.string(),
+    name: z.string(),
+    sourceType: z.literal("LINEAR"),
   }),
 ])
