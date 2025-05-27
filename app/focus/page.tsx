@@ -9,9 +9,9 @@ export default async function Page() {
     return redirect("/")
   }
 
-  const projects = await getProjects("1a201e45-025c-460e-a14b-166c98f6ed51")
-  const notionIntegration = await getNotionIntegration("1a201e45-025c-460e-a14b-166c98f6ed51")
-  const linearIntegration = await getLinearIntegration("1a201e45-025c-460e-a14b-166c98f6ed51")
+  const projects = await getProjects(user.id)
+  const notionIntegration = await getNotionIntegration(user.id)
+  const linearIntegration = await getLinearIntegration(user.id)
 
   return (
     <FocusView
