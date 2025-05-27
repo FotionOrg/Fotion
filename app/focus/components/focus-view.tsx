@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Slider } from "@/components/ui/slider"
 import { XIcon } from "lucide-react"
 import { useRef, useState } from "react"
 import { z } from "zod"
@@ -34,6 +35,7 @@ export default function FocusView({
 }) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [volume, setVolume] = useState(0.5)
 
   const [selectedProject, setSelectedProject] = useState<z.infer<
     typeof projectSchema
@@ -44,6 +46,10 @@ export default function FocusView({
   > | null>(null)
 
   const [isTimerRunning, setIsTimerRunning] = useState(false)
+
+  if (audioRef.current) {
+    audioRef.current.volume = volume
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
@@ -98,6 +104,22 @@ export default function FocusView({
                 />
               </DialogContent>
             </Dialog>
+
+            <div className="flex items-center gap-2 w-full">
+              <Slider
+                min={0}
+                max={1}
+                step={0.01}
+                value={[volume]}
+                onValueChange={([v]: number[]) => {
+                  setVolume(v)
+                  if (audioRef.current) {
+                    audioRef.current.volume = v
+                  }
+                }}
+                className="w-full"
+              />
+            </div>
 
             <audio
               ref={audioRef}
