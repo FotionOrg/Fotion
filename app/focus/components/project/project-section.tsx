@@ -44,7 +44,6 @@ export default function ProjectSection({
     <div className="flex flex-col justify-center items-center w-full h-full">
       {!selectedProject && (
         <ProjectSelect
-          selectedProject={selectedProject}
           setSelectedProject={setSelectedProject}
           projects={projects}
           notionIntegrationId={notionIntegrationId}
