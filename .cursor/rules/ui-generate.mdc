@@ -1,0 +1,7 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+- 우리의 고객은 영어권이기에 모든 텍스트는 영어로 작성해줘.
+- 우리는 nextjs, shadcn, tailwindcss를 사용하고 있어. 항상 이것을 기준으로 작성해줘.

@@ -1,19 +1,12 @@
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Pencil } from "lucide-react"
 import Image from "next/image"
 import { useState } from "react"
 import { z } from "zod"
-import { projectSchema } from "../type"
-import SectionCreateLinearProject from "./linear/section-create-linear-project"
-import SectionCreateNotionProject from "./notion/section-create-notion-project"
-import FormCreateScratchProject from "./scratch/form-create-scratch-project"
+import { projectSchema } from "../../type"
+import SectionCreateLinearProject from "./linear/form-wrapper"
+import SectionCreateNotionProject from "./notion/form-wrapper"
+import FormCreateScratchProject from "./scratch/form"
 
 export default function CreateNewProject({
   setIsDialogOpen,
@@ -34,15 +27,15 @@ export default function CreateNewProject({
       <div className="space-y-4">
         <SelectProjectType type={type} setType={setType} />
 
-        {
-          type === "SCRATCH" &&
-          <FormCreateScratchProject afterSubmitFn={() => {
-            setIsDialogOpen(false)
-          }} />
-        }
+        {type === "SCRATCH" && (
+          <FormCreateScratchProject
+            afterSubmitFn={() => {
+              setIsDialogOpen(false)
+            }}
+          />
+        )}
 
-        {
-          type === "NOTION" &&
+        {type === "NOTION" && (
           <SectionCreateNotionProject
             notionIntegrationId={notionIntegrationId}
             projects={projects}
@@ -50,10 +43,9 @@ export default function CreateNewProject({
               setIsDialogOpen(false)
             }}
           />
-        }
+        )}
 
-        {
-          type === "LINEAR" &&
+        {type === "LINEAR" && (
           <SectionCreateLinearProject
             linearIntegrationId={linearIntegrationId}
             projects={projects}
@@ -61,13 +53,19 @@ export default function CreateNewProject({
               setIsDialogOpen(false)
             }}
           />
-        }
+        )}
       </div>
     </div>
   )
 }
 
-function SelectProjectType({ type, setType }: { type: "SCRATCH" | "NOTION" | "LINEAR", setType: (type: "SCRATCH" | "NOTION" | "LINEAR") => void }) {
+function SelectProjectType({
+  type,
+  setType,
+}: {
+  type: "SCRATCH" | "NOTION" | "LINEAR"
+  setType: (type: "SCRATCH" | "NOTION" | "LINEAR") => void
+}) {
   return (
     <div>
       <Select
@@ -81,43 +79,24 @@ function SelectProjectType({ type, setType }: { type: "SCRATCH" | "NOTION" | "LI
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem
-              value="SCRATCH"
-              className="hover:bg-primary/10"
-            >
+            <SelectItem value="SCRATCH" className="hover:bg-primary/10">
               <div className="flex items-center gap-2">
                 <Pencil className="h-4 w-4" />
                 Scratch
               </div>
             </SelectItem>
-            <SelectItem
-              value="NOTION"
-              className="hover:bg-primary/10"
-            >
+            <SelectItem value="NOTION" className="hover:bg-primary/10">
               <div className="flex items-center gap-2">
                 <div className="relative w-4 h-4">
-                  <Image
-                    src={"/images/notion.png"}
-                    fill
-                    alt="Notion Logo"
-                    className="object-contain"
-                  />
+                  <Image src={"/images/notion.png"} fill alt="Notion Logo" className="object-contain" />
                 </div>
                 Notion
               </div>
             </SelectItem>
-            <SelectItem
-              value="LINEAR"
-              className="hover:bg-primary/10"
-            >
+            <SelectItem value="LINEAR" className="hover:bg-primary/10">
               <div className="flex items-center gap-2">
                 <div className="relative w-4 h-4">
-                  <Image
-                    src={"/images/linear.png"}
-                    fill
-                    alt="Linear Logo"
-                    className="object-contain"
-                  />
+                  <Image src={"/images/linear.png"} fill alt="Linear Logo" className="object-contain" />
                 </div>
                 Linear
               </div>
@@ -128,6 +107,3 @@ function SelectProjectType({ type, setType }: { type: "SCRATCH" | "NOTION" | "LI
     </div>
   )
 }
-
-
-

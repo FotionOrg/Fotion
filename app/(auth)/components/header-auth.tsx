@@ -1,19 +1,18 @@
-import Link from "next/link";
-import { Button } from "../../../components/ui/button";
-import { createClient } from "@/lib/be/superbase/server";
-import { UserProfile } from "@/app/(user)/components/user_profile_avatar";
+import { UserProfile } from "@/app/(user)/components/user_profile_avatar"
+import { createClient } from "@/lib/be/superbase/server"
+import Link from "next/link"
+import { Button } from "../../../components/ui/button"
 
 export default async function AuthButton() {
-  const supabase = await createClient();
+  const supabase = await createClient()
 
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  
-  
+
   return user ? (
     <div className="flex items-center gap-4">
-      <UserProfile /> 
+      <UserProfile />
     </div>
   ) : (
     <div className="flex gap-2">
@@ -21,5 +20,5 @@ export default async function AuthButton() {
         <Link href="/sign-up">Sign up</Link>
       </Button>
     </div>
-  );
+  )
 }

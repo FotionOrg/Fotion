@@ -1,7 +1,8 @@
 import { getDomainUserOrNull } from "@/lib/be/utils/user"
 import { redirect } from "next/navigation"
 import { getLinearIntegration, getNotionIntegration, getProjects } from "./actions"
-import FocusView from "./components/focus-view"
+import FocusView from "./focus-view"
+import UnScrollablePage from "./unscrollable-page"
 
 export default async function Page() {
   const user = await getDomainUserOrNull()
@@ -14,11 +15,13 @@ export default async function Page() {
   const linearIntegration = await getLinearIntegration(user.id)
 
   return (
-    <FocusView
-      projects={projects}
-      notionIntegrationId={notionIntegration?.id ?? null}
-      linearIntegrationId={linearIntegration?.id ?? null}
-      userId={user.id}
-    />
+    <UnScrollablePage>
+      <FocusView
+        projects={projects}
+        notionIntegrationId={notionIntegration?.id ?? null}
+        linearIntegrationId={linearIntegration?.id ?? null}
+        userId={user.id}
+      />
+    </UnScrollablePage>
   )
 }

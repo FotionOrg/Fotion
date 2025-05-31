@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
   if (!("properties" in page)) {
     return NextResponse.json({ error: "Page does not have properties" }, { status: 400 })
   }
-  
+
   const focusedMinuteRaw = Object.values(page.properties).find(
     (property) => property.id === project.notionPropertyConfig!.focusedMinutesPropertyId,
   )
@@ -68,9 +68,9 @@ export async function POST(request: NextRequest) {
     properties: {
       [project.notionPropertyConfig.focusedMinutesPropertyId]: {
         number: focusedMinute + (durationMinutes ? Number(durationMinutes) : 0),
-        },
       },
-    })
+    },
+  })
 
   if (!res) {
     return NextResponse.json({ error: "Failed to update page" }, { status: 400 })

@@ -10,11 +10,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar"
-import {
-  DoubleArrowLeftIcon,
-  DoubleArrowRightIcon,
-  LockOpen1Icon,
-} from "@radix-ui/react-icons"
+import { DoubleArrowLeftIcon, DoubleArrowRightIcon, LockOpen1Icon } from "@radix-ui/react-icons"
 import { Home, Target } from "lucide-react"
 import { useEffect, useState } from "react"
 
@@ -56,11 +52,7 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu>
-                <SidebarMenuItem
-                  className={
-                    open ? "flex justify-end ml-auto" : "flex justify-start"
-                  }
-                >
+                <SidebarMenuItem className={open ? "flex justify-end ml-auto" : "flex justify-start"}>
                   <SidebarMenuButton asChild onClick={() => setOpen(!open)}>
                     {open ? <DoubleArrowLeftIcon /> : <DoubleArrowRightIcon />}
                   </SidebarMenuButton>

@@ -1,5 +1,6 @@
-"use server";
-import { type NextRequest, NextResponse } from "next/server";
+"use server"
+
+import { type NextRequest, NextResponse } from "next/server"
 
 export const updateSession = async (request: NextRequest) => {
   // This `try/catch` block is only here for the interactive tutorial.
@@ -10,10 +11,10 @@ export const updateSession = async (request: NextRequest) => {
       request: {
         headers: request.headers,
       },
-    });
+    })
 
-    return response;
-  } catch (_error) { 
+    return response
+  } catch (_error) {
     // If you are here, a Supabase client could not be created!
     // This is likely because you have not set up environment variables.
     // Check out http://localhost:3000 for Next Steps.
@@ -21,6 +22,6 @@ export const updateSession = async (request: NextRequest) => {
       request: {
         headers: request.headers,
       },
-    });
+    })
   }
-};
+}

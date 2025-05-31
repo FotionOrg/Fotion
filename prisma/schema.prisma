@@ -24,6 +24,7 @@ model User {
   NotionIntegartion NotionIntegartion[]
   LinearIntegration LinearIntegration[]
   Project           Project[]
+  Task              Task[]
 }
 
 enum ProjectSourceType {
@@ -51,6 +52,8 @@ model Project {
   updatedAt         DateTime           @default(now())
   notionIntegration NotionIntegartion? @relation(fields: [notionIntegrationId], references: [id], onDelete: Cascade)
   linearIntegration LinearIntegration? @relation(fields: [linearIntegrationId], references: [id], onDelete: Cascade)
+  
+  tasks             Task[]
 
   @@index([userId])
 }
@@ -81,4 +84,20 @@ model LinearIntegration {
   projects Project[]
 
   @@index([userId])
+}
+
+model Task {
+  id String @id @default(uuid()) @db.Uuid
+  userId String
+  projectId String
+  vendorTaskId String
+  
+  /// [TaskSessions]
+  sessions Json @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  @@unique([projectId, vendorTaskId])
 }

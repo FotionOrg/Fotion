@@ -1,0 +1,27 @@
+# postgresql
+
+services:
+  supabase:
+    image: supabase/postgres:15.6.1.146
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgrespostgresql/postgresql.conf
+      - -p 6543
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - target: 6543
+        published: 6543
+        protocol: tcp
+    volumes:
+      - type: volume
+        source: supabase-data
+        target: /var/lib/postgresql/data
+      - type: volume
+        source: supabase-config
+        target: /etc/postgresql-custom
+
+volumes:
+  supabase-data: {}
+  supabase-config: {}

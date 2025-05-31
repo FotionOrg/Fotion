@@ -2,36 +2,36 @@ import { prisma } from "@/app/pkg/prisma"
 import { Client } from "@notionhq/client"
 
 export async function GET(request: Request) {
-    const { searchParams } = new URL(request.url)
-    const code = searchParams.get('code')
-    const userId = searchParams.get('state')
-    if (!code || !userId) {
-        return new Response("Invalid request", {
-            status: 400,
-        })
-    }
-
-    const notion = new Client({
-        auth: process.env.NOTION_CLIENT_SECRET,
+  const { searchParams } = new URL(request.url)
+  const code = searchParams.get("code")
+  const userId = searchParams.get("state")
+  if (!code || !userId) {
+    return new Response("Invalid request", {
+      status: 400,
     })
+  }
 
-    const {access_token: accessToken} = await notion.oauth.token({
-        client_id: process.env.NOTION_CLIENT_ID!,
-        client_secret: process.env.NOTION_CLIENT_SECRET!,
-        code,
-        grant_type: "authorization_code",
-        redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL}/api/notion/webhook/oauth`,
-    })
+  const notion = new Client({
+    auth: process.env.NOTION_CLIENT_SECRET,
+  })
 
-    const notionIntegration = await prisma.notionIntegartion.create({
-        data: {
-            accessToken: accessToken,
-            userId: userId,
-        }
-    })
+  const { access_token: accessToken } = await notion.oauth.token({
+    client_id: process.env.NOTION_CLIENT_ID!,
+    client_secret: process.env.NOTION_CLIENT_SECRET!,
+    code,
+    grant_type: "authorization_code",
+    redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL}/api/notion/webhook/oauth`,
+  })
 
-    // HTML 응답을 반환하여 부모 창에 결과를 전달
-    const html = `
+  const notionIntegration = await prisma.notionIntegartion.create({
+    data: {
+      accessToken: accessToken,
+      userId: userId,
+    },
+  })
+
+  // HTML 응답을 반환하여 부모 창에 결과를 전달
+  const html = `
         <!DOCTYPE html>
         <html>
             <head>
@@ -52,11 +52,10 @@ export async function GET(request: Request) {
         </html>
     `
 
-    return new Response(html, {
-        status: 200,
-        headers: {
-            'Content-Type': 'text/html'
-        }
-    })
+  return new Response(html, {
+    status: 200,
+    headers: {
+      "Content-Type": "text/html",
+    },
+  })
 }
-

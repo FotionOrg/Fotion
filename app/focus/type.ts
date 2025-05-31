@@ -22,11 +22,7 @@ const linearSchema = z.object({
   linearIntegrationId: z.string().min(1),
 })
 
-export const formSchema = z.discriminatedUnion("type", [
-  scratchSchema,
-  notionSchema,
-  linearSchema,
-])
+export const formSchema = z.discriminatedUnion("type", [scratchSchema, notionSchema, linearSchema])
 
 export const projectSchema = z.discriminatedUnion("sourceType", [
   z.object({

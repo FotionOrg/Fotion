@@ -1,27 +1,26 @@
 "use client"
 
+import { getDatabasePagesSchema, getLinearIssuesSchema } from "@/app/api/notion/search/database/page/[projectId]/type"
+import { taskSchema } from "@/app/api/task/type"
 import { Input } from "@/components/ui/input"
 import { Loader, Search } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
+import { toast } from "sonner"
 import { useDebouncedCallback } from "use-debounce"
 import { z } from "zod"
-import {
-  getDatabasePagesSchema,
-  getLinearIssuesSchema,
-  linearIssueSchema
-} from "../../../api/notion/search/database/page/[projectId]/type"
+import { getTaskOrCreateTask } from "../../project/api"
 
 export default function LinearTaskSelect({
+  projectId,
   selectedTask,
   setSelectedTask,
 }: {
-  selectedTask: z.infer<typeof linearIssueSchema> | null
-  setSelectedTask: (task: z.infer<typeof linearIssueSchema> | null) => void
+  projectId: string
+  selectedTask: z.infer<typeof taskSchema> | null
+  setSelectedTask: (task: z.infer<typeof taskSchema> | null) => void
 }) {
-  const [searchedTasks, setSearchedTasks] = useState<
-    z.infer<typeof getDatabasePagesSchema>
-  >([])
+  const [searchedVendorTasks, setSearchedVendorTasks] = useState<z.infer<typeof getDatabasePagesSchema>>([])
   const [isSearching, setIsSearching] = useState(false)
   const abortControllerRef = useRef<AbortController | null>(null)
 
@@ -40,8 +39,7 @@ export default function LinearTaskSelect({
     })
       .then(async (res) => getLinearIssuesSchema.parse(await res.json()))
       .then((data) => {
-        console.log(data)
-        setSearchedTasks(data)
+        setSearchedVendorTasks(data)
         setIsSearching(false)
       })
       .catch((err) => {
@@ -56,7 +54,6 @@ export default function LinearTaskSelect({
     searchTasks(value)
   }, 200)
 
-  // 컴포넌트가 언마운트될 때 진행 중인 요청 취소
   useEffect(() => {
     return () => {
       if (abortControllerRef.current) {
@@ -82,7 +79,7 @@ export default function LinearTaskSelect({
               onChange={(e) => {
                 const value = e.target.value
                 if (value === "") {
-                  setSearchedTasks([])
+                  setSearchedVendorTasks([])
                 } else {
                   debouncedTaskSearch(value)
                 }
@@ -91,18 +88,23 @@ export default function LinearTaskSelect({
           </div>
         )}
         <div className="bg-white rounded shadow overflow-auto min-h-0 ">
-          {searchedTasks.length > 0 &&
+          {searchedVendorTasks.length > 0 &&
             selectedTask === null &&
-            searchedTasks.map((task) => (
+            searchedVendorTasks.map((vendorTask) => (
               <div
-                key={task.id}
-                onClick={() => {
-                  setSelectedTask(task)
-                  setSearchedTasks([])
+                key={vendorTask.id}
+                onClick={async () => {
+                  const task = await getTaskOrCreateTask(vendorTask.id, projectId)
+                  if (task) {
+                    setSelectedTask(task)
+                    setSearchedVendorTasks([])
+                  } else {
+                    toast.error("Failed to select task. Please try again.")
+                  }
                 }}
                 className="hover:bg-primary/10 p-2 hover:cursor-pointer text-sm"
               >
-                {task.title}
+                {vendorTask.title}
               </div>
             ))}
         </div>
@@ -113,16 +115,9 @@ export default function LinearTaskSelect({
           <div className="flex items-center gap-2  rounded-lg text-sm justify-center">
             <div className="flex items-center gap-2">
               <div className="relative w-4 h-4">
-                <Image
-                  src={"/images/linear.png"}
-                  fill
-                  alt="Notion Logo"
-                  className="object-contain"
-                />
+                <Image src={"/images/linear.png"} fill alt="Notion Logo" className="object-contain" />
               </div>
-              <div className="truncate max-w-xs">
-                {selectedTask.title}
-              </div>
+              <div className="truncate max-w-xs">{selectedTask.vendorTaskId}</div>
             </div>
           </div>
         </div>

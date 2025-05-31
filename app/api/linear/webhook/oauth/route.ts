@@ -1,45 +1,39 @@
-import { prisma } from "@/app/pkg/prisma";
+import { prisma } from "@/app/pkg/prisma"
 
 export async function GET(request: Request) {
-    const { searchParams } = new URL(request.url)
-    const code = searchParams.get("code")
-    const userId = searchParams.get("state")
-    if (!code || !userId) {
-        return new Response("Invalid request", {
-            status: 400,
-        })
-    }
-
-    console.log("userId", userId)
-    console.log("code", code)
-
-    const params = new URLSearchParams({
-        code: code ?? '',
-        client_id: process.env.LINEAR_CLIENT_ID ?? '',
-        client_secret: process.env.LINEAR_CLIENT_SECRET ?? '',
-        redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL}/api/linear/webhook/oauth`,
-        grant_type: "authorization_code",
-    });
-
-    const res = await fetch(
-        `https://api.linear.app/oauth/token`,
-        {
-            method: "POST",
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: params.toString(),
-        },
-    )
-
-    const {access_token: accessToken} = await res.json()
-
-    const linearIntegration = await prisma.linearIntegration.create({
-        data: {
-            userId: userId,
-            accessToken: accessToken,
-        },
+  const { searchParams } = new URL(request.url)
+  const code = searchParams.get("code")
+  const userId = searchParams.get("state")
+  if (!code || !userId) {
+    return new Response("Invalid request", {
+      status: 400,
     })
+  }
 
-    const html = `
+  const params = new URLSearchParams({
+    code: code ?? "",
+    client_id: process.env.LINEAR_CLIENT_ID ?? "",
+    client_secret: process.env.LINEAR_CLIENT_SECRET ?? "",
+    redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL}/api/linear/webhook/oauth`,
+    grant_type: "authorization_code",
+  })
+
+  const res = await fetch(`https://api.linear.app/oauth/token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: params.toString(),
+  })
+
+  const { access_token: accessToken } = await res.json()
+
+  const linearIntegration = await prisma.linearIntegration.create({
+    data: {
+      userId: userId,
+      accessToken: accessToken,
+    },
+  })
+
+  const html = `
         <!DOCTYPE html>
         <html>
             <head>
@@ -60,10 +54,10 @@ export async function GET(request: Request) {
         </html>
     `
 
-    return new Response(html, {
-        status: 200,
-        headers: {
-            "Content-Type": "text/html",
-        },
-    })
+  return new Response(html, {
+    status: 200,
+    headers: {
+      "Content-Type": "text/html",
+    },
+  })
 }
