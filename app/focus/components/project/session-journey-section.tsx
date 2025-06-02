@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { Loader2, XIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
@@ -46,7 +46,6 @@ export default function SessionJourneySection({
     return () => window.removeEventListener("keydown", handleEsc)
   }, [setSelectedTask])
 
-  const queryClient = useQueryClient()
   const { data: durationMSPerSession } = useQuery({
     queryKey: ["task", selectedTask.id],
     queryFn: async () =>
