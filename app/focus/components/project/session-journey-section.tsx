@@ -13,7 +13,8 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { XIcon } from "lucide-react"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { Loader2, XIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { z } from "zod"
@@ -45,6 +46,25 @@ export default function SessionJourneySection({
     return () => window.removeEventListener("keydown", handleEsc)
   }, [setSelectedTask])
 
+  const queryClient = useQueryClient()
+  const { data: durationMSPerSession } = useQuery({
+    queryKey: ["task", selectedTask.id],
+    queryFn: async () =>
+      fetch(`/api/task?taskId=${selectedTask.id}`).then(async (res) => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch task")
+        }
+        const json = await res.json()
+        const task = taskSchema.parse(json)
+        const durationMSPerSession: Record<string, number> = {}
+        for (const session of task.sessions || []) {
+          durationMSPerSession[session.id] = session.durationMs
+        }
+        return durationMSPerSession
+      }),
+    refetchInterval: 5_000,
+  })
+
   return (
     <div className="flex flex-col justify-center items-center w-full max-h-screen min-h-screen">
       <div className="flex flex-row items-center gap-2 w-full justify-center mb-5">
@@ -61,6 +81,7 @@ export default function SessionJourneySection({
                     session={session}
                     setSelectedSession={setSelectedSession}
                     selectedSession={selectedSession}
+                    durationMS={durationMSPerSession?.[session.id]}
                   />
                   {idx < arr.length - 1 && (
                     <div className="flex flex-col items-center">
@@ -86,12 +107,15 @@ function SessionCard({
   session,
   setSelectedSession,
   selectedSession,
+  durationMS,
 }: {
   session: z.infer<typeof taskSessionSchema>
   setSelectedSession: (session: z.infer<typeof taskSessionSchema>) => void
   selectedSession: z.infer<typeof taskSessionSchema> | null
+  durationMS?: number
 }) {
   const isSelected = selectedSession?.id === session.id
+  const duration = durationMS || session.durationMs
 
   return (
     <Card
@@ -104,7 +128,17 @@ function SessionCard({
         <CardTitle className={`text-sm ${isSelected ? "text-green-700" : ""}`}>{session.name}</CardTitle>
       </CardHeader>
       <CardContent className="p-3">
-        <div className="text-xs text-gray-500 mb-1">{Math.floor(session.durationMs / (1000 * 60))} min</div>
+        <div className="text-xs text-gray-500 mb-1">
+          {(() => {
+            const totalSeconds = Math.floor(duration / 1000)
+            const hours = Math.floor(totalSeconds / 3600)
+            const minutes = Math.floor((totalSeconds % 3600) / 60)
+            const seconds = totalSeconds % 60
+            return [hours > 0 ? `${hours}h` : null, minutes > 0 ? `${minutes}m` : null, `${seconds}s`]
+              .filter(Boolean)
+              .join(" ")
+          })()}
+        </div>
       </CardContent>
     </Card>
   )
@@ -121,8 +155,10 @@ function AddNewSessionButton({
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [newSessionName, setNewSessionName] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleAddSession = async () => {
+    setIsLoading(true)
     if (newSessionName.trim() === "") return
     const res = await fetch("/api/task/session", {
       method: "POST",
@@ -143,6 +179,7 @@ function AddNewSessionButton({
     }
     setIsDialogOpen(false)
     setNewSessionName("")
+    setIsLoading(false)
   }
 
   return (
@@ -167,6 +204,7 @@ function AddNewSessionButton({
                 handleAddSession()
               }
             }}
+            disabled={isLoading}
           />
           <DialogFooter>
             <DialogClose asChild>
@@ -178,18 +216,19 @@ function AddNewSessionButton({
                   setIsDialogOpen(false)
                   setNewSessionName("")
                 }}
+                disabled={isLoading}
               >
                 Cancel
               </Button>
             </DialogClose>
             <Button
               onClick={handleAddSession}
-              disabled={newSessionName.trim() === ""}
+              disabled={newSessionName.trim() === "" || isLoading}
               className="text-xs"
               size="sm"
               variant="default"
             >
-              Add
+              {isLoading ? <Loader2 className="size-4 animate-spin" /> : "Add"}
             </Button>
           </DialogFooter>
         </DialogContent>

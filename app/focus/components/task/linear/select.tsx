@@ -74,6 +74,7 @@ export default function LinearTaskSelect({
               <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
             )}
             <Input
+              autoFocus
               placeholder="Search tasks..."
               className="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 border-none focus:outline-none focus:border-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               onChange={(e) => {
