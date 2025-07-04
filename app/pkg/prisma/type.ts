@@ -9,11 +9,13 @@ declare global {
     type TaskSessions = {
       id: string
       name: string
-      durationMs: number
+      durationMs : number
+      breakDurationMs :number
       createdAtMs: number
       updatedAtMs: number
       order: number // start from 1, 1 is the first session
-    }[]
+    }
+    type TaskSessions = TaskSession[]
   }
 }
 
