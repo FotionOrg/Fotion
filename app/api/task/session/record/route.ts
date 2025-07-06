@@ -4,10 +4,10 @@ import { Client } from "@notionhq/client"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
-  const { projectId, taskId, sessionId, durationMinutes } = await request.json()
+  const { projectId, taskId, sessionId, durationMinutes, breakDurationMinutes } = await request.json()
 
-  if (!taskId || !projectId || !durationMinutes || isNaN(Number(durationMinutes))) {
-    return NextResponse.json({ error: "taskId and projectId are required" }, { status: 400 })
+  if (!taskId || !projectId || (durationMinutes == null && breakDurationMinutes == null)) {
+    return NextResponse.json({ error: "Error : taskId and projectId are required" }, { status: 400 })
   }
 
   const project = await prisma.project.findUnique({
@@ -41,9 +41,11 @@ export async function POST(request: NextRequest) {
   if (!session) {
     return NextResponse.json({ error: "Session not found" }, { status: 400 })
   }
-
+  if (durationMinutes != null) {
   session.durationMs += durationMinutes * 60 * 1000
-
+  } else{
+  session.breakDurationMs += breakDurationMinutes * 60 * 1000
+  }
   await prisma.task.update({
     where: {
       id: taskId,

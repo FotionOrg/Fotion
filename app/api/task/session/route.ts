@@ -26,6 +26,7 @@ export async function POST(request: Request) {
     id: crypto.randomUUID(),
     name: body.sessionName,
     durationMs: 0,
+    breakDurationMs: 0,
     createdAtMs: Date.now(),
     updatedAtMs: Date.now(),
     order: task.sessions.length + 1,

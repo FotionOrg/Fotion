@@ -10,12 +10,11 @@ declare global {
       id: string
       name: string
       durationMs : number
-      breakDurationMs :number
+      breakDurationMs :Number
       createdAtMs: number
       updatedAtMs: number
       order: number // start from 1, 1 is the first session
-    }
-    type TaskSessions = TaskSession[]
+    }[]
   }
 }
 

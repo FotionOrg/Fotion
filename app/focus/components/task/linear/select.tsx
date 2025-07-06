@@ -15,10 +15,14 @@ export default function LinearTaskSelect({
   projectId,
   selectedTask,
   setSelectedTask,
+  isTimerRunning,
+  setIsTimerRunning,
 }: {
   projectId: string
   selectedTask: z.infer<typeof taskSchema> | null
   setSelectedTask: (task: z.infer<typeof taskSchema> | null) => void
+  isTimerRunning: boolean
+  setIsTimerRunning: (isTimerRunning: boolean) => void
 }) {
   const [searchedVendorTasks, setSearchedVendorTasks] = useState<z.infer<typeof getDatabasePagesSchema>>([])
   const [isSearching, setIsSearching] = useState(false)

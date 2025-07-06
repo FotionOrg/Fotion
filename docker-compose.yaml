@@ -6,7 +6,7 @@ services:
     command:
       - postgres
       - -c
-      - config_file=/etc/postgrespostgresql/postgresql.conf
+      - config_file=/etc/postgresql/postgresql.conf
       - -p 6543
     environment:
       POSTGRES_PASSWORD: postgres

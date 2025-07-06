@@ -16,6 +16,8 @@ export default function ProjectSection({
   notionIntegrationId,
   linearIntegrationId,
   userId,
+  isTimerRunning,
+  setIsTimerRunning,
 }: {
   selectedProject: z.infer<typeof projectSchema> | null
   setSelectedProject: (project: z.infer<typeof projectSchema> | null) => void
@@ -23,6 +25,9 @@ export default function ProjectSection({
   setSelectedTask: (task: z.infer<typeof taskSchema> | null) => void
   selectedSession: z.infer<typeof taskSessionSchema> | null
   setSelectedSession: (session: z.infer<typeof taskSessionSchema> | null) => void
+  isTimerRunning: boolean
+  setIsTimerRunning: (isTimerRunning: boolean) => void
+
   projects: z.infer<typeof projectSchema>[]
   notionIntegrationId: string | null
   linearIntegrationId: string | null
@@ -57,6 +62,8 @@ export default function ProjectSection({
           setSelectedProject={setSelectedProject}
           selectedTask={selectedTask}
           setSelectedTask={setSelectedTask}
+          isTimerRunning={isTimerRunning}
+          setIsTimerRunning={setIsTimerRunning}
         />
       )}
       {selectedProject && selectedTask && (
@@ -65,6 +72,7 @@ export default function ProjectSection({
           setSelectedTask={setSelectedTask}
           selectedSession={selectedSession}
           setSelectedSession={setSelectedSession}
+          isTimerRunning={isTimerRunning}
         />
       )}
     </div>

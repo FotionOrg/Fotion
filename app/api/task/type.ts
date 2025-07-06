@@ -10,7 +10,8 @@ export type request = z.infer<typeof requestSchema>
 export const taskSessionSchema = z.object({
   id: z.string(),
   name: z.string(),
-  durationMs: z.number(),
+  durationMs: z.number().optional(),
+  breakDurationMs: z.number().optional(),
   createdAtMs: z.number(),
   updatedAtMs: z.number(),
   order: z.number(),

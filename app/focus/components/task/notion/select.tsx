@@ -15,10 +15,14 @@ export default function NotionTaskSelect({
   projectId,
   selectedTask,
   setSelectedTask,
+  isTimerRunning,
+  setIsTimerRunning,
 }: {
   projectId: string
   selectedTask: z.infer<typeof taskSchema> | null
   setSelectedTask: (task: z.infer<typeof taskSchema> | null) => void
+  isTimerRunning: boolean
+  setIsTimerRunning: (isTimerRunning: boolean) => void
 }) {
   const [searchedVendorTasks, setSearchedVendorTasks] = useState<z.infer<typeof getDatabasePagesSchema>>([])
   const [selectedTaskTitle, setSelectedTaskTitle] = useState<string | null>(null)
@@ -102,6 +106,7 @@ export default function NotionTaskSelect({
                     setSelectedTask(task)
                     setSelectedTaskTitle(vendorTask.title)
                     setSearchedVendorTasks([])
+                    setIsTimerRunning(false)
                   } else {
                     toast.error("Failed to select task. Please try again.")
                   }
