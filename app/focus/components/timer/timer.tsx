@@ -9,6 +9,8 @@ export default function Timer({
   projectId,
   taskId,
   sessionId,
+  mode,
+  switchingMode,
 }: {
   audioRef: React.RefObject<HTMLAudioElement | null>
   isTimerRunning: boolean
@@ -16,23 +18,14 @@ export default function Timer({
   projectId: string | null
   taskId: string | null
   sessionId: string | null
+  mode: "FOCUS" | "BREAK"
+  switchingMode: () => void
 }) {
   const recordingBufferSec = 10
   const recordingIntervalMinutes = 0.1
   const recordingIntervalSeconds = recordingIntervalMinutes * 60
   const recordingIntervalMS = recordingIntervalSeconds * 1000
-
-  const breakDurationMinutes = 10
-  const breakIntervalMinutes = 0.1
-  const breakDurationMS = breakDurationMinutes * 60 * 1000
-
-  // 사용자가 정의하는 Focus 길이 (초기 50분)
-  const [focusDurationMS, setFocusDurationMS] = useState(50 * 60 * 1000)
-
-  const [duration, setDuration] = useState(focusDurationMS)
-
-  const [mode, setMode] = useState<"FOCUS" | "BREAK">("FOCUS")
-
+  const [duration, setDuration] = useState(1 * 10 * 1000)
   const [elapsed, setElapsed] = useState(0)
   const [editing, setEditing] = useState(false)
   const [inputValue, setInputValue] = useState(duration)
@@ -58,12 +51,12 @@ export default function Timer({
 
       setElapsed(0)
       setIsTimerRunning(false)
-      setMode("FOCUS")         
-      setDuration(focusDurationMS)
+      switchingMode()
+      setDuration(duration)
       return
     }
 
-    const start = Date.now() - elapsed
+    const start = Date.now()
     timerRef.current = setInterval(() => {
       const newElapsed = Date.now() - start
       setElapsed(newElapsed)
@@ -73,9 +66,9 @@ export default function Timer({
           if ((elapsed - recordedDurationMS) / 1000 + recordingBufferSec > recordingIntervalSeconds) {
             recordFocusTime()
           }
-          
-          setMode("BREAK")
-          setDuration(breakDurationMS)
+
+          switchingMode()
+          setDuration(duration)
           setRecordedDurationMS(recordedDurationMS + recordingIntervalMS)
           setElapsed(0)
 
@@ -84,12 +77,12 @@ export default function Timer({
           timerRef.current = setInterval(() => {
             const breakElapsed = Date.now() - newStart
             setElapsed(breakElapsed)
-            if (breakElapsed >= breakDurationMS) {
+            if (breakElapsed >= duration) {
               clearInterval(timerRef.current!)
               recordBreakTime()
               setIsTimerRunning(false)
-              setMode("FOCUS")
-              setDuration(recordingIntervalMinutes)
+              switchingMode()
+              setDuration(duration)
               setElapsed(0)
             }
           }, 500)
@@ -97,8 +90,8 @@ export default function Timer({
           clearInterval(timerRef.current!)
           recordBreakTime()
           setIsTimerRunning(false)
-          setMode("BREAK")
-          setDuration(recordingIntervalMinutes)
+          switchingMode()
+          setDuration(duration)
           setElapsed(0)
         }
       }
@@ -107,7 +100,6 @@ export default function Timer({
     audioRef.current?.play()
     setIsTimerRunning(true)
   }
-
   const handleTimeClick = () => {
     if (!isTimerRunning) setEditing(true)
   }
@@ -115,7 +107,6 @@ export default function Timer({
   const handleInputBlur = () => {
     const minutes = Math.min(Number(inputValue), 60)
     const ms = minutes * 60 * 1000
-    setFocusDurationMS(ms)   
     setDuration(ms)
     setElapsed(0)
     setEditing(false)
@@ -154,7 +145,6 @@ export default function Timer({
 
   function recordBreakTime() {
     if (!projectId || !taskId) return
-    console.log("Mode : ", mode)
     fetch(`/api/task/session/record`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -162,9 +152,8 @@ export default function Timer({
         projectId: projectId,
         taskId: taskId,
         sessionId: sessionId,
-        breakDurationMinutes: breakIntervalMinutes,
+        breakDurationMinutes: recordingIntervalMinutes,
       }),
-      
     })
       .then(async (res) => {
         const data = await res.json()
@@ -210,7 +199,7 @@ export default function Timer({
   return (
     <div className="flex flex-col items-center justify-center gap-4 w-full">
       <div className="text-5xl font-mono tabular-nums text-foreground drop-shadow-sm select-none flex items-center">
-        <span className="mr-2 text-sm">{mode === "FOCUS" ? "Focus" : "Break"}</span> 
+        <span className="mr-2 text-sm">{mode === "FOCUS" ? "Focus" : "Break"}</span>
         {editing ? (
           <>
             <input

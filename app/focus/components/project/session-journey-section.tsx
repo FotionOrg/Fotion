@@ -18,15 +18,13 @@ import { Loader2, XIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { z } from "zod"
-import Timer from "../timer/timer"
-
 
 export default function SessionJourneySection({
   selectedTask,
   setSelectedTask,
   selectedSession,
   setSelectedSession,
-  isTimerRunning
+  isTimerRunning,
 }: {
   selectedTask: z.infer<typeof taskSchema>
   setSelectedTask: (task: z.infer<typeof taskSchema> | null) => void
@@ -59,10 +57,7 @@ export default function SessionJourneySection({
         }
         const json = await res.json()
         const task = taskSchema.parse(json)
-        const durationMSPerSession: Record<
-          string,
-          { durationMs: number; breakDurationMs: number }
-        > = {}        
+        const durationMSPerSession: Record<string, { durationMs: number; breakDurationMs: number | null }> = {}
         for (const session of task.sessions || []) {
           durationMSPerSession[session.id] = {
             durationMs: session.durationMs ?? 0,
@@ -119,7 +114,7 @@ function SessionCard({
   setSelectedSession,
   selectedSession,
   durationMS,
-  breakDurationMS
+  breakDurationMS,
 }: {
   session: z.infer<typeof taskSessionSchema>
   setSelectedSession: (session: z.infer<typeof taskSessionSchema>) => void
@@ -146,13 +141,13 @@ function SessionCard({
           <span>
             Focus:&nbsp;
             {(() => {
-              const totalSeconds = Math.floor(duration / 1000);
-              const hours = Math.floor(totalSeconds / 3600);
-              const minutes = Math.floor((totalSeconds % 3600) / 60);
-              const seconds = totalSeconds % 60;
+              const totalSeconds = Math.floor(duration / 1000)
+              const hours = Math.floor(totalSeconds / 3600)
+              const minutes = Math.floor((totalSeconds % 3600) / 60)
+              const seconds = totalSeconds % 60
               return [hours > 0 ? `${hours}h` : null, minutes > 0 ? `${minutes}m` : null, `${seconds}s`]
                 .filter(Boolean)
-                .join(" ");
+                .join(" ")
             })()}
           </span>
         </div>
@@ -160,13 +155,13 @@ function SessionCard({
           <span>
             Break:&nbsp;
             {(() => {
-              const totalSeconds = Math.floor(breakDuration / 1000);
-              const hours = Math.floor(totalSeconds / 3600);
-              const minutes = Math.floor((totalSeconds % 3600) / 60);
-              const seconds = totalSeconds % 60;
+              const totalSeconds = Math.floor(breakDuration / 1000)
+              const hours = Math.floor(totalSeconds / 3600)
+              const minutes = Math.floor((totalSeconds % 3600) / 60)
+              const seconds = totalSeconds % 60
               return [hours > 0 ? `${hours}h` : null, minutes > 0 ? `${minutes}m` : null, `${seconds}s`]
                 .filter(Boolean)
-                .join(" ");
+                .join(" ")
             })()}
           </span>
         </div>
@@ -179,18 +174,16 @@ function AddNewSessionButton({
   selectedTask,
   setSelectedTask,
   setSelectedSession,
+  isTimerRunning,
 }: {
   selectedTask: z.infer<typeof taskSchema>
   setSelectedTask: (task: z.infer<typeof taskSchema>) => void
   setSelectedSession: (session: z.infer<typeof taskSessionSchema>) => void
   isTimerRunning: boolean
-  setIsTimerRunning: (isTimerRunning: boolean) => void
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [newSessionName, setNewSessionName] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [isTimerRunning, setIsTimerRunning] = useState(false)
-
 
   const handleAddSession = async () => {
     setIsLoading(true)

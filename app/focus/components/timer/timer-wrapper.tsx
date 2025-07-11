@@ -27,6 +27,17 @@ export default function TimerSection({
   }, [volume, audioRef])
 
   const [isTimerRunning, setIsTimerRunning] = useState(false)
+  const [mode, setMode] = useState<"FOCUS" | "BREAK">("FOCUS")
+
+  const handlingSwitchingMode = () => {
+    setMode((prev) => {
+      if (prev === "FOCUS") {
+        return "BREAK"
+      } else {
+        return "FOCUS"
+      }
+    })
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-4 w-full">
@@ -40,6 +51,8 @@ export default function TimerSection({
               projectId={selectedProject?.id ?? null}
               taskId={selectedTask?.id ?? null}
               sessionId={selectedSession?.id ?? null}
+              mode={mode}
+              switchingMode={handlingSwitchingMode}
             />
 
             {isTimerRunning && (

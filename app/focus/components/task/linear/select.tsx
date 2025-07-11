@@ -15,8 +15,6 @@ export default function LinearTaskSelect({
   projectId,
   selectedTask,
   setSelectedTask,
-  isTimerRunning,
-  setIsTimerRunning,
 }: {
   projectId: string
   selectedTask: z.infer<typeof taskSchema> | null

@@ -1,3 +1,4 @@
+import prettierPlugin from "eslint-plugin-prettier"
 import pluginReact from "eslint-plugin-react"
 import globals from "globals"
 import tseslint from "typescript-eslint"
@@ -23,6 +24,7 @@ export default [
     plugins: {
       react: pluginReact,
       "@typescript-eslint": tseslint.plugin,
+      prettier: prettierPlugin,
     },
     rules: {
       "react/react-in-jsx-scope": "off",
@@ -30,6 +32,7 @@ export default [
       "react/prop-types": "off",
       "@typescript-eslint/no-empty-interface": "off",
       "no-unused-vars": "off",
+      "prettier/prettier": "error",
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
