@@ -20,12 +20,14 @@ export default function TimerSection({
 }) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [volume, setVolume] = useState(0.5)
+
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume
     }
   }, [volume, audioRef])
-
+  const [duration, setDuration] = useState(50 * 60 * 1000)
+  const [breakDuration, setBreakDuration] = useState(10 * 60 * 1000)
   const [isTimerRunning, setIsTimerRunning] = useState(false)
   const [mode, setMode] = useState<"FOCUS" | "BREAK">("FOCUS")
 
@@ -33,8 +35,10 @@ export default function TimerSection({
     setMode((prev) => {
       if (prev === "FOCUS") {
         return "BREAK"
+        setBreakDuration(breakDuration)
       } else {
         return "FOCUS"
+        setDuration(duration)
       }
     })
   }
@@ -47,6 +51,10 @@ export default function TimerSection({
             <Timer
               audioRef={audioRef}
               isTimerRunning={isTimerRunning}
+              duration={duration}
+              breakDuration={breakDuration}
+              setDuration={setDuration}
+              setBreakDuration={setBreakDuration}
               setIsTimerRunning={setIsTimerRunning}
               projectId={selectedProject?.id ?? null}
               taskId={selectedTask?.id ?? null}
