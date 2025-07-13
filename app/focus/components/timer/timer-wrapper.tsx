@@ -19,10 +19,14 @@ export default function TimerSection({
   selectedSession: z.infer<typeof taskSessionSchema> | null
 }) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const audioAlarmRef = useRef<HTMLAudioElement | null>(null)
   const [volume, setVolume] = useState(0.5)
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume
+    }
+    if (audioAlarmRef.current) {
+      audioAlarmRef.current.volume = volume
     }
   }, [volume, audioRef])
 
@@ -31,6 +35,7 @@ export default function TimerSection({
 
   const handlingSwitchingMode = () => {
     setMode((prev) => {
+      audioAlarmRef.current?.play()
       if (prev === "FOCUS") {
         return "BREAK"
       } else {
@@ -46,6 +51,7 @@ export default function TimerSection({
           <div className="flex flex-col items-center gap-6">
             <Timer
               audioRef={audioRef}
+              audioAlarmRef={audioAlarmRef}
               isTimerRunning={isTimerRunning}
               setIsTimerRunning={setIsTimerRunning}
               projectId={selectedProject?.id ?? null}
@@ -90,6 +96,7 @@ export default function TimerSection({
               src="https://mfrc3lvbxokueaya.public.blob.vercel-storage.com/lofi-background-music-337568-aIPJNMILf7xBoX7lmh9UzpJYlzv4aV.mp3"
               loop
             />
+            <audio ref={audioAlarmRef} src="https://t1.daumcdn.net/cfile/tistory/995003385D2A04E214" />
           </div>
         </CardContent>
       </Card>
