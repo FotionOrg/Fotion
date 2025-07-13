@@ -129,6 +129,7 @@ export default function Timer({
         projectId: projectId,
         taskId: taskId,
         sessionId: sessionId,
+        type: "FOCUS",
         durationMinutes: recordingIntervalMinutes,
       }),
     })
@@ -152,6 +153,7 @@ export default function Timer({
         projectId: projectId,
         taskId: taskId,
         sessionId: sessionId,
+        type: "BREAK",
         breakDurationMinutes: recordingIntervalMinutes,
       }),
     })

@@ -193,6 +193,7 @@ function AddNewSessionButton({
       body: JSON.stringify({
         taskId: selectedTask.id,
         sessionName: newSessionName,
+        type: "FOCUS",
       }),
     })
     if (!res.ok) {

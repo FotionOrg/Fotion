@@ -39,6 +39,7 @@ export async function POST(request: Request) {
     sessions: task.sessions.map((session) => ({
       id: session.id,
       name: session.name,
+      type: session.type,
       durationMs: session.durationMs,
       breakDurationMs: session.breakDurationMs,
       createdAtMs: session.createdAtMs,
@@ -79,6 +80,7 @@ export async function GET(request: Request) {
     sessions: task.sessions.map((session) => ({
       id: session.id,
       name: session.name,
+      type: session.type,
       durationMs: session.durationMs,
       breakDurationMs: session.breakDurationMs,
       createdAtMs: session.createdAtMs,

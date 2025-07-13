@@ -9,6 +9,7 @@ declare global {
     type TaskSessions = {
       id: string
       name: string
+      type: "FOCUS" | "BREAK"
       durationMs: number
       breakDurationMs: number
       createdAtMs: number
