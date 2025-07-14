@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+// Project 인터페이스: 코드에서 사용할 타입
 export interface Project {
   id: string
   name: string
@@ -10,12 +11,14 @@ export interface Project {
   notionPropertyConfig?: NotionPropertyConfig
 }
 
+// Notion Property Config 타입
 export interface NotionPropertyConfig {
   titlePropertyId: string
   estimatedMinutesPropertyId: string
   focusedMinutesPropertyId: string
 }
 
+// 프로젝트 생성 폼 스키마 (zod)
 const scratchSchema = z.object({
   type: z.literal("SCRATCH"),
   name: z.string().min(1),
@@ -40,6 +43,7 @@ const linearSchema = z.object({
 
 export const formSchema = z.discriminatedUnion("type", [scratchSchema, notionSchema, linearSchema])
 
+// 프로젝트 조회 결과 스키마 (zod)
 export const projectSchema = z.discriminatedUnion("sourceType", [
   z.object({
     id: z.string(),

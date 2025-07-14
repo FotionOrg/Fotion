@@ -1,7 +1,7 @@
 import { prisma } from "@/app/pkg/prisma"
 import { getDomainUserOrNull } from "@/lib/be/utils/user"
 import { z } from "zod"
-import { taskSessionSchema } from "../type"
+import { taskSessionSchema, TaskSession } from "../type"
 import { requestSchema, responseSchema } from "./type"
 
 export async function POST(request: Request) {
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
     task: {
       id: updatedTask.id,
       vendorTaskId: updatedTask.vendorTaskId,
-      sessions: updatedTask.sessions.map((session) => ({
+      sessions: updatedTask.sessions.map((session: TaskSession) => ({
         id: session.id,
         name: session.name,
         type: session.type as "FOCUS" | "BREAK",

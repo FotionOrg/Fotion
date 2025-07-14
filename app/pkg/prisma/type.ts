@@ -6,7 +6,7 @@ declare global {
       focusedMinutesPropertyId: string
     }
 
-    type TaskSessions = {
+    type TaskSession = {
       id: string
       name: string
       type: "FOCUS" | "BREAK"

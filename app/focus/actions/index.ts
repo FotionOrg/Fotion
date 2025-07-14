@@ -3,7 +3,7 @@
 import { getDomainUserOrNull } from "@/lib/be/utils/user"
 import { z } from "zod"
 import { prisma } from "../../pkg/prisma"
-import { formSchema, projectSchema } from "../type"
+import { formSchema, projectSchema } from "./type"
 
 export async function createProject(data: z.infer<typeof formSchema>) {
   const user = await getDomainUserOrNull()

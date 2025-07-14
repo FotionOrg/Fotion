@@ -5,6 +5,17 @@ export const requestSchema = z.object({
   projectId: z.string(),
 })
 
+export interface TaskSession {
+  id: string
+  name: string
+  type: "FOCUS" | "BREAK"
+  durationMs: number
+  breakDurationMs: number
+  createdAtMs: number
+  updatedAtMs: number
+  order: number
+}
+
 export type request = z.infer<typeof requestSchema>
 
 export const taskSessionSchema = z.object({

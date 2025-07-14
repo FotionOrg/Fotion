@@ -1,7 +1,7 @@
 import { prisma } from "@/app/pkg/prisma"
 import { getDomainUserOrNull } from "@/lib/be/utils/user"
 import { z } from "zod"
-import { requestSchema, taskSchema } from "./type"
+import { requestSchema, taskSchema, TaskSession } from "./type"
 
 export async function POST(request: Request) {
   const user = await getDomainUserOrNull()
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
   const ret: z.infer<typeof taskSchema> = {
     id: task.id,
     vendorTaskId: task.vendorTaskId,
-    sessions: task.sessions.map((session) => ({
+    sessions: task.sessions.map((session: TaskSession) => ({
       id: session.id,
       name: session.name,
       type: session.type,
@@ -77,7 +77,7 @@ export async function GET(request: Request) {
   const ret: z.infer<typeof taskSchema> = {
     id: task.id,
     vendorTaskId: task.vendorTaskId,
-    sessions: task.sessions.map((session) => ({
+    sessions: task.sessions.map((session: TaskSession) => ({
       id: session.id,
       name: session.name,
       type: session.type,
