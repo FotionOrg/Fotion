@@ -51,7 +51,6 @@ export default function TimerSection({
           <div className="flex flex-col items-center gap-6">
             <Timer
               audioRef={audioRef}
-              audioAlarmRef={audioAlarmRef}
               isTimerRunning={isTimerRunning}
               setIsTimerRunning={setIsTimerRunning}
               projectId={selectedProject?.id ?? null}

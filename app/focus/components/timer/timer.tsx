@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react"
 
 export default function Timer({
   audioRef,
-  audioAlarmRef,
   isTimerRunning,
   setIsTimerRunning,
   projectId,
@@ -14,7 +13,6 @@ export default function Timer({
   switchingMode,
 }: {
   audioRef: React.RefObject<HTMLAudioElement | null>
-  audioAlarmRef: React.RefObject<HTMLAudioElement | null>
   isTimerRunning: boolean
   setIsTimerRunning: (isTimerRunning: boolean) => void
   projectId: string | null
