@@ -50,35 +50,19 @@ export default function TimerSection({
       <Card className="w-full aspect-square shadow-2xl flex items-center justify-center">
         <CardContent className="flex flex-col items-center justify-center gap-6 p-8 h-full relative">
           <div className="flex flex-col items-center gap-6">
-            {mode === "FOCUS" ? (
-              <Timer
-                audioRef={audioRef}
-                audioAlarmRef={audioAlarmRef}
-                isTimerRunning={isTimerRunning}
-                duration={duration[mode]}
-                setDuration={handleDurationChange}
-                setIsTimerRunning={setIsTimerRunning}
-                projectId={selectedProject?.id ?? null}
-                taskId={selectedTask?.id ?? null}
-                sessionId={selectedSession?.id ?? null}
-                mode={mode}
-                switchingMode={handlingSwitchingMode}
-              />
-            ) : (
-              <Timer
-                audioRef={audioRef}
-                audioAlarmRef={audioAlarmRef}
-                isTimerRunning={isTimerRunning}
-                duration={duration[mode]}
-                setDuration={handleDurationChange}
-                setIsTimerRunning={setIsTimerRunning}
-                projectId={selectedProject?.id ?? null}
-                taskId={selectedTask?.id ?? null}
-                sessionId={selectedSession?.id ?? null}
-                mode={mode}
-                switchingMode={handlingSwitchingMode}
-              />
-            )}
+            <Timer
+              audioRef={audioRef}
+              isTimerRunning={isTimerRunning}
+              duration={duration[mode]}
+              setDuration={handleDurationChange}
+              setIsTimerRunning={setIsTimerRunning}
+              projectId={selectedProject?.id ?? null}
+              taskId={selectedTask?.id ?? null}
+              sessionId={selectedSession?.id ?? null}
+              mode={mode}
+              switchingMode={handlingSwitchingMode}
+            />
+
             {isTimerRunning && (
               <div className="flex items-center gap-2 w-full">
                 {volume > 0 ? (
