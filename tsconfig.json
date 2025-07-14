@@ -22,9 +22,7 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@prisma/app/generated/prisma/client": [
-        "./prisma/app/generated/prisma/client/index.js"
-      ]
+      "@/*": ["*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
