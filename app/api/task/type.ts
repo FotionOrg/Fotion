@@ -7,12 +7,22 @@ export const requestSchema = z.object({
 
 export type request = z.infer<typeof requestSchema>
 
+export const focusStepSchema = z.object({
+  type: z.literal("FOCUS"),
+  duration: z.number(),
+})
+
+export const breakStepSchema = z.object({
+  type: z.literal("BREAK"),
+  duration: z.number(),
+})
+
+export const sessionStepSchema = z.union([focusStepSchema, breakStepSchema])
+
 export const taskSessionSchema = z.object({
   id: z.string(),
   name: z.string(),
-  type: z.enum(["FOCUS", "BREAK"]),
-  durationMs: z.number(),
-  breakDurationMs: z.number(),
+  steps: z.array(sessionStepSchema),
   createdAtMs: z.number(),
   updatedAtMs: z.number(),
   order: z.number(),

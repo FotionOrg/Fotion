@@ -59,9 +59,11 @@ export default function SessionJourneySection({
         const task = taskSchema.parse(json)
         const durationMSPerSession: Record<string, { durationMs: number; breakDurationMs: number | null }> = {}
         for (const session of task.sessions || []) {
+          const focusStep = session.steps?.find((s: any) => s.type === "FOCUS")
+          const breakStep = session.steps?.find((s: any) => s.type === "BREAK")
           durationMSPerSession[session.id] = {
-            durationMs: session.durationMs ?? 0,
-            breakDurationMs: session.breakDurationMs ?? 0,
+            durationMs: focusStep?.duration ?? 0,
+            breakDurationMs: breakStep?.duration ?? 0,
           }
         }
         return durationMSPerSession
@@ -123,8 +125,8 @@ function SessionCard({
   breakDurationMS?: number | null
 }) {
   const isSelected = selectedSession?.id === session.id
-  const duration = durationMS || session.durationMs
-  const breakDuration = breakDurationMS || session.breakDurationMs || 0
+  const duration = durationMS || session.steps.find((s) => s.type === "FOCUS")?.duration || 0
+  const breakDuration = breakDurationMS || session.steps.find((s) => s.type === "BREAK")?.duration || 0
 
   return (
     <Card
@@ -193,7 +195,16 @@ function AddNewSessionButton({
       body: JSON.stringify({
         taskId: selectedTask.id,
         sessionName: newSessionName,
-        type: "FOCUS",
+        steps: [
+          {
+            type: "FOCUS",
+            duration: 0,
+          },
+          {
+            type: "BREAK",
+            duration: 0,
+          },
+        ],
       }),
     })
     if (!res.ok) {

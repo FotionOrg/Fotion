@@ -4,7 +4,7 @@ import { Client } from "@notionhq/client"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
-  const { projectId, taskId, sessionId, durationMinutes, breakDurationMinutes } = await request.json()
+  const { projectId, taskId, sessionId, type, durationMinutes } = await request.json()
 
   if (!taskId) {
     return NextResponse.json({ error: "Error: taskId is required" }, { status: 400 })
@@ -13,11 +13,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Error: projectId is required" }, { status: 400 })
   }
 
-  if (durationMinutes === null && breakDurationMinutes === null) {
-    return NextResponse.json(
-      { error: "Error: Either durationMinutes or breakDurationMinutes is required" },
-      { status: 400 },
-    )
+  if (durationMinutes === null) {
+    return NextResponse.json({ error: "Error: durationMinutes is required" }, { status: 400 })
   }
 
   const project = await prisma.project.findUnique({
@@ -51,11 +48,31 @@ export async function POST(request: NextRequest) {
   if (!session) {
     return NextResponse.json({ error: "Session not found" }, { status: 400 })
   }
-  if (durationMinutes != null) {
-    session.durationMs += durationMinutes * 60 * 1000
+
+  if (type === "FOCUS") {
+    const focusStep = session.steps.find((step) => step.type === "FOCUS")
+    if (focusStep) {
+      focusStep.duration += durationMinutes * 60 * 1000
+      console.log("focusStep", focusStep)
+    } else {
+      session.steps.push({
+        type: "FOCUS",
+        duration: durationMinutes * 60 * 1000,
+      })
+    }
   }
-  if (breakDurationMinutes != null) {
-    session.breakDurationMs += breakDurationMinutes * 60 * 1000
+
+  if (type === "BREAK") {
+    const breakStep = session.steps.find((step) => step.type === "BREAK")
+    if (breakStep) {
+      breakStep.duration += durationMinutes * 60 * 1000
+      console.log("breakStep", breakStep)
+    } else {
+      session.steps.push({
+        type: "BREAK",
+        duration: durationMinutes * 60 * 1000,
+      })
+    }
   }
 
   await prisma.task.update({

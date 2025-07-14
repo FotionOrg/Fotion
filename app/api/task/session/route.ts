@@ -25,9 +25,7 @@ export async function POST(request: Request) {
   const newSession: z.infer<typeof taskSessionSchema> = {
     id: crypto.randomUUID(),
     name: body.sessionName,
-    type: body.type as "FOCUS" | "BREAK",
-    durationMs: 0,
-    breakDurationMs: 0,
+    steps: body.steps,
     createdAtMs: Date.now(),
     updatedAtMs: Date.now(),
     order: task.sessions.length + 1,
@@ -51,9 +49,10 @@ export async function POST(request: Request) {
       sessions: updatedTask.sessions.map((session) => ({
         id: session.id,
         name: session.name,
-        type: session.type as "FOCUS" | "BREAK",
-        durationMs: session.durationMs,
-        breakDurationMs: session.breakDurationMs,
+        steps: session.steps.map((step) => ({
+          type: step.type,
+          duration: step.duration,
+        })),
         createdAtMs: session.createdAtMs,
         updatedAtMs: session.updatedAtMs,
         order: session.order,

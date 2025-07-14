@@ -161,7 +161,7 @@ export default function Timer({
         taskId: taskId,
         sessionId: sessionId,
         type: "BREAK",
-        breakDurationMinutes: recordingIntervalMinutes,
+        durationMinutes: recordingIntervalMinutes,
       }),
     })
       .then(async (res) => {

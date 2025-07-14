@@ -1,10 +1,10 @@
 import { z } from "zod"
-import { taskSchema } from "../type"
+import { sessionStepSchema, taskSchema } from "../type"
 
 export const requestSchema = z.object({
   taskId: z.string(),
   sessionName: z.string(),
-  type: z.enum(["FOCUS", "BREAK"]),
+  steps: z.array(sessionStepSchema),
 })
 
 export type request = z.infer<typeof requestSchema>

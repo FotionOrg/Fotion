@@ -9,9 +9,10 @@ declare global {
     type TaskSessions = {
       id: string
       name: string
-      type: "FOCUS" | "BREAK"
-      durationMs: number
-      breakDurationMs: number
+      steps: {
+        type: "FOCUS" | "BREAK"
+        duration: number
+      }[]
       createdAtMs: number
       updatedAtMs: number
       order: number // start from 1, 1 is the first session
