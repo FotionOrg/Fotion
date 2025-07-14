@@ -1,7 +1,7 @@
 "use server"
 
 import { getDomainUserOrNull } from "@/lib/be/utils/user"
-import { Project } from "@prisma/app/generated/prisma/client"
+import { Project } from "@/prisma/app/generated/prisma/client"
 import { z } from "zod"
 import { prisma } from "../../pkg/prisma"
 import { formSchema, projectSchema } from "../type"
