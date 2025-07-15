@@ -53,7 +53,6 @@ export async function POST(request: NextRequest) {
     const focusStep = session.steps.find((step) => step.type === "FOCUS")
     if (focusStep) {
       focusStep.duration += durationMinutes * 60 * 1000
-      console.log("focusStep", focusStep)
     } else {
       session.steps.push({
         type: "FOCUS",
@@ -66,7 +65,6 @@ export async function POST(request: NextRequest) {
     const breakStep = session.steps.find((step) => step.type === "BREAK")
     if (breakStep) {
       breakStep.duration += durationMinutes * 60 * 1000
-      console.log("breakStep", breakStep)
     } else {
       session.steps.push({
         type: "BREAK",

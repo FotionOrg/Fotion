@@ -214,7 +214,6 @@ function AddNewSessionButton({
     const json = await res.json()
     const data = responseSchema.parse(json)
     setSelectedTask(data.task)
-    console.log("isTimerRunning : ", isTimerRunning)
     if (data.task.sessions && data.task.sessions.length > 0 && isTimerRunning) {
       setSelectedSession(data.task.sessions[data.task.sessions.length - 1])
     }
