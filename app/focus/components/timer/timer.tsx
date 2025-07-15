@@ -50,19 +50,11 @@ export default function Timer({
         }
       } else {
         recordBreakTime()
-
-      if (mode === "FOCUS") {
-        if ((elapsed - recordedDurationMS) / 1000 + recordingBufferSec > recordingIntervalSeconds) {
-          recordFocusTime()
-        }
-      } else {
-        recordBreakTime()
       }
 
       setElapsed(0)
       setIsTimerRunning(false)
       switchingMode()
-      setDuration(duration)
       return
     }
 
@@ -73,14 +65,11 @@ export default function Timer({
 
       if (newElapsed >= duration) {
         if (mode === "FOCUS") {
-      if (newElapsed >= duration) {
-        if (mode === "FOCUS") {
           if ((elapsed - recordedDurationMS) / 1000 + recordingBufferSec > recordingIntervalSeconds) {
             recordFocusTime()
           }
 
           switchingMode()
-          setDuration(duration)
           setRecordedDurationMS(recordedDurationMS + recordingIntervalMS)
           setElapsed(0)
 
@@ -94,7 +83,6 @@ export default function Timer({
               recordBreakTime()
               setIsTimerRunning(false)
               switchingMode()
-              setDuration(duration)
               setElapsed(0)
             }
           }, 500)
@@ -103,14 +91,7 @@ export default function Timer({
           recordBreakTime()
           setIsTimerRunning(false)
           switchingMode()
-          setDuration(duration)
           setElapsed(0)
-        }
-      }
-    }, 500)
-
-    audioRef.current?.play()
-    setIsTimerRunning(true)
         }
       }
     }, 500)
@@ -147,12 +128,10 @@ export default function Timer({
     fetch(`/api/task/session/record`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         projectId: projectId,
         taskId: taskId,
         sessionId: sessionId,
-        type: "FOCUS",
         type: "FOCUS",
         durationMinutes: recordingIntervalMinutes,
       }),
@@ -160,7 +139,6 @@ export default function Timer({
       .then(async (res) => {
         const data = await res.json()
         if (data.success) {
-          setRecordedDurationMS(recordedDurationMS + recordingIntervalMinutes)
           setRecordedDurationMS(recordedDurationMS + recordingIntervalMinutes)
         }
       })
@@ -179,7 +157,7 @@ export default function Timer({
         taskId: taskId,
         sessionId: sessionId,
         type: "BREAK",
-        breakDurationMinutes: recordingIntervalMinutes,
+        durationMinutes: recordingIntervalMinutes,
       }),
     })
       .then(async (res) => {
@@ -208,13 +186,6 @@ export default function Timer({
           recordBreakTime()
         }, recordingIntervalMS)
       }
-      if (mode === "FOCUS") {
-        recordInterval = setInterval(recordFocusTime, recordingIntervalMS)
-      } else {
-        recordInterval = setInterval(() => {
-          recordBreakTime()
-        }, recordingIntervalMS)
-      }
     }
 
     return () => {
@@ -222,7 +193,6 @@ export default function Timer({
         clearInterval(recordInterval)
       }
     }
-  }, [isTimerRunning, projectId, taskId, mode])
   }, [isTimerRunning, projectId, taskId, mode])
 
   useEffect(() => {
@@ -235,7 +205,6 @@ export default function Timer({
     <div className="flex flex-col items-center justify-center gap-4 w-full">
       <div className="text-5xl font-mono tabular-nums text-foreground drop-shadow-sm select-none flex items-center">
         <span className="mr-2 text-sm">{mode === "FOCUS" ? "Focus" : "Break"}</span>
-        <span className="mr-2 text-sm">{mode === "FOCUS" ? "Focus" : "Break"}</span>
         {editing ? (
           <>
             <input
@@ -243,7 +212,6 @@ export default function Timer({
               inputMode="numeric"
               pattern="[0-9]*"
               value={inputValue}
-              onChange={(e) => setInputValue(parseInt(e.target.value))}
               onChange={(e) => setInputValue(parseInt(e.target.value))}
               onBlur={handleInputBlur}
               autoFocus
