@@ -13,8 +13,6 @@ export default function Timer({
   switchingMode,
   duration,
   setDuration,
-  breakDuration,
-  setBreakDuration,
 }: {
   audioRef: React.RefObject<HTMLAudioElement | null>
   isTimerRunning: boolean
@@ -26,8 +24,6 @@ export default function Timer({
   switchingMode: () => void
   duration: number
   setDuration: (duration: number) => void
-  breakDuration: number
-  setBreakDuration: (breakDuration: number) => void
 }) {
   const recordingBufferSec = 10
   const recordingIntervalMinutes = 0.1
@@ -82,7 +78,7 @@ export default function Timer({
           timerRef.current = setInterval(() => {
             const breakElapsed = Date.now() - newStart
             setElapsed(breakElapsed)
-            if (breakElapsed >= breakDuration) {
+            if (breakElapsed >= duration) {
               clearInterval(timerRef.current!)
               recordBreakTime()
               setIsTimerRunning(false)
@@ -113,14 +109,14 @@ export default function Timer({
     if (mode === "FOCUS") {
       setDuration(ms)
     } else {
-      setBreakDuration(ms)
+      setDuration(ms)
     }
     setElapsed(0)
     setEditing(false)
   }
 
   const formatTime = (ms: number) => {
-    const totalSeconds = Math.max(0, Math.ceil((mode === "FOCUS" ? duration - ms : breakDuration - ms) / 1000))
+    const totalSeconds = Math.max(0, Math.ceil((mode === "FOCUS" ? duration - ms : duration - ms) / 1000))
     const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0")
     const seconds = String(totalSeconds % 60).padStart(2, "0")
     return `${minutes}:${seconds}`
