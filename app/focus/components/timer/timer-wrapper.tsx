@@ -19,11 +19,15 @@ export default function TimerSection({
   selectedSession: z.infer<typeof taskSessionSchema> | null
 }) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const audioAlarmRef = useRef<HTMLAudioElement | null>(null)
   const [volume, setVolume] = useState(0.5)
 
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume
+    }
+    if (audioAlarmRef.current) {
+      audioAlarmRef.current.volume = volume
     }
   }, [volume, audioRef])
   const [isTimerRunning, setIsTimerRunning] = useState(false)
@@ -35,6 +39,7 @@ export default function TimerSection({
 
   const handlingSwitchingMode = () => {
     setMode((prev) => (prev === "FOCUS" ? "BREAK" : "FOCUS"))
+    audioAlarmRef.current?.play()
   }
   const handleDurationChange = (duration: number) => {
     setDuration((prev) => ({ ...prev, [mode]: duration }))
@@ -48,6 +53,7 @@ export default function TimerSection({
             {mode === "FOCUS" ? (
               <Timer
                 audioRef={audioRef}
+                audioAlarmRef={audioAlarmRef}
                 isTimerRunning={isTimerRunning}
                 duration={duration[mode]}
                 setDuration={handleDurationChange}
@@ -61,6 +67,7 @@ export default function TimerSection({
             ) : (
               <Timer
                 audioRef={audioRef}
+                audioAlarmRef={audioAlarmRef}
                 isTimerRunning={isTimerRunning}
                 duration={duration[mode]}
                 setDuration={handleDurationChange}
@@ -107,6 +114,7 @@ export default function TimerSection({
               src="https://mfrc3lvbxokueaya.public.blob.vercel-storage.com/lofi-background-music-337568-aIPJNMILf7xBoX7lmh9UzpJYlzv4aV.mp3"
               loop
             />
+            <audio ref={audioAlarmRef} src="https://t1.daumcdn.net/cfile/tistory/995003385D2A04E214" />
           </div>
         </CardContent>
       </Card>
