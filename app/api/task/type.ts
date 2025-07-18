@@ -8,9 +8,10 @@ export const requestSchema = z.object({
 export interface TaskSession {
   id: string
   name: string
-  type: "FOCUS" | "BREAK"
-  durationMs: number
-  breakDurationMs: number
+  duration: {
+    type: "FOCUS"
+    duration: number
+  }[]
   createdAtMs: number
   updatedAtMs: number
   order: number
