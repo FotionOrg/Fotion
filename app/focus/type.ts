@@ -1,5 +1,21 @@
 import { z } from "zod"
 
+export interface Project {
+  id: string
+  name: string
+  sourceType: "SCRATCH" | "NOTION" | "LINEAR"
+  databaseId?: string
+  notionIntegrationId?: string
+  linearIntegrationId?: string
+  notionPropertyConfig?: NotionPropertyConfig
+}
+
+export interface NotionPropertyConfig {
+  titlePropertyId: string
+  estimatedMinutesPropertyId: string
+  focusedMinutesPropertyId: string
+}
+
 const scratchSchema = z.object({
   type: z.literal("SCRATCH"),
   name: z.string().min(1),

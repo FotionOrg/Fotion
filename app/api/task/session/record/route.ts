@@ -2,6 +2,7 @@ import { prisma } from "@/app/pkg/prisma"
 import { Prisma } from "@/prisma/app/generated/prisma/client"
 import { Client } from "@notionhq/client"
 import { NextRequest, NextResponse } from "next/server"
+import { TaskSession } from "../../type"
 
 export async function POST(request: NextRequest) {
   const { projectId, taskId, sessionId, type, durationMinutes } = await request.json()
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Session not found" }, { status: 400 })
   }
 
-  const session = sessions.find((session) => session.id === sessionId)
+  const session = sessions.find((session: TaskSession) => session.id === sessionId)
 
   if (!session) {
     return NextResponse.json({ error: "Session not found" }, { status: 400 })
