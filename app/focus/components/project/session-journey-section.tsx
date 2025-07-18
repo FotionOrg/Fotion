@@ -83,7 +83,6 @@ export default function SessionJourneySection({
                 <div key={session.id} className="flex flex-col items-center w-[90%]">
                   <SessionCard
                     selectedTask={selectedTask.duration}
-                    setSelectedTask={setSelectedTask}
                     session={session}
                     setSelectedSession={setSelectedSession}
                     selectedSession={selectedSession}
