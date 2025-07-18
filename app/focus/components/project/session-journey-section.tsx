@@ -141,7 +141,6 @@ function SessionCard({
           <span>
             Focus:&nbsp;
             {(() => {
-              //const totalSeconds = Math.floor((duration.find((d) => d.type === "FOCUS")?.duration) / 1000)
               const totalSeconds = Math.floor(duration / 1000)
               const hours = Math.floor(totalSeconds / 3600)
               const minutes = Math.floor((totalSeconds % 3600) / 60)
