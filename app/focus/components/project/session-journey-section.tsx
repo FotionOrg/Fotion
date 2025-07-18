@@ -57,15 +57,13 @@ export default function SessionJourneySection({
         }
         const json = await res.json()
         const task = taskSchema.parse(json)
-        const durationMSPerSession: Record<string, { durationMs: number; breakDurationMs: number | null }> = {}
+        const durationMSPerSession: Record<string, { durationMs: { type: string; duration: number }[] }> = {}
         for (const session of task.sessions || []) {
-          const focusStep = session.steps?.find((s: any) => s.type === "FOCUS")
-          const breakStep = session.steps?.find((s: any) => s.type === "BREAK")
           durationMSPerSession[session.id] = {
-            durationMs: focusStep?.duration ?? 0,
-            breakDurationMs: breakStep?.duration ?? 0,
+            durationMs: session.duration || [],
           }
         }
+        setSelectedTask(task)
         return durationMSPerSession
       }),
     refetchInterval: 5_000,
@@ -84,11 +82,12 @@ export default function SessionJourneySection({
               .map((session, idx, arr) => (
                 <div key={session.id} className="flex flex-col items-center w-[90%]">
                   <SessionCard
+                    selectedTask={selectedTask.duration}
+                    setSelectedTask={setSelectedTask}
                     session={session}
                     setSelectedSession={setSelectedSession}
                     selectedSession={selectedSession}
                     durationMS={durationMSPerSession?.[session.id]?.durationMs}
-                    breakDurationMS={durationMSPerSession?.[session.id]?.breakDurationMs}
                   />
                   {idx < arr.length - 1 && (
                     <div className="flex flex-col items-center">
@@ -113,20 +112,20 @@ export default function SessionJourneySection({
 
 function SessionCard({
   session,
+  selectedTask,
   setSelectedSession,
   selectedSession,
   durationMS,
-  breakDurationMS,
 }: {
   session: z.infer<typeof taskSessionSchema>
+  selectedTask: { type: string; duration: number }[] | null
   setSelectedSession: (session: z.infer<typeof taskSessionSchema>) => void
   selectedSession: z.infer<typeof taskSessionSchema> | null
-  durationMS?: number | null
-  breakDurationMS?: number | null
+  durationMS?: { type: string; duration: number }[] | null
 }) {
   const isSelected = selectedSession?.id === session.id
-  const duration = durationMS || session.steps.find((s) => s.type === "FOCUS")?.duration || 0
-  const breakDuration = breakDurationMS || session.steps.find((s) => s.type === "BREAK")?.duration || 0
+  const duration = (durationMS || session.duration).find((d) => d.type === "FOCUS")?.duration || 0
+  const task = selectedTask?.find((d) => d.type === "BREAK")?.duration || 0
 
   return (
     <Card
@@ -143,6 +142,7 @@ function SessionCard({
           <span>
             Focus:&nbsp;
             {(() => {
+              //const totalSeconds = Math.floor((duration.find((d) => d.type === "FOCUS")?.duration) / 1000)
               const totalSeconds = Math.floor(duration / 1000)
               const hours = Math.floor(totalSeconds / 3600)
               const minutes = Math.floor((totalSeconds % 3600) / 60)
@@ -157,7 +157,7 @@ function SessionCard({
           <span>
             Break:&nbsp;
             {(() => {
-              const totalSeconds = Math.floor(breakDuration / 1000)
+              const totalSeconds = Math.floor(task / 1000)
               const hours = Math.floor(totalSeconds / 3600)
               const minutes = Math.floor((totalSeconds % 3600) / 60)
               const seconds = totalSeconds % 60
@@ -195,13 +195,9 @@ function AddNewSessionButton({
       body: JSON.stringify({
         taskId: selectedTask.id,
         sessionName: newSessionName,
-        steps: [
+        duration: [
           {
             type: "FOCUS",
-            duration: 0,
-          },
-          {
-            type: "BREAK",
             duration: 0,
           },
         ],

@@ -10,6 +10,12 @@ export async function getTaskOrCreateTask(
     body: JSON.stringify({
       vendorTaskId: vendorTaskId,
       projectId,
+      duration: [
+        {
+          type: "BREAK",
+          duration: 0,
+        },
+      ],
     }),
   }).catch((err) => {
     console.error(err)

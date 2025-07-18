@@ -163,6 +163,7 @@ export default function Timer({
       .then(async (res) => {
         const data = await res.json()
         if (data.success) {
+          setRecordedDurationMS(recordedDurationMS + recordingIntervalMinutes)
         }
       })
       .catch((err) => console.error(err))

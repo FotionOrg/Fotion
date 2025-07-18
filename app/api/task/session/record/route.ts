@@ -50,26 +50,33 @@ export async function POST(request: NextRequest) {
   }
 
   if (type === "FOCUS") {
-    const focusStep = session.steps.find((step) => step.type === "FOCUS")
+    const focusStep = session.duration.find((d) => d.type === "FOCUS")
     if (focusStep) {
       focusStep.duration += durationMinutes * 60 * 1000
     } else {
-      session.steps.push({
-        type: "FOCUS",
-        duration: durationMinutes * 60 * 1000,
+      task.sessions.push({
+        id: crypto.randomUUID(),
+        name: "New Session",
+        createdAtMs: Date.now(),
+        updatedAtMs: Date.now(),
+        order: task.sessions.length + 1,
+        duration: [
+          {
+            type: "FOCUS",
+            duration: durationMinutes * 60 * 1000,
+          },
+        ],
       })
     }
   }
 
   if (type === "BREAK") {
-    const breakStep = session.steps.find((step) => step.type === "BREAK")
+    const duration = task.duration as { type: "BREAK"; duration: number }[]
+    const breakStep = duration.find((d) => d.type === "BREAK")
     if (breakStep) {
       breakStep.duration += durationMinutes * 60 * 1000
     } else {
-      session.steps.push({
-        type: "BREAK",
-        duration: durationMinutes * 60 * 1000,
-      })
+      duration.push({ type: "BREAK", duration: durationMinutes * 60 * 1000 })
     }
   }
 
@@ -79,6 +86,7 @@ export async function POST(request: NextRequest) {
     },
     data: {
       sessions: sessions,
+      duration: task.duration,
     },
   })
 

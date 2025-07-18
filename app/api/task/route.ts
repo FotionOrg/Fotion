@@ -1,7 +1,7 @@
 import { prisma } from "@/app/pkg/prisma"
 import { getDomainUserOrNull } from "@/lib/be/utils/user"
 import { z } from "zod"
-import { requestSchema, taskSchema } from "./type"
+import { breakDurationSchema, requestSchema, taskSchema } from "./type"
 
 export async function POST(request: Request) {
   const user = await getDomainUserOrNull()
@@ -24,6 +24,12 @@ export async function POST(request: Request) {
         vendorTaskId: body.vendorTaskId,
         userId: user.id,
         projectId: body.projectId,
+        duration: [
+          {
+            type: "BREAK",
+            duration: 0,
+          },
+        ],
       },
     })
     task = newTask
@@ -36,13 +42,11 @@ export async function POST(request: Request) {
   const ret: z.infer<typeof taskSchema> = {
     id: task.id,
     vendorTaskId: task.vendorTaskId,
+    duration: task.duration as z.infer<typeof breakDurationSchema>[],
     sessions: task.sessions.map((session) => ({
       id: session.id,
       name: session.name,
-      steps: session.steps.map((step) => ({
-        type: step.type,
-        duration: step.duration,
-      })),
+      duration: session.duration,
       createdAtMs: session.createdAtMs,
       updatedAtMs: session.updatedAtMs,
       order: session.order,
@@ -78,13 +82,11 @@ export async function GET(request: Request) {
   const ret: z.infer<typeof taskSchema> = {
     id: task.id,
     vendorTaskId: task.vendorTaskId,
+    duration: task.duration as z.infer<typeof breakDurationSchema>[],
     sessions: task.sessions.map((session) => ({
       id: session.id,
       name: session.name,
-      steps: session.steps.map((step) => ({
-        type: step.type,
-        duration: step.duration,
-      })),
+      duration: session.duration,
       createdAtMs: session.createdAtMs,
       updatedAtMs: session.updatedAtMs,
       order: session.order,

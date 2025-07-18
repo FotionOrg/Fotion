@@ -9,8 +9,8 @@ declare global {
     type TaskSessions = {
       id: string
       name: string
-      steps: {
-        type: "FOCUS" | "BREAK"
+      duration: {
+        type: "FOCUS"
         duration: number
       }[]
       createdAtMs: number
