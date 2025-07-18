@@ -21,6 +21,7 @@ export default function TimerSection({
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const audioAlarmRef = useRef<HTMLAudioElement | null>(null)
   const [volume, setVolume] = useState(0.5)
+
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume
@@ -29,19 +30,19 @@ export default function TimerSection({
       audioAlarmRef.current.volume = volume
     }
   }, [volume, audioRef])
-
   const [isTimerRunning, setIsTimerRunning] = useState(false)
   const [mode, setMode] = useState<"FOCUS" | "BREAK">("FOCUS")
+  const [duration, setDuration] = useState({
+    FOCUS: 50 * 60 * 1000,
+    BREAK: 10 * 60 * 1000,
+  })
 
   const handlingSwitchingMode = () => {
-    setMode((prev) => {
-      audioAlarmRef.current?.play()
-      if (prev === "FOCUS") {
-        return "BREAK"
-      } else {
-        return "FOCUS"
-      }
-    })
+    setMode((prev) => (prev === "FOCUS" ? "BREAK" : "FOCUS"))
+    audioAlarmRef.current?.play()
+  }
+  const handleDurationChange = (duration: number) => {
+    setDuration((prev) => ({ ...prev, [mode]: duration }))
   }
 
   return (
@@ -49,17 +50,33 @@ export default function TimerSection({
       <Card className="w-full aspect-square shadow-2xl flex items-center justify-center">
         <CardContent className="flex flex-col items-center justify-center gap-6 p-8 h-full relative">
           <div className="flex flex-col items-center gap-6">
-            <Timer
-              audioRef={audioRef}
-              isTimerRunning={isTimerRunning}
-              setIsTimerRunning={setIsTimerRunning}
-              projectId={selectedProject?.id ?? null}
-              taskId={selectedTask?.id ?? null}
-              sessionId={selectedSession?.id ?? null}
-              mode={mode}
-              switchingMode={handlingSwitchingMode}
-            />
-
+            {mode === "FOCUS" ? (
+              <Timer
+                audioRef={audioRef}
+                isTimerRunning={isTimerRunning}
+                duration={duration[mode]}
+                setDuration={handleDurationChange}
+                setIsTimerRunning={setIsTimerRunning}
+                projectId={selectedProject?.id ?? null}
+                taskId={selectedTask?.id ?? null}
+                sessionId={selectedSession?.id ?? null}
+                mode={mode}
+                switchingMode={handlingSwitchingMode}
+              />
+            ) : (
+              <Timer
+                audioRef={audioRef}
+                isTimerRunning={isTimerRunning}
+                duration={duration[mode]}
+                setDuration={handleDurationChange}
+                setIsTimerRunning={setIsTimerRunning}
+                projectId={selectedProject?.id ?? null}
+                taskId={selectedTask?.id ?? null}
+                sessionId={selectedSession?.id ?? null}
+                mode={mode}
+                switchingMode={handlingSwitchingMode}
+              />
+            )}
             {isTimerRunning && (
               <div className="flex items-center gap-2 w-full">
                 {volume > 0 ? (

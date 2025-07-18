@@ -1,7 +1,7 @@
 import { prisma } from "@/app/pkg/prisma"
 import { getDomainUserOrNull } from "@/lib/be/utils/user"
 import { z } from "zod"
-import { requestSchema, taskSchema, TaskSession } from "./type"
+import { breakDurationSchema, requestSchema, taskSchema, taskSessionSchema } from "./type"
 
 export async function POST(request: Request) {
   const user = await getDomainUserOrNull()
@@ -24,6 +24,12 @@ export async function POST(request: Request) {
         vendorTaskId: body.vendorTaskId,
         userId: user.id,
         projectId: body.projectId,
+        duration: [
+          {
+            type: "BREAK",
+            duration: 0,
+          },
+        ],
       },
     })
     task = newTask
@@ -36,12 +42,11 @@ export async function POST(request: Request) {
   const ret: z.infer<typeof taskSchema> = {
     id: task.id,
     vendorTaskId: task.vendorTaskId,
-    sessions: task.sessions.map((session: TaskSession) => ({
+    duration: task.duration as z.infer<typeof breakDurationSchema>[],
+    sessions: task.sessions.map((session: z.infer<typeof taskSessionSchema>) => ({
       id: session.id,
       name: session.name,
-      type: session.type,
-      durationMs: session.durationMs,
-      breakDurationMs: session.breakDurationMs,
+      duration: session.duration,
       createdAtMs: session.createdAtMs,
       updatedAtMs: session.updatedAtMs,
       order: session.order,
@@ -77,12 +82,11 @@ export async function GET(request: Request) {
   const ret: z.infer<typeof taskSchema> = {
     id: task.id,
     vendorTaskId: task.vendorTaskId,
-    sessions: task.sessions.map((session: TaskSession) => ({
+    duration: task.duration as z.infer<typeof breakDurationSchema>[],
+    sessions: task.sessions.map((session: z.infer<typeof taskSessionSchema>) => ({
       id: session.id,
       name: session.name,
-      type: session.type,
-      durationMs: session.durationMs,
-      breakDurationMs: session.breakDurationMs,
+      duration: session.duration,
       createdAtMs: session.createdAtMs,
       updatedAtMs: session.updatedAtMs,
       order: session.order,

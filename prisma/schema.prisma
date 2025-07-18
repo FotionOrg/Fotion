@@ -91,6 +91,7 @@ model Task {
   userId String
   projectId String
   vendorTaskId String
+  duration Json @default("[]")
   
   /// [TaskSessions]
   sessions Json @default("[]")

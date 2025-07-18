@@ -8,9 +8,10 @@ export const requestSchema = z.object({
 export interface TaskSession {
   id: string
   name: string
-  type: "FOCUS" | "BREAK"
-  durationMs: number
-  breakDurationMs: number
+  duration: {
+    type: "FOCUS"
+    duration: number
+  }[]
   createdAtMs: number
   updatedAtMs: number
   order: number
@@ -18,12 +19,20 @@ export interface TaskSession {
 
 export type request = z.infer<typeof requestSchema>
 
+export const focusDurationSchema = z.object({
+  type: z.literal("FOCUS"),
+  duration: z.number(),
+})
+
+export const breakDurationSchema = z.object({
+  type: z.literal("BREAK"),
+  duration: z.number(),
+})
+
 export const taskSessionSchema = z.object({
   id: z.string(),
   name: z.string(),
-  type: z.enum(["FOCUS", "BREAK"]),
-  durationMs: z.number(),
-  breakDurationMs: z.number(),
+  duration: z.array(focusDurationSchema),
   createdAtMs: z.number(),
   updatedAtMs: z.number(),
   order: z.number(),
@@ -32,5 +41,6 @@ export const taskSessionSchema = z.object({
 export const taskSchema = z.object({
   id: z.string(),
   vendorTaskId: z.string(),
-  sessions: z.array(taskSessionSchema).optional(),
+  duration: z.array(breakDurationSchema),
+  sessions: z.array(taskSessionSchema),
 })

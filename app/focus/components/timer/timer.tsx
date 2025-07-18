@@ -11,6 +11,8 @@ export default function Timer({
   sessionId,
   mode,
   switchingMode,
+  duration,
+  setDuration,
 }: {
   audioRef: React.RefObject<HTMLAudioElement | null>
   isTimerRunning: boolean
@@ -20,12 +22,13 @@ export default function Timer({
   sessionId: string | null
   mode: "FOCUS" | "BREAK"
   switchingMode: () => void
+  duration: number
+  setDuration: (duration: number) => void
 }) {
   const recordingBufferSec = 10
   const recordingIntervalMinutes = 0.1
   const recordingIntervalSeconds = recordingIntervalMinutes * 60
   const recordingIntervalMS = recordingIntervalSeconds * 1000
-  const [duration, setDuration] = useState(1 * 10 * 1000)
   const [elapsed, setElapsed] = useState(0)
   const [editing, setEditing] = useState(false)
   const [inputValue, setInputValue] = useState(duration)
@@ -52,7 +55,6 @@ export default function Timer({
       setElapsed(0)
       setIsTimerRunning(false)
       switchingMode()
-      setDuration(duration)
       return
     }
 
@@ -68,7 +70,6 @@ export default function Timer({
           }
 
           switchingMode()
-          setDuration(duration)
           setRecordedDurationMS(recordedDurationMS + recordingIntervalMS)
           setElapsed(0)
 
@@ -82,7 +83,6 @@ export default function Timer({
               recordBreakTime()
               setIsTimerRunning(false)
               switchingMode()
-              setDuration(duration)
               setElapsed(0)
             }
           }, 500)
@@ -91,7 +91,6 @@ export default function Timer({
           recordBreakTime()
           setIsTimerRunning(false)
           switchingMode()
-          setDuration(duration)
           setElapsed(0)
         }
       }
@@ -107,13 +106,17 @@ export default function Timer({
   const handleInputBlur = () => {
     const minutes = Math.min(Number(inputValue), 60)
     const ms = minutes * 60 * 1000
-    setDuration(ms)
+    if (mode === "FOCUS") {
+      setDuration(ms)
+    } else {
+      setDuration(ms)
+    }
     setElapsed(0)
     setEditing(false)
   }
 
   const formatTime = (ms: number) => {
-    const totalSeconds = Math.max(0, Math.ceil((duration - ms) / 1000))
+    const totalSeconds = Math.max(0, Math.ceil((mode === "FOCUS" ? duration - ms : duration - ms) / 1000))
     const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0")
     const seconds = String(totalSeconds % 60).padStart(2, "0")
     return `${minutes}:${seconds}`
@@ -154,12 +157,13 @@ export default function Timer({
         taskId: taskId,
         sessionId: sessionId,
         type: "BREAK",
-        breakDurationMinutes: recordingIntervalMinutes,
+        durationMinutes: recordingIntervalMinutes,
       }),
     })
       .then(async (res) => {
         const data = await res.json()
         if (data.success) {
+          setRecordedDurationMS(recordedDurationMS + recordingIntervalMinutes)
         }
       })
       .catch((err) => console.error(err))

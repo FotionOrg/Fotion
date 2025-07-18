@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { TaskSession } from "../../type"
 
 export async function POST(request: NextRequest) {
-  const { projectId, taskId, sessionId, durationMinutes, breakDurationMinutes } = await request.json()
+  const { projectId, taskId, sessionId, type, durationMinutes } = await request.json()
 
   if (!taskId) {
     return NextResponse.json({ error: "Error: taskId is required" }, { status: 400 })
@@ -14,11 +14,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Error: projectId is required" }, { status: 400 })
   }
 
-  if (durationMinutes === null && breakDurationMinutes === null) {
-    return NextResponse.json(
-      { error: "Error: Either durationMinutes or breakDurationMinutes is required" },
-      { status: 400 },
-    )
+  if (durationMinutes === null) {
+    return NextResponse.json({ error: "Error: durationMinutes is required" }, { status: 400 })
   }
 
   const project = await prisma.project.findUnique({
@@ -52,11 +49,36 @@ export async function POST(request: NextRequest) {
   if (!session) {
     return NextResponse.json({ error: "Session not found" }, { status: 400 })
   }
-  if (durationMinutes != null) {
-    session.durationMs += durationMinutes * 60 * 1000
+
+  if (type === "FOCUS") {
+    const focusStep = session.duration.find((d: { type: string }) => d.type === "FOCUS")
+    if (focusStep) {
+      focusStep.duration += durationMinutes * 60 * 1000
+    } else {
+      task.sessions.push({
+        id: crypto.randomUUID(),
+        name: "New Session",
+        createdAtMs: Date.now(),
+        updatedAtMs: Date.now(),
+        order: task.sessions.length + 1,
+        duration: [
+          {
+            type: "FOCUS",
+            duration: durationMinutes * 60 * 1000,
+          },
+        ],
+      })
+    }
   }
-  if (breakDurationMinutes != null) {
-    session.breakDurationMs += breakDurationMinutes * 60 * 1000
+
+  if (type === "BREAK") {
+    const duration = task.duration as { type: "BREAK"; duration: number }[]
+    const breakStep = duration.find((d) => d.type === "BREAK")
+    if (breakStep) {
+      breakStep.duration += durationMinutes * 60 * 1000
+    } else {
+      duration.push({ type: "BREAK", duration: durationMinutes * 60 * 1000 })
+    }
   }
 
   await prisma.task.update({
@@ -65,6 +87,7 @@ export async function POST(request: NextRequest) {
     },
     data: {
       sessions: sessions,
+      duration: task.duration,
     },
   })
 
