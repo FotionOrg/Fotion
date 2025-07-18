@@ -39,7 +39,7 @@ export default function TimerSection({
 
   const handlingSwitchingMode = () => {
     setMode((prev) => (prev === "FOCUS" ? "BREAK" : "FOCUS"))
-    audioRef.current?.play()
+    audioAlarmRef.current?.play()
   }
   const handleDurationChange = (duration: number) => {
     setDuration((prev) => ({ ...prev, [mode]: duration }))
