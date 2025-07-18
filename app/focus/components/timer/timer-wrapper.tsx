@@ -19,14 +19,30 @@ export default function TimerSection({
   selectedSession: z.infer<typeof taskSessionSchema> | null
 }) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const audioAlarmRef = useRef<HTMLAudioElement | null>(null)
   const [volume, setVolume] = useState(0.5)
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume
     }
+    if (audioAlarmRef.current) {
+      audioAlarmRef.current.volume = volume
+    }
   }, [volume, audioRef])
 
   const [isTimerRunning, setIsTimerRunning] = useState(false)
+  const [mode, setMode] = useState<"FOCUS" | "BREAK">("FOCUS")
+
+  const handlingSwitchingMode = () => {
+    setMode((prev) => {
+      audioAlarmRef.current?.play()
+      if (prev === "FOCUS") {
+        return "BREAK"
+      } else {
+        return "FOCUS"
+      }
+    })
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-4 w-full">
@@ -40,6 +56,8 @@ export default function TimerSection({
               projectId={selectedProject?.id ?? null}
               taskId={selectedTask?.id ?? null}
               sessionId={selectedSession?.id ?? null}
+              mode={mode}
+              switchingMode={handlingSwitchingMode}
             />
 
             {isTimerRunning && (
@@ -77,6 +95,7 @@ export default function TimerSection({
               src="https://mfrc3lvbxokueaya.public.blob.vercel-storage.com/lofi-background-music-337568-aIPJNMILf7xBoX7lmh9UzpJYlzv4aV.mp3"
               loop
             />
+            <audio ref={audioAlarmRef} src="https://t1.daumcdn.net/cfile/tistory/995003385D2A04E214" />
           </div>
         </CardContent>
       </Card>

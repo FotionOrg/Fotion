@@ -1,6 +1,7 @@
 "use server"
 
 import { getDomainUserOrNull } from "@/lib/be/utils/user"
+import { Project } from "@/prisma/app/generated/prisma/client"
 import { z } from "zod"
 import { prisma } from "../../pkg/prisma"
 import { formSchema, projectSchema } from "../type"
@@ -42,7 +43,7 @@ export async function getProjects(userId: string): Promise<z.infer<typeof projec
     },
   })
 
-  return projects.map((project) => {
+  return projects.map((project: Project) => {
     if (project.sourceType === "NOTION") {
       return {
         id: project.id,

@@ -23,7 +23,7 @@ export default function FocusView({
   const [selectedTask, setSelectedTask] = useState<z.infer<typeof taskSchema> | null>(null)
   const [selectedSession, setSelectedSession] = useState<z.infer<typeof taskSessionSchema> | null>(null)
   const [queryClient] = useState(() => new QueryClient())
-
+  const [isTimerRunning, setIsTimerRunning] = useState(false)
   return (
     <QueryClientProvider client={queryClient}>
       <div className="flex flex-row gap-4 w-full h-full">
@@ -39,6 +39,8 @@ export default function FocusView({
             notionIntegrationId={notionIntegrationId}
             linearIntegrationId={linearIntegrationId}
             userId={userId}
+            isTimerRunning={isTimerRunning}
+            setIsTimerRunning={setIsTimerRunning}
           />
         </div>
         <div className="w-1/2">

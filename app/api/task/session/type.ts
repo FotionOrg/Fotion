@@ -4,6 +4,7 @@ import { taskSchema } from "../type"
 export const requestSchema = z.object({
   taskId: z.string(),
   sessionName: z.string(),
+  type: z.enum(["FOCUS", "BREAK"]),
 })
 
 export type request = z.infer<typeof requestSchema>

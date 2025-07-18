@@ -24,11 +24,13 @@ export default function SessionJourneySection({
   setSelectedTask,
   selectedSession,
   setSelectedSession,
+  isTimerRunning,
 }: {
   selectedTask: z.infer<typeof taskSchema>
   setSelectedTask: (task: z.infer<typeof taskSchema> | null) => void
   selectedSession: z.infer<typeof taskSessionSchema> | null
   setSelectedSession: (session: z.infer<typeof taskSessionSchema>) => void
+  isTimerRunning: boolean
 }) {
   useEffect(() => {
     if (!selectedSession && selectedTask.sessions && selectedTask.sessions.length > 0) {
@@ -55,9 +57,12 @@ export default function SessionJourneySection({
         }
         const json = await res.json()
         const task = taskSchema.parse(json)
-        const durationMSPerSession: Record<string, number> = {}
+        const durationMSPerSession: Record<string, { durationMs: number; breakDurationMs: number | null }> = {}
         for (const session of task.sessions || []) {
-          durationMSPerSession[session.id] = session.durationMs
+          durationMSPerSession[session.id] = {
+            durationMs: session.durationMs ?? 0,
+            breakDurationMs: session.breakDurationMs ?? 0,
+          }
         }
         return durationMSPerSession
       }),
@@ -80,7 +85,8 @@ export default function SessionJourneySection({
                     session={session}
                     setSelectedSession={setSelectedSession}
                     selectedSession={selectedSession}
-                    durationMS={durationMSPerSession?.[session.id]}
+                    durationMS={durationMSPerSession?.[session.id]?.durationMs}
+                    breakDurationMS={durationMSPerSession?.[session.id]?.breakDurationMs}
                   />
                   {idx < arr.length - 1 && (
                     <div className="flex flex-col items-center">
@@ -95,6 +101,7 @@ export default function SessionJourneySection({
             selectedTask={selectedTask}
             setSelectedTask={setSelectedTask}
             setSelectedSession={setSelectedSession}
+            isTimerRunning={isTimerRunning}
           />
         </div>
       </ScrollArea>
@@ -107,14 +114,17 @@ function SessionCard({
   setSelectedSession,
   selectedSession,
   durationMS,
+  breakDurationMS,
 }: {
   session: z.infer<typeof taskSessionSchema>
   setSelectedSession: (session: z.infer<typeof taskSessionSchema>) => void
   selectedSession: z.infer<typeof taskSessionSchema> | null
-  durationMS?: number
+  durationMS?: number | null
+  breakDurationMS?: number | null
 }) {
   const isSelected = selectedSession?.id === session.id
   const duration = durationMS || session.durationMs
+  const breakDuration = breakDurationMS || session.breakDurationMs || 0
 
   return (
     <Card
@@ -128,15 +138,32 @@ function SessionCard({
       </CardHeader>
       <CardContent className="p-3">
         <div className="text-xs text-gray-500 mb-1">
-          {(() => {
-            const totalSeconds = Math.floor(duration / 1000)
-            const hours = Math.floor(totalSeconds / 3600)
-            const minutes = Math.floor((totalSeconds % 3600) / 60)
-            const seconds = totalSeconds % 60
-            return [hours > 0 ? `${hours}h` : null, minutes > 0 ? `${minutes}m` : null, `${seconds}s`]
-              .filter(Boolean)
-              .join(" ")
-          })()}
+          <span>
+            Focus:&nbsp;
+            {(() => {
+              const totalSeconds = Math.floor(duration / 1000)
+              const hours = Math.floor(totalSeconds / 3600)
+              const minutes = Math.floor((totalSeconds % 3600) / 60)
+              const seconds = totalSeconds % 60
+              return [hours > 0 ? `${hours}h` : null, minutes > 0 ? `${minutes}m` : null, `${seconds}s`]
+                .filter(Boolean)
+                .join(" ")
+            })()}
+          </span>
+        </div>
+        <div className="text-xs text-gray-500 mb-1">
+          <span>
+            Break:&nbsp;
+            {(() => {
+              const totalSeconds = Math.floor(breakDuration / 1000)
+              const hours = Math.floor(totalSeconds / 3600)
+              const minutes = Math.floor((totalSeconds % 3600) / 60)
+              const seconds = totalSeconds % 60
+              return [hours > 0 ? `${hours}h` : null, minutes > 0 ? `${minutes}m` : null, `${seconds}s`]
+                .filter(Boolean)
+                .join(" ")
+            })()}
+          </span>
         </div>
       </CardContent>
     </Card>
@@ -147,10 +174,12 @@ function AddNewSessionButton({
   selectedTask,
   setSelectedTask,
   setSelectedSession,
+  isTimerRunning,
 }: {
   selectedTask: z.infer<typeof taskSchema>
   setSelectedTask: (task: z.infer<typeof taskSchema>) => void
   setSelectedSession: (session: z.infer<typeof taskSessionSchema>) => void
+  isTimerRunning: boolean
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [newSessionName, setNewSessionName] = useState("")
@@ -164,6 +193,7 @@ function AddNewSessionButton({
       body: JSON.stringify({
         taskId: selectedTask.id,
         sessionName: newSessionName,
+        type: "FOCUS",
       }),
     })
     if (!res.ok) {
@@ -173,7 +203,8 @@ function AddNewSessionButton({
     const json = await res.json()
     const data = responseSchema.parse(json)
     setSelectedTask(data.task)
-    if (data.task.sessions && data.task.sessions.length > 0) {
+    console.log("isTimerRunning : ", isTimerRunning)
+    if (data.task.sessions && data.task.sessions.length > 0 && isTimerRunning) {
       setSelectedSession(data.task.sessions[data.task.sessions.length - 1])
     }
     setIsDialogOpen(false)

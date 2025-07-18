@@ -11,11 +11,15 @@ export default function TaskSection({
   setSelectedProject,
   selectedTask,
   setSelectedTask,
+  isTimerRunning,
+  setIsTimerRunning,
 }: {
   selectedProject: z.infer<typeof projectSchema> | null
   setSelectedProject: (project: z.infer<typeof projectSchema> | null) => void
   selectedTask: z.infer<typeof taskSchema> | null
   setSelectedTask: (task: z.infer<typeof taskSchema> | null) => void
+  isTimerRunning: boolean
+  setIsTimerRunning: (isTimerRunning: boolean) => void
 }) {
   // ESC 키 핸들러 추가
   const handleEsc = useCallback(
@@ -42,6 +46,8 @@ export default function TaskSection({
           projectId={selectedProject.id}
           selectedTask={selectedTask}
           setSelectedTask={setSelectedTask}
+          isTimerRunning={isTimerRunning}
+          setIsTimerRunning={setIsTimerRunning}
         />
       )}
       {selectedProject && selectedProject.sourceType === "LINEAR" && (
@@ -49,6 +55,8 @@ export default function TaskSection({
           projectId={selectedProject.id}
           selectedTask={selectedTask}
           setSelectedTask={setSelectedTask}
+          isTimerRunning={isTimerRunning}
+          setIsTimerRunning={setIsTimerRunning}
         />
       )}
     </div>

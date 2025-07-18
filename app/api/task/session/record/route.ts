@@ -2,12 +2,23 @@ import { prisma } from "@/app/pkg/prisma"
 import { Prisma } from "@/prisma/app/generated/prisma/client"
 import { Client } from "@notionhq/client"
 import { NextRequest, NextResponse } from "next/server"
+import { TaskSession } from "../../type"
 
 export async function POST(request: NextRequest) {
-  const { projectId, taskId, sessionId, durationMinutes } = await request.json()
+  const { projectId, taskId, sessionId, durationMinutes, breakDurationMinutes } = await request.json()
 
-  if (!taskId || !projectId || !durationMinutes || isNaN(Number(durationMinutes))) {
-    return NextResponse.json({ error: "taskId and projectId are required" }, { status: 400 })
+  if (!taskId) {
+    return NextResponse.json({ error: "Error: taskId is required" }, { status: 400 })
+  }
+  if (!projectId) {
+    return NextResponse.json({ error: "Error: projectId is required" }, { status: 400 })
+  }
+
+  if (durationMinutes === null && breakDurationMinutes === null) {
+    return NextResponse.json(
+      { error: "Error: Either durationMinutes or breakDurationMinutes is required" },
+      { status: 400 },
+    )
   }
 
   const project = await prisma.project.findUnique({
@@ -36,13 +47,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Session not found" }, { status: 400 })
   }
 
-  const session = sessions.find((session) => session.id === sessionId)
+  const session = sessions.find((session: TaskSession) => session.id === sessionId)
 
   if (!session) {
     return NextResponse.json({ error: "Session not found" }, { status: 400 })
   }
-
-  session.durationMs += durationMinutes * 60 * 1000
+  if (durationMinutes != null) {
+    session.durationMs += durationMinutes * 60 * 1000
+  }
+  if (breakDurationMinutes != null) {
+    session.breakDurationMs += breakDurationMinutes * 60 * 1000
+  }
 
   await prisma.task.update({
     where: {

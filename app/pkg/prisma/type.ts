@@ -6,10 +6,12 @@ declare global {
       focusedMinutesPropertyId: string
     }
 
-    type TaskSessions = {
+    type TaskSession = {
       id: string
       name: string
+      type: "FOCUS" | "BREAK"
       durationMs: number
+      breakDurationMs: number
       createdAtMs: number
       updatedAtMs: number
       order: number // start from 1, 1 is the first session
