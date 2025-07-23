@@ -29,7 +29,7 @@ export default function SessionJourneySection({
   selectedTask: z.infer<typeof taskSchema>
   setSelectedTask: (task: z.infer<typeof taskSchema> | null) => void
   selectedSession: z.infer<typeof taskSessionSchema> | null
-  setSelectedSession: (session: z.infer<typeof taskSessionSchema>) => void
+  setSelectedSession: (session: z.infer<typeof taskSessionSchema> | null) => void
   isTimerRunning: boolean
 }) {
   useEffect(() => {
@@ -48,7 +48,7 @@ export default function SessionJourneySection({
     return () => window.removeEventListener("keydown", handleEsc)
   }, [setSelectedTask])
 
-  const { data: durationMSPerSession } = useQuery({
+  const { data: durationMSPerSession, refetch } = useQuery({
     queryKey: ["task", selectedTask.id],
     queryFn: async () =>
       fetch(`/api/task?taskId=${selectedTask.id}`).then(async (res) => {
@@ -82,11 +82,12 @@ export default function SessionJourneySection({
               .map((session, idx, arr) => (
                 <div key={session.id} className="flex flex-col items-center w-[90%]">
                   <SessionCard
-                    selectedTask={selectedTask.duration}
+                    selectedTask={selectedTask}
                     session={session}
                     setSelectedSession={setSelectedSession}
                     selectedSession={selectedSession}
                     durationMS={durationMSPerSession?.[session.id]?.durationMs}
+                    refetch={refetch}
                   />
                   {idx < arr.length - 1 && (
                     <div className="flex flex-col items-center">
@@ -115,16 +116,18 @@ function SessionCard({
   setSelectedSession,
   selectedSession,
   durationMS,
+  refetch,
 }: {
   session: z.infer<typeof taskSessionSchema>
-  selectedTask: { type: string; duration: number }[] | null
-  setSelectedSession: (session: z.infer<typeof taskSessionSchema>) => void
+  selectedTask: z.infer<typeof taskSchema> | null
+  setSelectedSession: (session: z.infer<typeof taskSessionSchema> | null) => void
   selectedSession: z.infer<typeof taskSessionSchema> | null
   durationMS?: { type: string; duration: number }[] | null
+  refetch: () => void
 }) {
   const isSelected = selectedSession?.id === session.id
   const duration = (durationMS || session.duration).find((d) => d.type === "FOCUS")?.duration || 0
-  const task = selectedTask?.find((d) => d.type === "BREAK")?.duration || 0
+  const task = selectedTask?.duration.find((d) => d.type === "BREAK")?.duration || 0
 
   return (
     <Card
@@ -133,8 +136,14 @@ function SessionCard({
       }`}
       onClick={() => setSelectedSession(session)}
     >
-      <CardHeader className="p-3">
+      <CardHeader className="p-3 flex flex-row items-center justify-between">
         <CardTitle className={`text-sm ${isSelected ? "text-green-700" : ""}`}>{session.name}</CardTitle>
+        <SessionDeleteButton
+          session={session}
+          selectedTask={selectedTask}
+          setSelectedSession={setSelectedSession}
+          refetch={refetch}
+        />
       </CardHeader>
       <CardContent className="p-3">
         <div className="text-xs text-gray-500 mb-1">
@@ -167,6 +176,42 @@ function SessionCard({
         </div>
       </CardContent>
     </Card>
+  )
+}
+function SessionDeleteButton({
+  session,
+  selectedTask,
+  setSelectedSession,
+  refetch,
+}: {
+  session: z.infer<typeof taskSessionSchema>
+  selectedTask: z.infer<typeof taskSchema> | null
+  setSelectedSession: (session: z.infer<typeof taskSessionSchema> | null) => void
+  refetch: () => void
+}) {
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    const confirmDelete = confirm(`${session.name}를 삭제하시겠습니까?`)
+    if (!confirmDelete) return
+
+    const res = await fetch(`/api/task?sessionId=${session.id}&taskId=${selectedTask?.id}`, {
+      method: "DELETE",
+    })
+    if (res.ok) {
+      setSelectedSession(null)
+      refetch()
+    } else {
+      alert("세션 삭제 실패")
+    }
+  }
+  return (
+    <button
+      className="ml-2 text-red-400 hover:text-red-700 text-lg font-bold focus:outline-none"
+      onClick={handleDelete}
+      aria-label="삭제"
+    >
+      ×
+    </button>
   )
 }
 

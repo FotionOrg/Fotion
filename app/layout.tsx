@@ -31,7 +31,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                   <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
                     <div className="flex items-center font-semibold">
                       <Link href={"/"} className="flex items-center">
-                        <img src="images/fotion-black.png" className="size-20 mr-2" />
+                        <img src="/images/fotion-black.png" className="size-20 mr-2" />
                       </Link>
                     </div>
                     <div className="flex items-center gap-4">

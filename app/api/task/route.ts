@@ -1,7 +1,9 @@
 import { prisma } from "@/app/pkg/prisma"
 import { getDomainUserOrNull } from "@/lib/be/utils/user"
 import { z } from "zod"
-import { breakDurationSchema, requestSchema, taskSchema, taskSessionSchema } from "./type"
+import { breakDurationSchema, request, requestSchema, taskSchema, TaskSession, taskSessionSchema } from "./type"
+import { Prisma } from "@/prisma/app/generated/prisma/client"
+import { Session } from "inspector/promises"
 
 export async function POST(request: Request) {
   const user = await getDomainUserOrNull()
@@ -94,4 +96,35 @@ export async function GET(request: Request) {
   }
 
   return new Response(JSON.stringify(ret), { status: 200 })
+}
+
+export async function DELETE(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const sessionId = searchParams.get("sessionId")
+  const id = searchParams.get("taskId")
+  if (!sessionId) {
+    return new Response("Session ID is required", { status: 400 })
+  }
+  if (!id) {
+    return new Response("ID is required", { status: 400 })
+  }
+  const user = await getDomainUserOrNull()
+  if (!user) {
+    return new Response("Unauthorized", { status: 401 })
+  }
+
+  const task = await prisma.task.findUnique({ where: { id: id } })
+  if (!task) {
+    return new Response("Task is not found", { status: 404 })
+  }
+
+  const newSessions = task.sessions.filter((s: TaskSession) => s.id !== sessionId)
+
+  // 3. update로 배열 전체를 다시 저장
+  await prisma.task.update({
+    where: { id: id },
+    data: { sessions: newSessions },
+  })
+
+  return new Response(JSON.stringify(task), { status: 200 })
 }
