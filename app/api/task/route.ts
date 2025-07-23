@@ -1,9 +1,7 @@
 import { prisma } from "@/app/pkg/prisma"
 import { getDomainUserOrNull } from "@/lib/be/utils/user"
 import { z } from "zod"
-import { breakDurationSchema, request, requestSchema, taskSchema, TaskSession, taskSessionSchema } from "./type"
-import { Prisma } from "@/prisma/app/generated/prisma/client"
-import { Session } from "inspector/promises"
+import { breakDurationSchema, requestSchema, taskSchema, TaskSession, taskSessionSchema } from "./type"
 
 export async function POST(request: Request) {
   const user = await getDomainUserOrNull()
