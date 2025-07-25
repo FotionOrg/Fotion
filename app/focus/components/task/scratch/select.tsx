@@ -48,7 +48,7 @@ export default function ScratchTaskSelect({
                     setSelectedTaskTitle(null)
                   }}
                 >
-                  수정
+                  edit
                 </button>
               </div>
             </div>
