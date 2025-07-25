@@ -191,24 +191,29 @@ function SessionDeleteButton({
 }) {
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    const confirmDelete = confirm(`${session.name}를 삭제하시겠습니까?`)
+    const confirmDelete = confirm(`Are you sure you want to delete the session '${session.name}'?`)
     if (!confirmDelete) return
 
-    const res = await fetch(`/api/task?sessionId=${session.id}&taskId=${selectedTask?.id}`, {
+    const params = new URLSearchParams({
+      sessionId: session.id,
+      taskId: selectedTask?.id || "",
+    })
+
+    const res = await fetch(`/api/task?${params.toString()}`, {
       method: "DELETE",
     })
     if (res.ok) {
       setSelectedSession(null)
       refetch()
     } else {
-      alert("세션 삭제 실패")
+      alert("Failed to delete session")
     }
   }
   return (
     <button
       className="ml-2 text-red-400 hover:text-red-700 text-lg font-bold focus:outline-none"
       onClick={handleDelete}
-      aria-label="삭제"
+      aria-label="delete"
     >
       ×
     </button>

@@ -118,7 +118,6 @@ export async function DELETE(request: Request) {
 
   const newSessions = task.sessions.filter((s: TaskSession) => s.id !== sessionId)
 
-  // 3. update로 배열 전체를 다시 저장
   await prisma.task.update({
     where: { id: id },
     data: { sessions: newSessions },
