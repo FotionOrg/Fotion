@@ -5,6 +5,7 @@ import { z } from "zod"
 import { projectSchema } from "../../type"
 import LinearTaskSelect from "../task/linear/select"
 import NotionTaskSelect from "../task/notion/select"
+import ScratchTaskSelect from "../task/scratch/select"
 
 export default function TaskSection({
   selectedProject,
@@ -41,6 +42,15 @@ export default function TaskSection({
       <div className="flex flex-row items-center gap-2 w-full justify-center mb-5">
         <XIcon className="size-4 cursor-pointer" onClick={() => setSelectedProject(null)} />
       </div>
+      {selectedProject && selectedProject.sourceType === "SCRATCH" && (
+        <ScratchTaskSelect
+          projectId={selectedProject.id}
+          selectedTask={selectedTask}
+          setSelectedTask={setSelectedTask}
+          isTimerRunning={isTimerRunning}
+          setIsTimerRunning={setIsTimerRunning}
+        />
+      )}
       {selectedProject && selectedProject.sourceType === "NOTION" && (
         <NotionTaskSelect
           projectId={selectedProject.id}

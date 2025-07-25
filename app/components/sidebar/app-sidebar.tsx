@@ -72,7 +72,6 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider open={open}>
-      ㄴ
       <Sidebar collapsible="icon">
         <SidebarContent>
           <SidebarGroup>
