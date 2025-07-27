@@ -20,7 +20,7 @@ declare global {
     type TaskDuration = {
       type: "BREAK"
       duration: number
-    }
+    }[]
   }
 }
 
