@@ -7,13 +7,13 @@ import { Command, CommandInput, CommandItem, CommandList } from "@/components/ui
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import SubmitButton from "@/components/ui/submit-button"
+import useCreateProjectHandler from "@/hooks/focus/use-create-project-handler"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { X } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useDebouncedCallback } from "use-debounce"
 import { z } from "zod"
-import { createProject } from "../../../actions"
 import { formSchema, projectSchema } from "../../../type"
 
 export default function FormNotionProject({
@@ -70,12 +70,8 @@ export default function FormNotionProject({
     }
   }
 
-  async function handleSubmit(data: z.infer<typeof formSchema>) {
-    const project = await createProject(data)
-    if (project) {
-      afterSubmitFn()
-    }
-  }
+  const handleSubmit = useCreateProjectHandler(afterSubmitFn)
+
   return (
     <div>
       <Form {...form}>

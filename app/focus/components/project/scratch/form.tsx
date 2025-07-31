@@ -1,13 +1,18 @@
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import SubmitButton from "@/components/ui/submit-button"
+import useCreateProjectHandler from "@/hooks/focus/use-create-project-handler"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { createProject } from "../../../actions"
-import { formSchema } from "../../../type"
+import { formSchema, projectSchema } from "../../../type"
 
-export default function FormCreateScratchProject({ afterSubmitFn }: { afterSubmitFn: () => void }) {
+export default function FormCreateScratchProject({
+  afterSubmitFn,
+}: {
+  afterSubmitFn: () => void
+  projects: z.infer<typeof projectSchema>[]
+}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -21,13 +26,7 @@ export default function FormCreateScratchProject({ afterSubmitFn }: { afterSubmi
       console.error(errors)
     }
   }
-
-  async function handleSubmit(data: z.infer<typeof formSchema>) {
-    const project = await createProject(data)
-    if (project) {
-      afterSubmitFn()
-    }
-  }
+  const handleSubmit = useCreateProjectHandler(afterSubmitFn)
 
   return (
     <div>

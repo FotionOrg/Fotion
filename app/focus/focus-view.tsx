@@ -9,10 +9,10 @@ import TimerSection from "./components/timer/timer-wrapper"
 import { projectSchema } from "./type"
 
 export default function FocusView({
-  projects,
   notionIntegrationId,
   linearIntegrationId,
   userId,
+  projects,
 }: {
   projects: z.infer<typeof projectSchema>[]
   notionIntegrationId: string | null
@@ -24,6 +24,7 @@ export default function FocusView({
   const [selectedSession, setSelectedSession] = useState<z.infer<typeof taskSessionSchema> | null>(null)
   const [queryClient] = useState(() => new QueryClient())
   const [isTimerRunning, setIsTimerRunning] = useState(false)
+
   return (
     <QueryClientProvider client={queryClient}>
       <div className="flex flex-row gap-4 w-full h-full">

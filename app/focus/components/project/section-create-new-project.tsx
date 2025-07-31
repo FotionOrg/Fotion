@@ -29,6 +29,7 @@ export default function CreateNewProject({
 
         {type === "SCRATCH" && (
           <FormCreateScratchProject
+            projects={projects}
             afterSubmitFn={() => {
               setIsDialogOpen(false)
             }}

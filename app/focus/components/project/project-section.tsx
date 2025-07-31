@@ -1,9 +1,25 @@
 import { taskSchema, taskSessionSchema } from "@/app/api/task/type"
+import { useProjectStore } from "@/stores/projectStore"
+import { useQuery } from "@tanstack/react-query"
 import { z } from "zod"
+import { getProjects } from "../../actions"
 import { projectSchema } from "../../type"
 import ProjectSelect from "./select-project"
 import SessionJourneySection from "./session-journey-section"
 import TaskSection from "./task-section"
+
+function useFetchProjects(userId: string) {
+  const setProjects = useProjectStore((state) => state.setProjects)
+
+  return useQuery({
+    queryKey: ["projects", userId],
+    queryFn: async () => {
+      const result = await getProjects(userId)
+      setProjects(result)
+      return result
+    },
+  })
+}
 
 export default function ProjectSection({
   selectedProject,
@@ -11,8 +27,8 @@ export default function ProjectSection({
   selectedTask,
   setSelectedTask,
   selectedSession,
-  setSelectedSession,
   projects,
+  setSelectedSession,
   notionIntegrationId,
   linearIntegrationId,
   userId,
@@ -33,24 +49,15 @@ export default function ProjectSection({
   linearIntegrationId: string | null
   userId: string
 }) {
-  const mockSessions = []
-  for (let i = 1; i <= 10; i++) {
-    mockSessions.push({
-      id: i.toString(),
-      name: `Session ${i}`,
-      durationMs: i * 1000,
-      createdAtMs: 1717334400000,
-      updatedAtMs: 1717334400000,
-      order: i,
-    })
-  }
+  const reRenderingProjects = useProjectStore((state) => state.projects) // zustand 데이터 사용
 
+  useFetchProjects(userId) // zustand 갱신
   return (
     <div className="flex flex-col justify-center items-center w-full h-full">
       {!selectedProject && (
         <ProjectSelect
           setSelectedProject={setSelectedProject}
-          projects={projects}
+          projects={reRenderingProjects || projects}
           notionIntegrationId={notionIntegrationId}
           linearIntegrationId={linearIntegrationId}
           userId={userId}
