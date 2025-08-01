@@ -104,7 +104,10 @@ export default function Timer({
   }
 
   const handleInputBlur = () => {
-    const minutes = Math.min(Number(inputValue), 60)
+    console.log("inputValue : ", inputValue)
+    const sliceInputValue = parseInt(String(inputValue).slice(-2))
+    const minutes = Math.min(Number(sliceInputValue), 60)
+    console.log("sliceInputValue : ", minutes)
     const ms = minutes * 60 * 1000
     if (mode === "FOCUS") {
       setDuration(ms)
@@ -117,7 +120,9 @@ export default function Timer({
 
   const formatTime = (ms: number) => {
     const totalSeconds = Math.max(0, Math.ceil((mode === "FOCUS" ? duration - ms : duration - ms) / 1000))
+
     const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0")
+
     const seconds = String(totalSeconds % 60).padStart(2, "0")
     return `${minutes}:${seconds}`
   }
@@ -213,7 +218,7 @@ export default function Timer({
               inputMode="numeric"
               pattern="[0-9]*"
               value={inputValue}
-              onChange={(e) => setInputValue(parseInt(e.target.value))}
+              onChange={(e) => setInputValue(parseInt(e.target.value) || 0)}
               onBlur={handleInputBlur}
               autoFocus
               className="bg-transparent border-none text-center w-[60px] text-5xl font-mono outline-none appearance-none"

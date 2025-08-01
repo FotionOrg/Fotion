@@ -44,7 +44,6 @@ export default function TimerSection({
   const handleDurationChange = (duration: number) => {
     setDuration((prev) => ({ ...prev, [mode]: duration }))
   }
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-4 w-full">
       <Card className="w-full aspect-square shadow-2xl flex items-center justify-center">
