@@ -2,11 +2,9 @@ import { projectSchema } from "@/app/focus/type"
 import z from "zod"
 import { create } from "zustand"
 
-type Project = z.infer<typeof projectSchema>
-
 interface ProjectStore {
-  projects: Project[]
-  setProjects: (projects: Project[]) => void
+  projects: z.infer<typeof projectSchema>[]
+  setProjects: (projects: z.infer<typeof projectSchema>[]) => void
 }
 
 export const useProjectStore = create<ProjectStore>((set) => ({

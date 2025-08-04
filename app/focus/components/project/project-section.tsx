@@ -49,7 +49,7 @@ export default function ProjectSection({
   linearIntegrationId: string | null
   userId: string
 }) {
-  const reRenderingProjects = useProjectStore((state) => state.projects) // zustand 데이터 사용
+  const projectStore = useProjectStore((state) => state.projects) // zustand 데이터 사용
 
   useFetchProjects(userId) // zustand 갱신
   return (
@@ -57,7 +57,7 @@ export default function ProjectSection({
       {!selectedProject && (
         <ProjectSelect
           setSelectedProject={setSelectedProject}
-          projects={reRenderingProjects || projects}
+          projects={projectStore || projects}
           notionIntegrationId={notionIntegrationId}
           linearIntegrationId={linearIntegrationId}
           userId={userId}
