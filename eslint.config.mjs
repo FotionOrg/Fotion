@@ -1,51 +1,18 @@
-import prettierPlugin from "eslint-plugin-prettier"
-import pluginReact from "eslint-plugin-react"
-import globals from "globals"
-import tseslint from "typescript-eslint"
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
 
-/** @type {import('eslint').Linter.Config[]} */
-export default [
-  {
-    ignores: [".next/**", "prisma/app/generated/**"],
-    files: ["**/*.{ts,tsx}"],
-    languageOptions: {
-      globals: {
-        ...globals.browser,
-        React: "readonly",
-        module: "readonly",
-      },
-      parser: tseslint.parser,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
-    },
-    plugins: {
-      react: pluginReact,
-      "@typescript-eslint": tseslint.plugin,
-      prettier: prettierPlugin,
-    },
-    rules: {
-      "react/react-in-jsx-scope": "off",
-      "react/jsx-uses-react": "off",
-      "react/prop-types": "off",
-      "@typescript-eslint/no-empty-interface": "off",
-      "no-unused-vars": "off",
-      "prettier/prettier": "error",
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-          caughtErrorsIgnorePattern: "^_",
-        },
-      ],
-    },
-    settings: {
-      react: {
-        version: "detect",
-      },
-    },
-  },
-]
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
+]);
+
+export default eslintConfig;

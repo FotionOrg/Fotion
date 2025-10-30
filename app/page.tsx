@@ -1,11 +1,9 @@
-"use client"
+import HomeClient from '@/components/HomeClient'
 
+/**
+ * 서버 컴포넌트
+ * React Query가 데이터를 자동으로 fetch하므로 초기 데이터 불필요
+ */
 export default function Home() {
-  return (
-    <>
-      <main className="flex-1 flex flex-col px-2 items-center justify-center">
-        <h1 className="text-5xl font-bold pb-2">Keep Focus With Fotion</h1>
-      </main>
-    </>
-  )
+  return <HomeClient />
 }
