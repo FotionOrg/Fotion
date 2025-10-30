@@ -12,20 +12,25 @@ const defaultSettings: UserSettings = {
 }
 
 export function useSettings() {
-  const [settings, setSettings] = useState<UserSettings>(defaultSettings)
-  const [isLoaded, setIsLoaded] = useState(false)
+  const [settings, setSettings] = useState<UserSettings>(() => {
+    if (typeof window === 'undefined') return defaultSettings
 
-  // 초기 로드
-  useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored) {
       try {
         const parsed = JSON.parse(stored)
-        setSettings({ ...defaultSettings, ...parsed })
+        return { ...defaultSettings, ...parsed }
       } catch (error) {
         console.error('Failed to parse settings:', error)
+        return defaultSettings
       }
     }
+    return defaultSettings
+  })
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  // 초기 로드 완료 표시
+  useEffect(() => {
     setIsLoaded(true)
   }, [])
 

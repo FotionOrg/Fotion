@@ -73,7 +73,7 @@ export async function getTokenFromCode(code: string): Promise<GoogleOAuthToken> 
 
   return {
     access_token: tokens.access_token!,
-    refresh_token: tokens.refresh_token,
+    refresh_token: tokens.refresh_token || undefined,
     expiry_date: tokens.expiry_date || undefined,
     token_type: tokens.token_type || 'Bearer',
     scope: tokens.scope || SCOPES.join(' '),

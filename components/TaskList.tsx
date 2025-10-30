@@ -159,9 +159,9 @@ export default function TaskList({
                                 {task.source}
                               </span>
                             )}
-                            {task.scheduledAt && (
+                            {task.scheduledDate && (
                               <span className="text-xs text-zinc-400">
-                                📅 {new Date(task.scheduledAt).toLocaleDateString()}
+                                📅 {new Date(task.scheduledDate).toLocaleDateString()}
                               </span>
                             )}
                           </div>

@@ -17,11 +17,17 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
 
+  const resetModal = () => {
+    setSearchQuery('')
+    setSelectedTask(null)
+  }
+
   useEffect(() => {
     if (isOpen) {
-      setSearchQuery('')
-      setSelectedTask(null)
+      resetModal()
     }
+    // resetModal은 useEffect 내에서만 호출되므로 의존성에 포함하지 않음
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
 
   if (!isOpen) return null

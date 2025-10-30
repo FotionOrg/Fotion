@@ -22,22 +22,27 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
   const modalRef = useRef<HTMLDivElement>(null)
   const titleInputRef = useRef<HTMLInputElement>(null)
 
+  const resetForm = () => {
+    setTitle('')
+    setContent('')
+    setPriority('medium')
+    setScheduledDate('')
+    setScheduledTime('')
+    setEstimatedDuration('')
+    setTags([])
+    setTagInput('')
+  }
+
   useEffect(() => {
     if (isOpen) {
-      setTitle('')
-      setContent('')
-      setPriority('medium')
-      setScheduledDate('')
-      setScheduledTime('')
-      setEstimatedDuration('')
-      setTags([])
-      setTagInput('')
-
+      resetForm()
       // 모달 열릴 때 제목 입력에 포커스
       setTimeout(() => {
         titleInputRef.current?.focus()
       }, 100)
     }
+    // resetForm은 useEffect 내에서만 호출되므로 의존성에 포함하지 않음
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
 
   if (!isOpen) return null

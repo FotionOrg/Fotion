@@ -112,7 +112,7 @@ export default function NotionSync() {
 
     try {
       const result = await checkNotionDatabaseAction(token, selectedDatabaseId)
-      if (result.success) {
+      if (result.success && 'hasFotionSync' in result && 'hasFotionId' in result) {
         setPropertyCheck({
           hasFotionSync: result.hasFotionSync || false,
           hasFotionId: result.hasFotionId || false,

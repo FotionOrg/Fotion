@@ -46,12 +46,12 @@ export default function Home() {
   }
 
   // 집중 모드 탭 생성
-  const handleFocusStart = (taskId: string, mode: TimerMode, duration?: number) => {
+  const handleFocusStart = async (taskId: string, mode: TimerMode, duration?: number) => {
     const task = tasks.find(t => t.id === taskId)
     if (!task) return
 
     // FocusSession 시작
-    const session = startSession(taskId, task.title, mode, duration)
+    const session = await startSession(taskId, task.title, mode, duration)
 
     const newTabId = `focus-${Date.now()}`
     const newTab: AppTab = {

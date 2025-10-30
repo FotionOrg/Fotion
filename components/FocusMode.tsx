@@ -22,14 +22,24 @@ export default function FocusMode({
   onStop,
   onChangeTask,
 }: FocusModeProps) {
-  const [displayTime, setDisplayTime] = useState(0)
-  const [isFullscreen, setIsFullscreen] = useState(false)
+  const [displayTime, setDisplayTime] = useState(timerState.elapsedTime)
+  const [, setIsFullscreen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  const exitFullscreen = async () => {
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen()
+      }
+      setIsFullscreen(false)
+    } catch (err) {
+      console.error('Exit fullscreen failed:', err)
+    }
+  }
 
   // 타이머 업데이트
   useEffect(() => {
     if (!timerState.isRunning) {
-      setDisplayTime(timerState.elapsedTime)
       return
     }
 
@@ -39,12 +49,18 @@ export default function FocusMode({
     }, 100)
 
     return () => clearInterval(interval)
-  }, [timerState.isRunning, timerState.startTime, timerState.elapsedTime])
+  }, [timerState.isRunning, timerState.startTime])
+
+  useEffect(() => {
+    if (!timerState.isRunning) {
+      setDisplayTime(timerState.elapsedTime)
+    }
+  }, [timerState.elapsedTime, timerState.isRunning])
 
   // 전체화면 진입/종료
   useEffect(() => {
     if (!isActive) {
-      exitFullscreen()
+      void exitFullscreen()
       return
     }
 
@@ -59,7 +75,7 @@ export default function FocusMode({
       }
     }
 
-    enterFullscreen()
+    void enterFullscreen()
 
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement)
@@ -74,17 +90,6 @@ export default function FocusMode({
       document.removeEventListener('fullscreenchange', handleFullscreenChange)
     }
   }, [isActive, onStop])
-
-  const exitFullscreen = async () => {
-    try {
-      if (document.fullscreenElement) {
-        await document.exitFullscreen()
-      }
-      setIsFullscreen(false)
-    } catch (err) {
-      console.error('Exit fullscreen failed:', err)
-    }
-  }
 
   const formatTime = (ms: number) => {
     const totalSeconds = Math.floor(ms / 1000)

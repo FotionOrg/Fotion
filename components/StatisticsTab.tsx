@@ -30,7 +30,7 @@ function StatisticsTab({ sessions }: StatisticsTabProps) {
     const thisMonthSessions = sessions.filter(s => s.startTime >= thisMonthStart)
 
     // 완료된 세션
-    const completedSessions = sessions.filter(s => s.completed)
+    const completedSessions = sessions.filter(s => s.isCompleted)
 
     // 시간 계산 (분 단위)
     const calculateTotalMinutes = (sessions: FocusSession[]) => {

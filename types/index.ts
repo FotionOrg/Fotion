@@ -3,6 +3,7 @@ export interface Task {
   id: string
   title: string
   content?: string // WYSIWYG 에디터 내용 (JSON 또는 HTML)
+  description?: string // 간단한 설명 (content의 축약형)
   status: 'todo' | 'in_progress' | 'completed'
   priority?: 'low' | 'medium' | 'high'
   tags?: string[]
@@ -12,6 +13,10 @@ export interface Task {
   // 일정 (외부 연동에서 가져올 수 있음)
   scheduledDate?: Date // 시작일 또는 종료일
   scheduledTime?: string // "09:00" 형식
+
+  // 외부 연동 데이터
+  externalId?: string // 외부 서비스의 ID (Notion Page ID 등)
+  externalData?: any // 외부 서비스에서 가져온 추가 데이터
 
   // 메타데이터
   createdAt: Date

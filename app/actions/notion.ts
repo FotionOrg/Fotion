@@ -35,7 +35,7 @@ export async function checkNotionDatabaseAction(
 ) {
   try {
     const result = await checkDatabaseProperties(token.access_token, databaseId)
-    return { success: true, ...result }
+    return result
   } catch (error) {
     console.error('Failed to check database properties:', error)
     return { success: false, error: 'Failed to check database properties' }
@@ -63,19 +63,18 @@ export async function syncNotionDatabaseAction(
     let tasksCreated = 0
     for (const page of pages) {
       const taskData = convertPageToTask(page)
-      const result = await createTaskAction(taskData)
-
-      if (result.success) {
+      try {
+        const task = await createTaskAction(taskData)
         tasksCreated++
 
         // 3. Notion에 Fotion ID 저장 (양방향 동기화 준비)
-        if (result.task) {
-          try {
-            await updateNotionPage(token.access_token, page.id, result.task)
-          } catch (error) {
-            console.error('Failed to update Notion page with Fotion ID:', error)
-          }
+        try {
+          await updateNotionPage(token.access_token, page.id, task)
+        } catch (error) {
+          console.error('Failed to update Notion page with Fotion ID:', error)
         }
+      } catch (error) {
+        console.error('Failed to create task:', error)
       }
     }
 

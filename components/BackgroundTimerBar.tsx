@@ -20,11 +20,10 @@ export default function BackgroundTimerBar({
   onReturnToFocus,
   taskTitle = '작업 중'
 }: BackgroundTimerBarProps) {
-  const [displayTime, setDisplayTime] = useState(0)
+  const [displayTime, setDisplayTime] = useState(timerState.elapsedTime)
 
   useEffect(() => {
     if (!timerState.isRunning) {
-      setDisplayTime(timerState.elapsedTime)
       return
     }
 
@@ -34,7 +33,13 @@ export default function BackgroundTimerBar({
     }, 100)
 
     return () => clearInterval(interval)
-  }, [timerState.isRunning, timerState.startTime, timerState.elapsedTime])
+  }, [timerState.isRunning, timerState.startTime])
+
+  useEffect(() => {
+    if (!timerState.isRunning) {
+      setDisplayTime(timerState.elapsedTime)
+    }
+  }, [timerState.elapsedTime, timerState.isRunning])
 
   const formatTime = (ms: number) => {
     const totalSeconds = Math.floor(ms / 1000)

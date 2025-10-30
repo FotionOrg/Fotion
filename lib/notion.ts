@@ -63,10 +63,11 @@ export function createNotionClient(accessToken: string) {
 export async function listDatabases(accessToken: string) {
   const notion = createNotionClient(accessToken)
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const response = await notion.search({
     filter: {
       property: 'object',
-      value: 'database',
+      value: 'database' as any,
     },
     sort: {
       direction: 'descending',
@@ -88,12 +89,21 @@ export async function checkDatabaseProperties(accessToken: string, databaseId: s
   const notion = createNotionClient(accessToken)
 
   const database = await notion.databases.retrieve({ database_id: databaseId })
+
+  if (!('properties' in database)) {
+    return {
+      success: false,
+      error: 'Database properties not accessible'
+    }
+  }
+
   const properties = database.properties as any
 
   const hasFotionSync = 'Fotion Sync' in properties && properties['Fotion Sync'].type === 'checkbox'
   const hasFotionId = 'Fotion ID' in properties && properties['Fotion ID'].type === 'rich_text'
 
   return {
+    success: true,
     hasFotionSync,
     hasFotionId,
     properties: Object.keys(properties).map(key => ({
@@ -107,7 +117,8 @@ export async function checkDatabaseProperties(accessToken: string, databaseId: s
 export async function fetchSyncedPages(accessToken: string, databaseId: string) {
   const notion = createNotionClient(accessToken)
 
-  const response = await notion.databases.query({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const response = await (notion.databases as any).query({
     database_id: databaseId,
     filter: {
       property: 'Fotion Sync',
