@@ -10,18 +10,18 @@ interface TasksTabProps {
 }
 
 function TasksTab({ tasks, onCreateTask }: TasksTabProps) {
-  // 날짜/시간이 지정된 작업 (정렬: 날짜 > 시간)
+  // Date/Time이 지정된 Task (정렬: Date > Time)
   const scheduledTasks = tasks
     .filter(task => task.scheduledDate || task.scheduledTime)
     .sort((a, b) => {
-      // 날짜 비교
+      // Date 비교
       if (a.scheduledDate && b.scheduledDate) {
         const dateCompare = a.scheduledDate.getTime() - b.scheduledDate.getTime()
         if (dateCompare !== 0) return dateCompare
       } else if (a.scheduledDate) return -1
       else if (b.scheduledDate) return 1
 
-      // 같은 날짜라면 시간 비교
+      // 같은 Date라면 Time 비교
       if (a.scheduledTime && b.scheduledTime) {
         return a.scheduledTime.localeCompare(b.scheduledTime)
       } else if (a.scheduledTime) return -1
@@ -30,20 +30,20 @@ function TasksTab({ tasks, onCreateTask }: TasksTabProps) {
       return 0
     })
 
-  // 날짜/시간이 없는 외부 연동 작업 (미분류 - Backlog)
-  // 내부(internal) 작업은 제외, 외부 소스(notion, linear, todoist 등)만 표시
+  // Date/Time이 없는 외부 연동 Task (미분류 - Backlog)
+  // 내부(internal) Task은 제외, 외부 소스(notion, linear, todoist 등)만 표시
   const unscheduledTasks = tasks.filter(
     task => !task.scheduledDate && !task.scheduledTime && task.source !== 'internal'
   )
 
   return (
     <div className="flex flex-col md:flex-row h-full">
-      {/* 좌측: 예정된 작업 */}
+      {/* 좌측: 예정된 Task */}
       <div className="flex-1 md:border-r border-b md:border-b-0 border-zinc-200 dark:border-zinc-800 overflow-auto">
         <div className="p-4 h-full flex flex-col">
-          <h2 className="text-lg font-semibold mb-4">예정된 작업</h2>
+          <h2 className="text-lg font-semibold mb-4">예정된 Task</h2>
 
-          {/* 현재 날짜 표시 */}
+          {/* 현재 Date 표시 */}
           <div className="mb-4 p-3 bg-surface-secondary dark:bg-surface-secondary rounded-lg flex-shrink-0">
             <div className="text-sm text-zinc-600 dark:text-zinc-400">
               {new Date().toLocaleDateString('ko-KR', {
@@ -55,7 +55,7 @@ function TasksTab({ tasks, onCreateTask }: TasksTabProps) {
             </div>
           </div>
 
-          {/* 시간대별 작업 - 스크롤 가능 */}
+          {/* Time대별 Task - 스크롤 가능 */}
           <div className="space-y-2 flex-1 overflow-auto">
             {scheduledTasks.length > 0 ? (
               scheduledTasks.map(task => (
@@ -63,24 +63,24 @@ function TasksTab({ tasks, onCreateTask }: TasksTabProps) {
               ))
             ) : (
               <div className="text-center text-zinc-500 dark:text-zinc-400 py-8">
-                예정된 작업이 없습니다
+                예정된 Task이 없습니다
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* 중앙: 미분류 작업 (Backlog) */}
+      {/* 중앙: 미분류 Task (Backlog) */}
       <div className="w-full md:w-80 md:border-r border-b md:border-b-0 border-zinc-200 dark:border-zinc-800 overflow-auto bg-surface dark:bg-surface">
         <div className="p-4 h-full flex flex-col">
           <div className="flex-shrink-0 mb-4">
-            <h2 className="text-lg font-semibold">미분류 작업</h2>
+            <h2 className="text-lg font-semibold">미분류 Task</h2>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-              외부 연동에서 날짜가 없거나 아직 일정을 정하지 않은 작업
+              외부 연동에서 Date가 없거나 아직 일정을 정하지 않은 Task
             </p>
           </div>
 
-          {/* 미분류 작업 목록 - 스크롤 가능 */}
+          {/* 미분류 Task List - 스크롤 가능 */}
           <div className="space-y-2 flex-1 overflow-auto">
             {unscheduledTasks.length > 0 ? (
               unscheduledTasks.map(task => (
@@ -88,7 +88,7 @@ function TasksTab({ tasks, onCreateTask }: TasksTabProps) {
               ))
             ) : (
               <div className="text-center text-zinc-500 dark:text-zinc-400 py-8 text-sm">
-                미분류 작업이 없습니다
+                미분류 Task이 없습니다
               </div>
             )}
           </div>
@@ -102,7 +102,7 @@ function TasksTab({ tasks, onCreateTask }: TasksTabProps) {
         </div>
       </div>
 
-      {/* 작업 생성 FAB */}
+      {/* Task 생성 FAB */}
       <button
         onClick={onCreateTask}
         className="fixed bottom-20 right-4 w-14 h-14 bg-blue-600 dark:bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors flex items-center justify-center z-40"
@@ -150,7 +150,7 @@ function TaskCard({ task, showDateTime = false }: TaskCardProps) {
               {task.content}
             </p>
           )}
-          {/* 날짜/시간 표시 */}
+          {/* Date/Time 표시 */}
           {showDateTime && (task.scheduledDate || task.scheduledTime) && (
             <div className="flex items-center gap-2 mt-2 text-xs text-zinc-500 dark:text-zinc-400">
               {task.scheduledDate && (
@@ -187,7 +187,7 @@ function TaskCard({ task, showDateTime = false }: TaskCardProps) {
             task.priority === 'medium' ? 'text-yellow-600 dark:text-yellow-400' :
             'text-zinc-500 dark:text-zinc-400'
           }`}>
-            {task.priority === 'high' ? '높음' : task.priority === 'medium' ? '중간' : '낮음'}
+            {task.priority === 'high' ? 'High' : task.priority === 'medium' ? '중간' : 'Low'}
           </span>
         )}
       </div>

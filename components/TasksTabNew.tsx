@@ -6,15 +6,16 @@ import TaskQueue from './TaskQueue'
 import TaskList from './TaskList'
 import ExternalConnectModal from './ExternalConnectModal'
 import TaskDetailModal from './TaskDetailModal'
-import { useTaskQueue } from '@/hooks/useTaskQueue'
 
 interface TasksTabProps {
   tasks: Task[]
+  taskQueue: string[]
+  onAddToQueue: (taskId: string) => void
+  onRemoveFromQueue: (taskId: string) => void
   onCreateTask: () => void
 }
 
-function TasksTabNew({ tasks, onCreateTask }: TasksTabProps) {
-  const { taskQueue, addToQueue, removeFromQueue } = useTaskQueue()
+function TasksTabNew({ tasks, taskQueue, onAddToQueue, onRemoveFromQueue, onCreateTask }: TasksTabProps) {
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false)
@@ -30,7 +31,7 @@ function TasksTabNew({ tasks, onCreateTask }: TasksTabProps) {
     // TODO: 실제 연동 로직 구현
   }
 
-  // 작업 큐에 있는 작업들 가져오기
+  // Task Queue에 있는 Task들 가져오기
   const queueTasks = taskQueue
     .map(id => tasks.find(t => t.id === id))
     .filter((t): t is Task => t !== undefined)
@@ -38,21 +39,21 @@ function TasksTabNew({ tasks, onCreateTask }: TasksTabProps) {
   return (
     <>
       <div className="h-full flex flex-col lg:flex-row">
-        {/* 작업 큐 (모바일: 상단, 데스크톱: 좌측) */}
+        {/* Task Queue (모바일: 상단, 데스크톱: 좌측) */}
         <div className="h-1/3 lg:h-full lg:w-80 border-b lg:border-b-0 lg:border-r border-zinc-200 dark:border-zinc-800">
           <TaskQueue
             tasks={queueTasks}
-            onRemoveFromQueue={removeFromQueue}
-            onDrop={addToQueue}
+            onRemoveFromQueue={onRemoveFromQueue}
+            onDrop={onAddToQueue}
           />
         </div>
 
-        {/* 작업 목록 (모바일: 하단, 데스크톱: 우측) */}
+        {/* Task List (모바일: 하단, 데스크톱: 우측) */}
         <div className="flex-1 h-2/3 lg:h-full overflow-hidden">
           <TaskList
             tasks={tasks}
             queuedTaskIds={taskQueue}
-            onAddToQueue={addToQueue}
+            onAddToQueue={onAddToQueue}
             onTaskClick={handleTaskClick}
             onCreateTask={onCreateTask}
             onConnectExternal={() => setIsConnectModalOpen(true)}
@@ -67,7 +68,7 @@ function TasksTabNew({ tasks, onCreateTask }: TasksTabProps) {
         onConnect={handleConnect}
       />
 
-      {/* 작업 상세 모달 */}
+      {/* Task 상세 모달 */}
       <TaskDetailModal
         isOpen={isTaskModalOpen}
         onClose={() => setIsTaskModalOpen(false)}

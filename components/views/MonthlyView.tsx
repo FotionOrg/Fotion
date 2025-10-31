@@ -18,11 +18,11 @@ export default function MonthlyView({ sessions }: MonthlyViewProps) {
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
 
-  // 캘린더 시작일 (이전 달 날짜 포함)
+  // 캘린더 Start일 (이전 달 Date 포함)
   const startDay = new Date(firstDay);
-  startDay.setDate(startDay.getDate() - ((firstDay.getDay() + 6) % 7)); // 월요일부터 시작
+  startDay.setDate(startDay.getDate() - ((firstDay.getDay() + 6) % 7)); // 월요일부터 Start
 
-  // 6주치 날짜 생성
+  // 6주치 Date 생성
   const calendarDays: Date[] = [];
   const currentDay = new Date(startDay);
   for (let i = 0; i < 42; i++) {
@@ -30,7 +30,7 @@ export default function MonthlyView({ sessions }: MonthlyViewProps) {
     currentDay.setDate(currentDay.getDate() + 1);
   }
 
-  // 특정 날짜의 세션 개수 계산
+  // 특정 Date의 세션 개수 계산
   const getSessionCountForDate = (date: Date) => {
     const dateString = date.toDateString();
     return sessions.filter((session) => {
@@ -120,7 +120,7 @@ export default function MonthlyView({ sessions }: MonthlyViewProps) {
         ))}
       </div>
 
-      {/* 날짜 그리드 */}
+      {/* Date 그리드 */}
       <div className="grid grid-cols-7 gap-px bg-zinc-200 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800">
         {calendarDays.map((date, index) => {
           const isCurrentMonth = date.getMonth() === month;
@@ -135,7 +135,7 @@ export default function MonthlyView({ sessions }: MonthlyViewProps) {
                 !isCurrentMonth ? "opacity-40" : ""
               }`}
             >
-              {/* 날짜 숫자 */}
+              {/* Date 숫자 */}
               <div
                 className={`text-sm font-medium ${
                   isToday
@@ -170,7 +170,7 @@ export default function MonthlyView({ sessions }: MonthlyViewProps) {
                 </div>
               )}
 
-              {/* Session 밀도에 따른 배경 색상 */}
+              {/* Session 밀도에 따른 배경 Color */}
               {sessionCount > 0 && (
                 <div
                   className="absolute inset-0 bg-primary-500 dark:bg-primary-600 pointer-events-none"

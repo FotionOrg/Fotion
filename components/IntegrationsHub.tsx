@@ -21,7 +21,7 @@ const integrations: Integration[] = [
     id: 'notion',
     name: 'Notion',
     icon: '📝',
-    description: 'Notion 데이터베이스의 작업을 동기화합니다',
+    description: 'Notion 데이터베이스의 Task을 동기화합니다',
     status: 'disconnected',
     tagRequirement: 'Fotion Sync (Checkbox Property)',
     setupTime: '2분'
@@ -30,7 +30,7 @@ const integrations: Integration[] = [
     id: 'linear',
     name: 'Linear',
     icon: '📐',
-    description: 'Linear 이슈를 작업으로 가져옵니다',
+    description: 'Linear 이슈를 Task으로 가져옵니다',
     status: 'disconnected',
     tagRequirement: 'fotion-sync (Label)',
     setupTime: '2분'
@@ -39,7 +39,7 @@ const integrations: Integration[] = [
     id: 'google-calendar',
     name: 'Google Calendar',
     icon: '📅',
-    description: '캘린더 일정을 작업으로 변환합니다',
+    description: '캘린더 일정을 Task으로 변환합니다',
     status: 'disconnected',
     tagRequirement: '캘린더 선택만',
     setupTime: '1분'
@@ -68,7 +68,7 @@ export default function IntegrationsHub() {
           외부 서비스 연동
         </h2>
         <p className="text-gray-600 dark:text-gray-400">
-          기존 프로젝트에 태그만 추가하면 자동으로 동기화됩니다
+          기존 프로젝트에 Tags만 추가하면 자동으로 동기화됩니다
         </p>
       </div>
 
@@ -117,7 +117,7 @@ export default function IntegrationsHub() {
             {/* Tag Requirement */}
             <div className="mb-4">
               <p className="text-xs text-gray-500 dark:text-gray-500 mb-1">
-                필요한 설정:
+                필요한 Settings:
               </p>
               <div className="bg-gray-100 dark:bg-gray-700 rounded px-2 py-1">
                 <code className="text-xs text-gray-700 dark:text-gray-300">
@@ -128,7 +128,7 @@ export default function IntegrationsHub() {
 
             {/* Setup Time */}
             <p className="text-xs text-gray-500 dark:text-gray-500 mb-4">
-              ⏱️ 설정 시간: 약 {integration.setupTime}
+              ⏱️ Settings Time: 약 {integration.setupTime}
             </p>
 
             {/* Action Buttons */}
@@ -139,7 +139,7 @@ export default function IntegrationsHub() {
                   className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium transition-colors"
                 >
                   <Settings className="w-4 h-4" />
-                  <span>설정</span>
+                  <span>Settings</span>
                 </button>
               </div>
             ) : (
@@ -148,7 +148,7 @@ export default function IntegrationsHub() {
                 className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition-colors"
               >
                 <Plus className="w-4 h-4" />
-                <span>연동 시작</span>
+                <span>연동 Start</span>
               </button>
             )}
           </div>

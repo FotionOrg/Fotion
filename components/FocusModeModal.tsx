@@ -2,17 +2,19 @@
 
 import { Task, TimerMode } from '@/types'
 import { useState, useRef, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 
 interface FocusModeModalProps {
   isOpen: boolean
   onClose: () => void
   tasks: Task[]
-  queuedTaskIds: string[] // 작업 큐에 있는 task ID 목록
-  defaultTimerDuration: number // 기본 타이머 시간 (분)
+  queuedTaskIds: string[] // Task Queue에 있는 task ID 목록
+  defaultTimerDuration: number // 기본 타이머 Time (분)
   onStart: (taskId: string, mode: TimerMode, duration?: number) => void
 }
 
 export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, defaultTimerDuration, onStart }: FocusModeModalProps) {
+  const t = useTranslations()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
@@ -32,7 +34,7 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
 
   if (!isOpen) return null
 
-  // 작업 큐에 있는 작업들만 표시
+  // Task Queue에 있는 Task들만 표시
   const queuedTasks = queuedTaskIds
     .map(id => tasks.find(t => t.id === id))
     .filter((t): t is Task => t !== undefined)
@@ -44,7 +46,7 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
   const handleStart = () => {
     if (!selectedTask) return
 
-    // 기본 타이머 모드로 시작 (설정에서 지정한 시간 사용)
+    // 기본 타이머 모드로 Start (Settings에서 지정한 Time 사용)
     const duration = defaultTimerDuration * 60 * 1000
     onStart(selectedTask.id, 'timer', duration)
     onClose()
@@ -67,7 +69,7 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
       >
         {/* 헤더 */}
         <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-800">
-          <h2 className="text-xl font-semibold">집중 시작</h2>
+          <h2 className="text-xl font-semibold">{t('focus.startFocus')}</h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
@@ -80,27 +82,27 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
 
         {/* 내용 */}
         <div className="flex-1 overflow-auto p-6 space-y-6">
-          {/* 작업 검색 */}
+          {/* Task 검색 */}
           <div>
-            <label className="block text-sm font-medium mb-2">작업 선택</label>
+            <label className="block text-sm font-medium mb-2">{t('task.selectTask')}</label>
             <input
               type="text"
-              placeholder="작업 검색..."
+              placeholder={t('task.searchTasks')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          {/* 작업 리스트 */}
+          {/* Task 리스트 */}
           <div className="space-y-2 max-h-80 overflow-auto">
             {queuedTasks.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-2">
-                  작업 큐가 비어있습니다
+                  {t('task.queueEmpty')}
                 </p>
                 <p className="text-xs text-zinc-400 dark:text-zinc-500">
-                  작업 관리 탭에서 작업을 큐에 추가하세요
+                  {t('task.queueEmptyDescription')}
                 </p>
               </div>
             ) : searchQuery ? (
@@ -111,38 +113,40 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
                     task={task}
                     isSelected={selectedTask?.id === task.id}
                     onSelect={() => setSelectedTask(task)}
+                    t={t}
                   />
                 ))
               ) : (
                 <p className="text-center text-zinc-500 dark:text-zinc-400 py-4 text-sm">
-                  검색 결과가 없습니다
+                  {t('task.noSearchResults')}
                 </p>
               )
             ) : (
               <>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-2">작업 큐</p>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-2">{t('task.taskQueue')}</p>
                 {queuedTasks.map(task => (
                   <TaskItem
                     key={task.id}
                     task={task}
                     isSelected={selectedTask?.id === task.id}
                     onSelect={() => setSelectedTask(task)}
+                    t={t}
                   />
                 ))}
               </>
             )}
           </div>
 
-          {/* 타이머 시간 안내 */}
+          {/* 타이머 Time 안내 */}
           <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
             <div className="flex items-center gap-2 text-sm">
               <span className="text-blue-600 dark:text-blue-400 font-medium">⏱️</span>
               <span className="text-blue-700 dark:text-blue-300">
-                타이머: <strong>{defaultTimerDuration}분</strong>
+                {t('focus.timerInfo', { duration: defaultTimerDuration })}
               </span>
             </div>
             <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-              설정 탭에서 기본 타이머 시간을 변경할 수 있습니다
+              {t('focus.timerSettingsNote')}
             </p>
           </div>
         </div>
@@ -153,14 +157,14 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
             onClick={onClose}
             className="flex-1 py-3 px-4 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors font-medium"
           >
-            취소
+            {t('common.cancel')}
           </button>
           <button
             onClick={handleStart}
             disabled={!selectedTask}
             className="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-300 dark:disabled:bg-zinc-700 text-white rounded-lg transition-colors font-medium disabled:cursor-not-allowed"
           >
-            시작
+            {t('common.start')}
           </button>
         </div>
       </div>
@@ -168,13 +172,19 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
   )
 }
 
-function TaskItem({ task, isSelected, onSelect }: { task: Task; isSelected: boolean; onSelect: () => void }) {
+function TaskItem({ task, isSelected, onSelect, t }: { task: Task; isSelected: boolean; onSelect: () => void; t: any }) {
   const sourceColors = {
     internal: 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400',
     notion: 'bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400',
     todoist: 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400',
     linear: 'bg-indigo-100 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400',
     'google-calendar': 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400',
+  }
+
+  const getSourceLabel = (source: string) => {
+    if (source === 'internal') return t('task.internal')
+    if (source === 'google-calendar') return 'Google Calendar'
+    return source.charAt(0).toUpperCase() + source.slice(1)
   }
 
   return (
@@ -194,15 +204,12 @@ function TaskItem({ task, isSelected, onSelect }: { task: Task; isSelected: bool
               <span>🕐 {task.scheduledTime}</span>
             )}
             {task.estimatedDuration && (
-              <span>⏱ {task.estimatedDuration}분</span>
+              <span>⏱ {task.estimatedDuration}{t('common.minute')}</span>
             )}
           </div>
         </div>
         <span className={`px-2 py-0.5 text-xs rounded whitespace-nowrap ${sourceColors[task.source]}`}>
-          {task.source === 'internal' ? '내부' :
-           task.source === 'notion' ? 'Notion' :
-           task.source === 'linear' ? 'Linear' :
-           task.source === 'todoist' ? 'Todoist' : task.source}
+          {getSourceLabel(task.source)}
         </span>
       </div>
     </button>

@@ -57,7 +57,7 @@ export default function FocusMode({
     }
   }, [timerState.elapsedTime, timerState.isRunning])
 
-  // 전체화면 진입/종료
+  // 전체화면 진입/End
   useEffect(() => {
     if (!isActive) {
       void exitFullscreen()
@@ -80,7 +80,7 @@ export default function FocusMode({
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement)
       if (!document.fullscreenElement && isActive) {
-        // 사용자가 ESC로 전체화면 종료 시
+        // 사용자가 ESC로 전체화면 End 시
         onStop()
       }
     }
@@ -139,7 +139,7 @@ export default function FocusMode({
       {/* 상단: Task 정보 */}
       <div className="absolute top-8 left-0 right-0 text-center">
         <h1 className="text-white text-2xl font-medium opacity-90">
-          {task?.title || '작업 중'}
+          {task?.title || 'Task 중'}
         </h1>
       </div>
 
@@ -160,7 +160,7 @@ export default function FocusMode({
           )}
 
           <div className="flex items-center justify-center gap-4">
-            {/* 일시정지/재생 */}
+            {/* 일시Stop/Play */}
             <button
               onClick={timerState.isRunning ? onPause : onResume}
               className="w-16 h-16 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors backdrop-blur-sm"
@@ -176,7 +176,7 @@ export default function FocusMode({
               )}
             </button>
 
-            {/* 정지 */}
+            {/* Stop */}
             <button
               onClick={handleExitClick}
               className="w-16 h-16 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors backdrop-blur-sm"
@@ -195,14 +195,14 @@ export default function FocusMode({
           onClick={onChangeTask}
           className="px-6 py-3 bg-white/20 hover:bg-white/30 rounded-lg text-white font-medium transition-colors backdrop-blur-sm"
         >
-          다른 작업으로 전환
+          다른 Task으로 전환
         </button>
 
         <button
           onClick={handleExitClick}
           className="px-6 py-3 bg-white/20 hover:bg-white/30 rounded-lg text-white font-medium transition-colors backdrop-blur-sm"
         >
-          전체화면 종료
+          전체화면 End
         </button>
       </div>
 

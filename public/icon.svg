@@ -1,0 +1,22 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="128" fill="#3B82F6"/>
+
+  <!-- Focus Timer Icon -->
+  <circle cx="256" cy="256" r="160" stroke="white" stroke-width="24" fill="none"/>
+
+  <!-- Timer Hand -->
+  <line x1="256" y1="256" x2="256" y2="140" stroke="white" stroke-width="20" stroke-linecap="round"/>
+
+  <!-- Timer Dots -->
+  <circle cx="256" cy="120" r="12" fill="white"/>
+  <circle cx="392" cy="256" r="12" fill="white"/>
+  <circle cx="256" cy="392" r="12" fill="white"/>
+  <circle cx="120" cy="256" r="12" fill="white"/>
+
+  <!-- Center Dot -->
+  <circle cx="256" cy="256" r="16" fill="white"/>
+
+  <!-- Task Checkmark -->
+  <path d="M 180 280 L 220 320 L 300 220" stroke="white" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

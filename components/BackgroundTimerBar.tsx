@@ -18,7 +18,7 @@ export default function BackgroundTimerBar({
   onResume,
   onStop,
   onReturnToFocus,
-  taskTitle = '작업 중'
+  taskTitle = 'Task 중'
 }: BackgroundTimerBarProps) {
   const [displayTime, setDisplayTime] = useState(timerState.elapsedTime)
 
@@ -87,7 +87,7 @@ export default function BackgroundTimerBar({
           <button
             onClick={timerState.isRunning ? onPause : onResume}
             className="p-1.5 hover:bg-white/20 rounded transition-colors"
-            title={timerState.isRunning ? '일시정지' : '재생'}
+            title={timerState.isRunning ? '일시Stop' : 'Play'}
           >
             {timerState.isRunning ? (
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -103,7 +103,7 @@ export default function BackgroundTimerBar({
           <button
             onClick={onStop}
             className="p-1.5 hover:bg-white/20 rounded transition-colors"
-            title="정지"
+            title="Stop"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M6 6h12v12H6z" />

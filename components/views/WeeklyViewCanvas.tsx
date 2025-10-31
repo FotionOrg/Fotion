@@ -1,6 +1,7 @@
 "use client";
 
 import { FocusSession } from "@/types";
+import { useTranslations } from "next-intl";
 import { useRef, useEffect, useState } from "react";
 
 interface WeeklyViewCanvasProps {
@@ -8,25 +9,31 @@ interface WeeklyViewCanvasProps {
   onSessionClick?: (session: FocusSession) => void;
 }
 
-const HOUR_HEIGHT = 40; // 각 시간대의 높이 (px)
-const LEFT_MARGIN = 60; // 시간 레이블 영역 너비
+const HOUR_HEIGHT = 40; // 각 Time대의 높이 (px)
+const LEFT_MARGIN = 60; // Time 레이블 영역 너비
 const TOP_MARGIN = 80; // 상단 여백 (요일 헤더 포함)
 const BOTTOM_MARGIN = 40; // 하단 여백
 const MIN_BLOCK_HEIGHT = 24; // 최소 블록 높이 (텍스트가 들어갈 수 있는 크기)
 
-export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyViewCanvasProps) {
+export default function WeeklyViewCanvas({
+  sessions,
+  onSessionClick,
+}: WeeklyViewCanvasProps) {
+  const t = useTranslations();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [weekOffset, setWeekOffset] = useState(0); // 0 = 이번 주, -1 = 지난 주, 1 = 다음 주
-  const sessionBlocksRef = useRef<Array<{
-    session: FocusSession;
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  }>>([]);
+  const sessionBlocksRef = useRef<
+    Array<{
+      session: FocusSession;
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+    }>
+  >([]);
 
   const now = new Date();
   const currentHour = now.getHours();
@@ -55,7 +62,15 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
   });
 
   // 요일 이름
-  const dayNames = ["일", "월", "화", "수", "목", "금", "토"];
+  const dayNames = [
+    t("visualization.day1"),
+    t("visualization.day2"),
+    t("visualization.day3"),
+    t("visualization.day4"),
+    t("visualization.day5"),
+    t("visualization.day6"),
+    t("visualization.day7"),
+  ];
 
   // 다크 모드 감지
   useEffect(() => {
@@ -78,7 +93,7 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
     return Math.floor((containerWidth - LEFT_MARGIN) / 7);
   };
 
-  // Canvas 크기 설정
+  // Canvas 크기 Settings
   useEffect(() => {
     const updateSize = () => {
       if (containerRef.current) {
@@ -114,7 +129,7 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
     // 배경 초기화
     ctx.clearRect(0, 0, canvasSize.width, canvasSize.height);
 
-    // 색상 정의
+    // Color 정의
     const colors = isDarkMode
       ? {
           background: "#09090b",
@@ -152,7 +167,7 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
       const x = LEFT_MARGIN + day * DAY_WIDTH;
       const isToday = day === currentDay && weekOffset === 0;
 
-      // 오늘 날짜 배경 (이번 주일 때만)
+      // 오늘 Date 배경 (이번 주일 때만)
       if (isToday) {
         ctx.fillStyle = colors.todayBg;
         ctx.fillRect(x, 0, DAY_WIDTH, canvasSize.height);
@@ -165,7 +180,7 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
       ctx.textBaseline = "middle";
       ctx.fillText(dayNames[day], x + DAY_WIDTH / 2, 30);
 
-      // 날짜
+      // Date
       const date = new Date(startOfWeek);
       date.setDate(startOfWeek.getDate() + day);
       ctx.font = "400 12px sans-serif";
@@ -187,7 +202,7 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
       }
     }
 
-    // 시간별 그리드 그리기
+    // Time별 그리드 그리기
     for (let hour = 0; hour < 24; hour++) {
       const y = TOP_MARGIN + hour * HOUR_HEIGHT;
 
@@ -199,7 +214,7 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
       ctx.lineTo(canvasSize.width, y);
       ctx.stroke();
 
-      // 시간 레이블 (1시간마다)
+      // Time 레이블 (1Time마다)
       ctx.fillStyle = colors.text;
       ctx.font = "400 11px monospace";
       ctx.textAlign = "right";
@@ -217,17 +232,24 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
       totalColumns: number;
     }
 
-    const sessionsWithLayout: SessionWithLayout[] = weekSessions.map((session) => ({
-      ...session,
-      column: 0,
-      totalColumns: 1,
-    }));
+    const sessionsWithLayout: SessionWithLayout[] = weekSessions.map(
+      (session) => ({
+        ...session,
+        column: 0,
+        totalColumns: 1,
+      })
+    );
 
-    // 시작 시간 순으로 정렬
-    sessionsWithLayout.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+    // Start Time 순으로 정렬
+    sessionsWithLayout.sort(
+      (a, b) => a.startTime.getTime() - b.startTime.getTime()
+    );
 
-    // UI상 겹침 감지 함수 (같은 날짜 내에서만, 최소 블록 높이 고려)
-    const isOverlappingUI = (session1: FocusSession, session2: FocusSession) => {
+    // UI상 겹침 감지 함수 (같은 Date 내에서만, 최소 블록 높이 고려)
+    const isOverlappingUI = (
+      session1: FocusSession,
+      session2: FocusSession
+    ) => {
       // 다른 요일이면 겹치지 않음
       if (session1.startTime.getDay() !== session2.startTime.getDay()) {
         return false;
@@ -235,11 +257,17 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
 
       const startHour1 = session1.startTime.getHours();
       const startMinute1 = session1.startTime.getMinutes();
-      const startY1 = TOP_MARGIN + startHour1 * HOUR_HEIGHT + (startMinute1 / 60) * HOUR_HEIGHT;
+      const startY1 =
+        TOP_MARGIN +
+        startHour1 * HOUR_HEIGHT +
+        (startMinute1 / 60) * HOUR_HEIGHT;
 
       const startHour2 = session2.startTime.getHours();
       const startMinute2 = session2.startTime.getMinutes();
-      const startY2 = TOP_MARGIN + startHour2 * HOUR_HEIGHT + (startMinute2 / 60) * HOUR_HEIGHT;
+      const startY2 =
+        TOP_MARGIN +
+        startHour2 * HOUR_HEIGHT +
+        (startMinute2 / 60) * HOUR_HEIGHT;
 
       // 실제 블록 높이 계산 (최소 높이 적용)
       const calculatedHeight1 = (session1.duration / 60000 / 60) * HOUR_HEIGHT;
@@ -257,7 +285,9 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
     // 요일별로 그룹화
     const sessionsByDay: { [key: number]: SessionWithLayout[] } = {};
     for (let day = 0; day < 7; day++) {
-      sessionsByDay[day] = sessionsWithLayout.filter(s => s.startTime.getDay() === day);
+      sessionsByDay[day] = sessionsWithLayout.filter(
+        (s) => s.startTime.getDay() === day
+      );
     }
 
     // 각 요일별로 컬럼 배치
@@ -280,7 +310,7 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
           if (processed.has(other)) continue;
 
           // 그룹 내 어떤 세션과라도 겹치면 그룹에 추가
-          if (group.some(g => isOverlappingUI(g, other))) {
+          if (group.some((g) => isOverlappingUI(g, other))) {
             group.push(other);
             processed.add(other);
           }
@@ -293,30 +323,37 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
       for (const group of overlappingGroups) {
         if (group.length === 1) continue;
 
-        // 시작 시간 순으로 정렬
+        // Start Time 순으로 정렬
         group.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
 
-        // 각 컬럼의 마지막 종료 시간 추적
+        // 각 컬럼의 마지막 End Time 추적
         const columnEndTimes: number[] = [];
 
         for (const session of group) {
           // UI상 Y 좌표 계산
           const startHour = session.startTime.getHours();
           const startMinute = session.startTime.getMinutes();
-          const startY = TOP_MARGIN + startHour * HOUR_HEIGHT + (startMinute / 60) * HOUR_HEIGHT;
-          const calculatedHeight = (session.duration / 60000 / 60) * HOUR_HEIGHT;
+          const startY =
+            TOP_MARGIN +
+            startHour * HOUR_HEIGHT +
+            (startMinute / 60) * HOUR_HEIGHT;
+          const calculatedHeight =
+            (session.duration / 60000 / 60) * HOUR_HEIGHT;
           const blockHeight = Math.max(calculatedHeight, MIN_BLOCK_HEIGHT);
           const endY = startY + blockHeight;
 
           // 사용 가능한 컬럼 찾기 (UI상 Y 좌표 기준)
           let column = 0;
-          while (column < columnEndTimes.length && columnEndTimes[column] > startY) {
+          while (
+            column < columnEndTimes.length &&
+            columnEndTimes[column] > startY
+          ) {
             column++;
           }
 
           session.column = column;
 
-          // 컬럼 종료 Y 좌표 업데이트
+          // 컬럼 End Y 좌표 업데이트
           if (column < columnEndTimes.length) {
             columnEndTimes[column] = endY;
           } else {
@@ -326,11 +363,11 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
 
         // 그룹 내 모든 세션의 totalColumns 업데이트
         const totalColumns = columnEndTimes.length;
-        group.forEach(s => s.totalColumns = totalColumns);
+        group.forEach((s) => (s.totalColumns = totalColumns));
       }
     }
 
-    // 블록 위치 정보 저장용 배열
+    // 블록 위치 정보 Save용 배열
     const blocks: Array<{
       session: FocusSession;
       x: number;
@@ -358,7 +395,7 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
       const blockX = dayStartX + 4 + session.column * columnWidth;
       const blockWidth = columnWidth - columnGap;
 
-      // Y 위치 계산 (시간)
+      // Y 위치 계산 (Time)
       const startY =
         TOP_MARGIN + startHour * HOUR_HEIGHT + (startMinute / 60) * HOUR_HEIGHT;
 
@@ -367,7 +404,7 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
       const calculatedHeight = (totalMinutes / 60) * HOUR_HEIGHT;
       const blockHeight = Math.max(calculatedHeight, MIN_BLOCK_HEIGHT);
 
-      // 블록 위치 정보 저장
+      // 블록 위치 정보 Save
       blocks.push({
         session,
         x: blockX,
@@ -417,7 +454,7 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
       ctx.textBaseline = "top";
 
       if (blockHeight >= 40) {
-        // 충분한 높이: 제목 + 시간 표시
+        // 충분한 높이: Title + Time 표시
         ctx.fillStyle = colors.sessionText;
         ctx.font = "600 11px sans-serif";
         ctx.save();
@@ -434,7 +471,7 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
         ctx.font = "400 10px sans-serif";
         ctx.fillText(timeText, blockX + 6, startY + 22);
       } else if (blockHeight >= MIN_BLOCK_HEIGHT) {
-        // 최소 높이: 제목만 표시 (작은 폰트)
+        // 최소 높이: Title만 표시 (작은 폰트)
         ctx.fillStyle = colors.sessionText;
         ctx.font = "600 9px sans-serif";
         ctx.save();
@@ -447,7 +484,7 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
       // blockHeight < MIN_BLOCK_HEIGHT: 텍스트 표시 안함 (블록만 표시)
     });
 
-    // 현재 시간 막대 (이번 주일 때만)
+    // 현재 Time 막대 (이번 주일 때만)
     if (weekOffset === 0) {
       const todayX = LEFT_MARGIN + currentDay * DAY_WIDTH;
       const currentY =
@@ -462,14 +499,14 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
       ctx.lineTo(todayX + DAY_WIDTH, currentY);
       ctx.stroke();
 
-      // 현재 시간 원
+      // 현재 Time 원
       ctx.fillStyle = colors.currentTimeLine;
       ctx.beginPath();
       ctx.arc(todayX + 4, currentY, 4, 0, Math.PI * 2);
       ctx.fill();
     }
 
-    // 블록 정보를 ref에 저장
+    // 블록 정보를 ref에 Save
     sessionBlocksRef.current = blocks;
   }, [
     canvasSize,
@@ -494,8 +531,12 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    console.log('WeeklyView - Click coords:', { x, y, scrollTop: containerRef.current.scrollTop });
-    console.log('WeeklyView - Total blocks:', sessionBlocksRef.current.length);
+    console.log("WeeklyView - Click coords:", {
+      x,
+      y,
+      scrollTop: containerRef.current.scrollTop,
+    });
+    console.log("WeeklyView - Total blocks:", sessionBlocksRef.current.length);
 
     // 클릭된 블록 찾기 (역순으로 검색하여 가장 위의 블록 우선)
     let found = false;
@@ -505,14 +546,16 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
       const inY = y >= block.y && y <= block.y + block.height;
 
       console.log(`Block ${i} "${block.session.taskTitle}":`, {
-        blockRange: `x:${block.x}-${block.x + block.width}, y:${block.y}-${block.y + block.height}`,
+        blockRange: `x:${block.x}-${block.x + block.width}, y:${block.y}-${
+          block.y + block.height
+        }`,
         clickInX: inX,
         clickInY: inY,
-        match: inX && inY
+        match: inX && inY,
       });
 
       if (inX && inY) {
-        console.log('✓ WeeklyView - Clicked block:', block.session.taskTitle);
+        console.log("✓ WeeklyView - Clicked block:", block.session.taskTitle);
         onSessionClick(block.session);
         found = true;
         break;
@@ -520,11 +563,11 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
     }
 
     if (!found) {
-      console.log('✗ No block matched the click coordinates');
+      console.log("✗ No block matched the click coordinates");
     }
   };
 
-  // 현재 시간으로 스크롤
+  // 현재 Time으로 스크롤
   useEffect(() => {
     if (containerRef.current && canvasSize.height > 0) {
       const currentY = TOP_MARGIN + currentHour * HOUR_HEIGHT;
@@ -541,16 +584,20 @@ export default function WeeklyViewCanvas({ sessions, onSessionClick }: WeeklyVie
     }
   }, [canvasSize.height, currentHour]);
 
-  // 주간 제목 포맷
+  // 주간 Title 포맷
   const getWeekTitle = () => {
     const start = new Date(startOfWeek);
     const end = new Date(endOfWeek);
 
     if (weekOffset === 0) {
-      return "이번 주";
+      return t("visualization.currentWeek");
     }
 
-    return `${start.getMonth() + 1}월 ${start.getDate()}일 - ${end.getMonth() + 1}월 ${end.getDate()}일`;
+    return `${start.getMonth() + 1} ${t(
+      "visualization.month"
+    )} ${start.getDate()} ${t("visualization.day")} - ${end.getMonth() + 1} ${t(
+      "visualization.month"
+    )} ${end.getDate()} ${t("visualization.day")}`;
   };
 
   return (

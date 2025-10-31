@@ -18,12 +18,12 @@ export default function ConfirmModal({
   title,
   message,
   confirmText = "확인",
-  cancelText = "취소",
+  cancelText = "Cancel",
   onConfirm,
   onCancel,
   variant = "warning",
 }: ConfirmModalProps) {
-  // ESC 키로 취소
+  // ESC 키로 Cancel
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -82,7 +82,7 @@ export default function ConfirmModal({
             <span className="text-2xl">{style.icon}</span>
           </div>
 
-          {/* 제목 */}
+          {/* Title */}
           <div className="flex-1 pt-1">
             <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
               {title}

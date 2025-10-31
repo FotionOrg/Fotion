@@ -15,7 +15,7 @@ export default function HourlyView({ sessions }: HourlyViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const currentHourRef = useRef<HTMLDivElement>(null);
 
-  // 오늘 날짜의 세션만 필터링
+  // 오늘 Date의 세션만 필터링
   const todaySessions = sessions.filter((session) => {
     const sessionDate = session.startTime;
     const today = new Date();
@@ -26,7 +26,7 @@ export default function HourlyView({ sessions }: HourlyViewProps) {
     );
   });
 
-  // 각 시간대별로 세션 블록을 생성 (긴 세션은 여러 시간대에 걸쳐 표시)
+  // 각 Time대별로 세션 블록을 생성 (긴 세션은 여러 Time대에 걸쳐 표시)
   const getSessionBlocksForHour = (hour: number) => {
     const blocks: Array<{
       session: FocusSession;
@@ -45,7 +45,7 @@ export default function HourlyView({ sessions }: HourlyViewProps) {
       const endHour = endTime.getHours();
       const endMinute = endTime.getMinutes();
 
-      // 이 시간대에 세션이 걸쳐있는지 확인
+      // 이 Time대에 세션이 걸쳐있는지 확인
       if (startHour <= hour && endHour >= hour) {
         let blockStartMinute = 0;
         let blockEndMinute = 60;
@@ -53,13 +53,13 @@ export default function HourlyView({ sessions }: HourlyViewProps) {
         let isLastBlock = false;
 
         if (startHour === hour) {
-          // 시작 시간대
+          // Start Time대
           blockStartMinute = startMinute;
           isFirstBlock = true;
         }
 
         if (endHour === hour) {
-          // 종료 시간대
+          // End Time대
           blockEndMinute = endMinute;
           isLastBlock = true;
         }
@@ -82,16 +82,16 @@ export default function HourlyView({ sessions }: HourlyViewProps) {
     return blocks;
   };
 
-  // 컴포넌트 마운트 시 현재 시간대로 스크롤
+  // 컴포넌트 마운트 시 현재 Time대로 스크롤
   useEffect(() => {
     if (currentHourRef.current && containerRef.current) {
       const container = containerRef.current;
       const currentElement = currentHourRef.current;
 
-      // 현재 시간 요소의 위치 계산
+      // 현재 Time 요소의 위치 계산
       const elementTop = currentElement.offsetTop;
       const containerHeight = container.clientHeight;
-      const scrollPosition = elementTop - containerHeight / 3; // 화면 1/3 지점에 현재 시간 배치
+      const scrollPosition = elementTop - containerHeight / 3; // 화면 1/3 지점에 현재 Time 배치
 
       container.scrollTo({
         top: scrollPosition,
@@ -114,7 +114,7 @@ export default function HourlyView({ sessions }: HourlyViewProps) {
       >
         <div className="space-y-8">
           {hours.map((hour) => {
-            // 해당 시간대의 세션 블록들 가져오기
+            // 해당 Time대의 세션 블록들 가져오기
             const sessionBlocks = getSessionBlocksForHour(hour);
             const isCurrentHour = hour === currentHour;
 
@@ -138,7 +138,7 @@ export default function HourlyView({ sessions }: HourlyViewProps) {
                   {hour.toString().padStart(2, "0")}:00
                 </div>
                 <div className="flex-1 relative">
-                  {/* 현재 시간 막대 */}
+                  {/* 현재 Time 막대 */}
                   {isCurrentHour && (
                     <div
                       className="absolute left-0 right-0 h-0.5 bg-primary-500 dark:bg-primary-400 z-20 shadow-sm"
@@ -183,7 +183,7 @@ export default function HourlyView({ sessions }: HourlyViewProps) {
                                 </span>
                               </div>
                             </div>
-                            {/* 시작 블록에만 시간 정보 표시 */}
+                            {/* Start 블록에만 Time 정보 표시 */}
                             {block.isFirstBlock && (
                               <div className="text-xs text-zinc-500 dark:text-zinc-400">
                                 {block.session.startTime

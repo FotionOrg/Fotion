@@ -2,6 +2,8 @@
 
 import { Task } from '@/types'
 import { useState, useRef, useEffect } from 'react'
+import { TASK_COLORS } from '@/lib/colors'
+import { useTranslations } from 'next-intl'
 
 interface CreateTaskModalProps {
   isOpen: boolean
@@ -10,6 +12,7 @@ interface CreateTaskModalProps {
 }
 
 export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTaskModalProps) {
+  const t = useTranslations()
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium')
@@ -18,6 +21,7 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
   const [estimatedDuration, setEstimatedDuration] = useState('')
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState('')
+  const [color, setColor] = useState('blue') // 기본 Color
 
   const modalRef = useRef<HTMLDivElement>(null)
   const titleInputRef = useRef<HTMLInputElement>(null)
@@ -31,12 +35,13 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
     setEstimatedDuration('')
     setTags([])
     setTagInput('')
+    setColor('blue')
   }
 
   useEffect(() => {
     if (isOpen) {
       resetForm()
-      // 모달 열릴 때 제목 입력에 포커스
+      // 모달 열릴 때 Title 입력에 포커스
       setTimeout(() => {
         titleInputRef.current?.focus()
       }, 100)
@@ -75,7 +80,7 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
     e.preventDefault()
 
     if (!title.trim()) {
-      alert('제목을 입력해주세요')
+      alert(t('task.enterTitle'))
       return
     }
 
@@ -85,6 +90,7 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
       status: 'todo',
       priority,
       tags: tags.length > 0 ? tags : undefined,
+      color,
       source: 'internal',
       scheduledDate: scheduledDate ? new Date(scheduledDate) : undefined,
       scheduledTime: scheduledTime || undefined,
@@ -106,7 +112,7 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
       >
         {/* 헤더 */}
         <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-800">
-          <h2 className="text-xl font-semibold">새 작업 만들기</h2>
+          <h2 className="text-xl font-semibold">{t('task.createTask')}</h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
@@ -119,42 +125,42 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
 
         {/* 폼 */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-auto p-6 space-y-6">
-          {/* 제목 */}
+          {/* Title */}
           <div>
             <label className="block text-sm font-medium mb-2">
-              제목 <span className="text-red-500">*</span>
+              {t('task.title')} <span className="text-red-500">*</span>
             </label>
             <input
               ref={titleInputRef}
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="작업 제목을 입력하세요"
+              placeholder={t('task.enterTitlePlaceholder')}
               className="w-full px-4 py-3 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
               required
             />
           </div>
 
-          {/* 본문 (향후 WYSIWYG 에디터로 교체) */}
+          {/* Description (향후 WYSIWYG 에디터로 교체) */}
           <div>
             <label className="block text-sm font-medium mb-2">
-              본문
+              {t('task.description')}
             </label>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="작업 내용을 입력하세요&#10;&#10;향후 Notion 스타일 에디터로 교체 예정"
+              placeholder={t('task.enterContentPlaceholder')}
               className="w-full px-4 py-3 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[200px] resize-y"
             />
             <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">
-              💡 향후 Novel/Tiptap 에디터로 업그레이드 예정 (블록 에디터, 슬래시 커맨드 등)
+              💡 {t('task.editorUpgradeNote')}
             </p>
           </div>
 
-          {/* 날짜/시간 */}
+          {/* Date/Time */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">날짜 (선택)</label>
+              <label className="block text-sm font-medium mb-2">{t('task.date')} ({t('task.optional')})</label>
               <input
                 type="date"
                 value={scheduledDate}
@@ -163,7 +169,7 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">시간 (선택)</label>
+              <label className="block text-sm font-medium mb-2">{t('task.time')} ({t('task.optional')})</label>
               <input
                 type="time"
                 value={scheduledTime}
@@ -173,30 +179,30 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
             </div>
           </div>
 
-          {/* 예상 소요 시간 */}
+          {/* 예상 소요 Time */}
           <div>
-            <label className="block text-sm font-medium mb-2">예상 소요 시간 (분, 선택)</label>
+            <label className="block text-sm font-medium mb-2">{t('task.estimatedDuration')} ({t('task.optional')})</label>
             <input
               type="number"
               min="1"
               value={estimatedDuration}
               onChange={(e) => setEstimatedDuration(e.target.value)}
-              placeholder="예: 25, 50"
+              placeholder={t('task.estimatedDurationPlaceholder')}
               className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-              집중 모드에서 타이머 목표 시간으로 사용됩니다
+              {t('task.estimatedDurationNote')}
             </p>
           </div>
 
-          {/* 우선순위 */}
+          {/* Priority */}
           <div>
-            <label className="block text-sm font-medium mb-2">우선순위</label>
+            <label className="block text-sm font-medium mb-2">{t('task.priority')}</label>
             <div className="flex gap-3">
               {[
-                { value: 'low', label: '낮음', color: 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300' },
-                { value: 'medium', label: '보통', color: 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400' },
-                { value: 'high', label: '높음', color: 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400' },
+                { value: 'low', label: t('task.low'), color: 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300' },
+                { value: 'medium', label: t('task.medium'), color: 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400' },
+                { value: 'high', label: t('task.high'), color: 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400' },
               ].map((p) => (
                 <button
                   key={p.value}
@@ -214,16 +220,39 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
             </div>
           </div>
 
-          {/* 태그 */}
+          {/* Color */}
           <div>
-            <label className="block text-sm font-medium mb-2">태그</label>
+            <label className="block text-sm font-medium mb-2">{t('task.blockColor')}</label>
+            <div className="grid grid-cols-9 gap-2">
+              {TASK_COLORS.map((c) => (
+                <button
+                  key={c.name}
+                  type="button"
+                  onClick={() => setColor(c.name)}
+                  className={`w-full aspect-square rounded-lg ${c.bg} transition-all hover:scale-110 ${
+                    color === c.name
+                      ? 'ring-4 ring-offset-2 ring-offset-white dark:ring-offset-zinc-900 ring-blue-500 scale-110'
+                      : 'ring-1 ring-zinc-200 dark:ring-zinc-700'
+                  }`}
+                  title={c.label}
+                />
+              ))}
+            </div>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">
+              {t('task.colorNote')}
+            </p>
+          </div>
+
+          {/* Tags */}
+          <div>
+            <label className="block text-sm font-medium mb-2">{t('task.tags')}</label>
             <div className="flex gap-2 mb-2">
               <input
                 type="text"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={handleTagInputKeyDown}
-                placeholder="태그 입력 후 Enter"
+                placeholder={t('task.enterTagsPlaceholder')}
                 className="flex-1 px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <button
@@ -231,7 +260,7 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
                 onClick={handleAddTag}
                 className="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors"
               >
-                추가
+                {t('common.add')}
               </button>
             </div>
             {tags.length > 0 && (
@@ -265,13 +294,13 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
             onClick={onClose}
             className="flex-1 py-3 px-4 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors font-medium"
           >
-            취소
+            {t('common.cancel')}
           </button>
           <button
             onClick={handleSubmit}
             className="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
           >
-            저장
+            {t('common.save')}
           </button>
         </div>
       </div>

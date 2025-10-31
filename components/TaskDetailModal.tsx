@@ -45,7 +45,7 @@ export default function TaskDetailModal({ isOpen, onClose, task }: TaskDetailMod
       <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
         {/* 헤더 */}
         <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-800">
-          <h2 className="text-xl font-semibold">작업 상세</h2>
+          <h2 className="text-xl font-semibold">Task 상세</h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
@@ -58,10 +58,10 @@ export default function TaskDetailModal({ isOpen, onClose, task }: TaskDetailMod
 
         {/* 내용 */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
-          {/* 작업 제목 */}
+          {/* Task Title */}
           <div>
             <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
-              제목
+              Title
             </label>
             <p className="text-lg font-semibold">{task.title}</p>
           </div>
@@ -91,36 +91,36 @@ export default function TaskDetailModal({ isOpen, onClose, task }: TaskDetailMod
             </div>
           )}
 
-          {/* 예상 소요 시간 */}
+          {/* 예상 소요 Time */}
           {task.estimatedDuration && (
             <div>
               <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
-                예상 소요 시간
+                예상 소요 Time
               </label>
               <p className="text-base">
                 {Math.floor(task.estimatedDuration / 60) > 0 && (
-                  <span className="font-semibold">{Math.floor(task.estimatedDuration / 60)}시간 </span>
+                  <span className="font-semibold">{Math.floor(task.estimatedDuration / 60)}Time </span>
                 )}
                 <span className="font-semibold">{task.estimatedDuration % 60}분</span>
               </p>
             </div>
           )}
 
-          {/* 예정된 시간 */}
+          {/* 예정된 Time */}
           {task.scheduledTime && (
             <div>
               <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
-                예정된 시간
+                예정된 Time
               </label>
               <p className="text-base font-mono">{task.scheduledTime}</p>
             </div>
           )}
 
-          {/* 태그 */}
+          {/* Tags */}
           {task.tags && task.tags.length > 0 && (
             <div>
               <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">
-                태그
+                Tags
               </label>
               <div className="flex flex-wrap gap-2">
                 {task.tags.map((tag, index) => (
@@ -135,7 +135,7 @@ export default function TaskDetailModal({ isOpen, onClose, task }: TaskDetailMod
             </div>
           )}
 
-          {/* 생성/수정 날짜 */}
+          {/* 생성/수정 Date */}
           <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800">
             <div className="grid grid-cols-2 gap-4 text-sm text-zinc-500 dark:text-zinc-400">
               <div>

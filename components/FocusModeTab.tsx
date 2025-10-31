@@ -1,6 +1,6 @@
 'use client'
 
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
 import { TimerState, Task } from '@/types'
 import { useEffect, useState, useRef } from 'react'
 
@@ -12,6 +12,9 @@ interface FocusModeTabProps {
   onStop: () => void
   onToggleFullscreen: () => void
   isFullscreen: boolean
+  globalAudioRef?: { current: HTMLAudioElement | null }
+  isGlobalMusicPlaying?: boolean
+  onMusicPlayingChange?: (isPlaying: boolean) => void
 }
 
 // 음악 트랙 목록
@@ -29,37 +32,61 @@ function FocusModeTab({
   onStop,
   onToggleFullscreen,
   isFullscreen,
+  globalAudioRef,
+  isGlobalMusicPlaying = false,
+  onMusicPlayingChange,
 }: FocusModeTabProps) {
   const [displayTime, setDisplayTime] = useState(0)
 
   // 음악 플레이어 상태
-  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const localAudioRef = useRef<HTMLAudioElement | null>(null)
+  const audioRef = globalAudioRef || localAudioRef
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(isGlobalMusicPlaying)
   const [volume, setVolume] = useState(0.5)
 
-  // 오디오 초기화
+  // 전역 음악 Play 상태 동기화
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (globalAudioRef) {
+      setIsPlaying(isGlobalMusicPlaying)
+    }
+  }, [isGlobalMusicPlaying, globalAudioRef])
+
+  // 별 패턴 생성 (한 번만 생성하여 재사용)
+  const stars = useMemo(() => {
+    return Array.from({ length: 50 }).map(() => ({
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      opacity: Math.random() * 0.5 + 0.2,
+    }))
+  }, [])
+
+  // 오디오 초기화 (전역 오디오 사용 시 탭 전환 시에도 음악 유지)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !audioRef.current) {
       audioRef.current = new Audio(MUSIC_TRACKS[0].path)
       audioRef.current.volume = volume
       audioRef.current.loop = false
 
-      // 트랙 종료 시 다음 트랙으로
-      audioRef.current.addEventListener('ended', () => {
+      // 트랙 End 시 다음 트랙으로
+      const handleEnded = () => {
         setCurrentTrackIndex((prev) => (prev + 1) % MUSIC_TRACKS.length)
-      })
-    }
+      }
+      audioRef.current.addEventListener('ended', handleEnded)
 
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause()
-        audioRef.current = null
+      return () => {
+        // 전역 오디오가 아닌 경우에만 정리
+        if (!globalAudioRef && audioRef.current) {
+          audioRef.current.removeEventListener('ended', handleEnded)
+          audioRef.current.pause()
+          audioRef.current = null
+        }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // 트랙 변경 시 재생
+  // 트랙 변경 시 Play
   useEffect(() => {
     if (audioRef.current && isPlaying) {
       audioRef.current.pause()
@@ -67,6 +94,7 @@ function FocusModeTab({
       audioRef.current.volume = volume
       audioRef.current.play().catch((e) => console.error('Audio play failed:', e))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrackIndex])
 
   // 볼륨 변경
@@ -74,6 +102,7 @@ function FocusModeTab({
     if (audioRef.current) {
       audioRef.current.volume = volume
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [volume])
 
   // 타이머 업데이트
@@ -91,16 +120,18 @@ function FocusModeTab({
     return () => clearInterval(interval)
   }, [timerState.isRunning, timerState.startTime, timerState.elapsedTime])
 
-  // 음악 재생/일시정지
+  // 음악 Play/일시Stop
   const toggleMusic = () => {
     if (!audioRef.current) return
 
     if (isPlaying) {
       audioRef.current.pause()
       setIsPlaying(false)
+      onMusicPlayingChange?.(false)
     } else {
       audioRef.current.play().catch((e) => console.error('Audio play failed:', e))
       setIsPlaying(true)
+      onMusicPlayingChange?.(true)
     }
   }
 
@@ -153,14 +184,14 @@ function FocusModeTab({
     >
       {/* 별 패턴 */}
       <div className="absolute inset-0 opacity-30">
-        {Array.from({ length: 50 }).map((_, i) => (
+        {stars.map((star, i) => (
           <div
             key={i}
             className="absolute w-1 h-1 bg-white rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              opacity: Math.random() * 0.5 + 0.2,
+              left: `${star.left}%`,
+              top: `${star.top}%`,
+              opacity: star.opacity,
             }}
           />
         ))}
@@ -172,11 +203,11 @@ function FocusModeTab({
       {/* 상단: Task 정보 */}
       <div className="relative top-12 left-0 right-0 text-center z-10">
         <h1 className="text-white text-3xl font-semibold drop-shadow-lg">
-          {task?.title || '작업 중'}
+          {task?.title || 'Task 중'}
         </h1>
         {task?.priority && (
           <div className="mt-2 text-white/70 text-sm">
-            우선순위: {task.priority === 'high' ? '높음' : task.priority === 'medium' ? '보통' : '낮음'}
+            Priority: {task.priority === 'high' ? 'High' : task.priority === 'medium' ? 'Medium' : 'Low'}
           </div>
         )}
       </div>
@@ -201,7 +232,7 @@ function FocusModeTab({
 
           {/* 컨트롤 버튼 */}
           <div className="flex items-center justify-center gap-6 mt-8">
-            {/* 일시정지/재생 */}
+            {/* 일시Stop/Play */}
             <button
               onClick={timerState.isRunning ? onPause : onResume}
               className="w-20 h-20 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all backdrop-blur-md shadow-lg hover:scale-110"
@@ -217,7 +248,7 @@ function FocusModeTab({
               )}
             </button>
 
-            {/* 정지 */}
+            {/* Stop */}
             <button
               onClick={onStop}
               className="w-20 h-20 bg-red-500/30 hover:bg-red-500/40 rounded-full flex items-center justify-center transition-all backdrop-blur-md shadow-lg hover:scale-110"
@@ -231,7 +262,7 @@ function FocusModeTab({
             <button
               onClick={onToggleFullscreen}
               className="w-20 h-20 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all backdrop-blur-md shadow-lg hover:scale-110"
-              title={isFullscreen ? '전체화면 종료' : '전체화면'}
+              title={isFullscreen ? '전체화면 End' : '전체화면'}
             >
               {isFullscreen ? (
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -278,11 +309,11 @@ function FocusModeTab({
               </svg>
             </button>
 
-            {/* 재생/일시정지 */}
+            {/* Play/일시Stop */}
             <button
               onClick={toggleMusic}
               className="p-3 bg-white/20 hover:bg-white/30 rounded-full transition-all hover:scale-110"
-              title={isPlaying ? '일시정지' : '재생'}
+              title={isPlaying ? '일시Stop' : 'Play'}
             >
               {isPlaying ? (
                 <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">

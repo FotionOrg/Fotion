@@ -31,7 +31,7 @@ function VisualizationTab({ sessions, onStartFocus }: VisualizationTabProps) {
             <ViewSwitchButton
               active={currentView === "hourly"}
               onClick={() => setCurrentView("hourly")}
-              title="시간별"
+              title="Time별"
               icon={<ClockIcon />}
             />
             <ViewSwitchButton
@@ -54,11 +54,11 @@ function VisualizationTab({ sessions, onStartFocus }: VisualizationTabProps) {
         )}
       </div>
 
-      {/* 집중 시작 FAB */}
+      {/* Start Focus FAB */}
       <button
         onClick={onStartFocus}
         className="fixed bottom-20 right-4 w-14 h-14 bg-primary-600 dark:bg-primary-500 text-white rounded-full shadow-lg hover:bg-primary-700 dark:hover:bg-primary-600 transition-colors flex items-center justify-center z-40"
-        title="집중 모드 시작"
+        title="Focus Mode Start"
       >
         <svg
           className="w-6 h-6"

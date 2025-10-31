@@ -38,7 +38,7 @@ export default function SessionDetailModal({ isOpen, onClose, session }: Session
       <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
         {/* 헤더 */}
         <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-800">
-          <h2 className="text-xl font-semibold">집중 세션 상세</h2>
+          <h2 className="text-xl font-semibold">Focus 세션 상세</h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
@@ -51,54 +51,54 @@ export default function SessionDetailModal({ isOpen, onClose, session }: Session
 
         {/* 내용 */}
         <div className="p-6 space-y-4">
-          {/* 작업 상태 */}
+          {/* Task 상태 */}
           {isInProgress && (
             <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
               <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium text-blue-700 dark:text-blue-400">작업 중</span>
+              <span className="text-sm font-medium text-blue-700 dark:text-blue-400">Task 중</span>
             </div>
           )}
 
-          {/* 작업 제목 */}
+          {/* Task Title */}
           <div>
             <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
-              작업
+              Task
             </label>
             <p className="text-lg font-semibold">{session.taskTitle}</p>
           </div>
 
-          {/* 날짜 */}
+          {/* Date */}
           <div>
             <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
-              날짜
+              Date
             </label>
             <p className="text-base">{formatDate(startTime)}</p>
           </div>
 
-          {/* 시간 */}
+          {/* Time */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
-                시작 시간
+                Start Time
               </label>
               <p className="text-base font-mono">{formatTime(startTime)}</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
-                종료 시간
+                End Time
               </label>
               <p className="text-base font-mono">{formatTime(endTime)}</p>
             </div>
           </div>
 
-          {/* 실제 소요 시간 */}
+          {/* 실제 소요 Time */}
           <div>
             <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
-              실제 소요 시간
+              실제 소요 Time
             </label>
             <p className="text-base">
               {Math.floor(actualMinutes / 60) > 0 && (
-                <span className="font-semibold">{Math.floor(actualMinutes / 60)}시간 </span>
+                <span className="font-semibold">{Math.floor(actualMinutes / 60)}Time </span>
               )}
               <span className="font-semibold">{actualMinutes % 60}분</span>
             </p>

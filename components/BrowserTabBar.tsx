@@ -1,6 +1,7 @@
 "use client";
 
 import { AppTab } from "@/types";
+import { useTranslations } from "next-intl";
 
 interface BrowserTabBarProps {
   tabs: AppTab[];
@@ -15,6 +16,8 @@ export default function BrowserTabBar({
   onTabChange,
   onTabClose,
 }: BrowserTabBarProps) {
+  const t = useTranslations();
+
   const handleCloseClick = (e: React.MouseEvent, tabId: string) => {
     e.stopPropagation();
     onTabClose(tabId);
@@ -62,12 +65,12 @@ export default function BrowserTabBar({
                 {getTabIcon(tab.type)}
               </span>
 
-              {/* 제목 */}
+              {/* Title */}
               <span className="flex-1 text-sm font-medium truncate text-left">
                 {tab.title}
               </span>
 
-              {/* 타이머 표시 (집중 모드 탭) */}
+              {/* 타이머 표시 (Focus Mode 탭) */}
               {tab.type === "focus" && tab.timerState && (
                 <span className="text-xs text-zinc-500 dark:text-zinc-400 font-mono flex-shrink-0">
                   {formatTimer(tab.timerState)}
@@ -79,7 +82,7 @@ export default function BrowserTabBar({
                 <button
                   onClick={(e) => handleCloseClick(e, tab.id)}
                   className="flex-shrink-0 p-1 hover:bg-zinc-300 dark:hover:bg-zinc-700 rounded transition-colors"
-                  title="탭 닫기"
+                  title={t('browserTab.closeTab')}
                 >
                   <svg
                     className="w-3.5 h-3.5"

@@ -8,30 +8,35 @@ interface HourlyViewCanvasProps {
   onSessionClick?: (session: FocusSession) => void;
 }
 
-const HOUR_HEIGHT = 120; // 각 시간대의 높이 (px)
-const LEFT_MARGIN = 80; // 시간 레이블 영역 너비
+const HOUR_HEIGHT = 120; // 각 Time대의 높이 (px)
+const LEFT_MARGIN = 80; // Time 레이블 영역 너비
 const TOP_MARGIN = 60; // 상단 여백
 const BOTTOM_MARGIN = 40; // 하단 여백
 const MIN_BLOCK_HEIGHT = 60; // 최소 블록 높이 (텍스트가 들어갈 수 있는 크기)
 
-export default function HourlyViewCanvas({ sessions, onSessionClick }: HourlyViewCanvasProps) {
+export default function HourlyViewCanvas({
+  sessions,
+  onSessionClick,
+}: HourlyViewCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const sessionBlocksRef = useRef<Array<{
-    session: FocusSession;
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  }>>([]);
+  const sessionBlocksRef = useRef<
+    Array<{
+      session: FocusSession;
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+    }>
+  >([]);
 
   const now = new Date();
   const currentHour = now.getHours();
   const currentMinute = now.getMinutes();
 
-  // 오늘 날짜의 세션만 필터링
+  // 오늘 Date의 세션만 필터링
   const todaySessions = sessions.filter((session) => {
     const sessionDate = session.startTime;
     const today = new Date();
@@ -58,7 +63,7 @@ export default function HourlyViewCanvas({ sessions, onSessionClick }: HourlyVie
     return () => observer.disconnect();
   }, []);
 
-  // Canvas 크기 설정
+  // Canvas 크기 Settings
   useEffect(() => {
     const updateSize = () => {
       if (containerRef.current) {
@@ -92,7 +97,7 @@ export default function HourlyViewCanvas({ sessions, onSessionClick }: HourlyVie
     // 배경 초기화
     ctx.clearRect(0, 0, canvasSize.width, canvasSize.height);
 
-    // 색상 정의
+    // Color 정의
     const colors = isDarkMode
       ? {
           background: "#09090b",
@@ -117,12 +122,12 @@ export default function HourlyViewCanvas({ sessions, onSessionClick }: HourlyVie
           sessionText: "#1e293b",
         };
 
-    // 시간별 그리드 그리기
+    // Time별 그리드 그리기
     for (let hour = 0; hour < 24; hour++) {
       const y = TOP_MARGIN + hour * HOUR_HEIGHT;
       const isCurrentHour = hour === currentHour;
 
-      // 현재 시간대 배경
+      // 현재 Time대 배경
       if (isCurrentHour) {
         ctx.fillStyle = colors.currentHourBg;
         ctx.fillRect(0, y, canvasSize.width, HOUR_HEIGHT);
@@ -136,7 +141,7 @@ export default function HourlyViewCanvas({ sessions, onSessionClick }: HourlyVie
       ctx.lineTo(canvasSize.width, y);
       ctx.stroke();
 
-      // 시간 레이블
+      // Time 레이블
       ctx.fillStyle = isCurrentHour ? colors.textHighlight : colors.text;
       ctx.font = isCurrentHour ? "600 14px monospace" : "400 14px monospace";
       ctx.textAlign = "right";
@@ -154,24 +159,37 @@ export default function HourlyViewCanvas({ sessions, onSessionClick }: HourlyVie
       totalColumns: number;
     }
 
-    const sessionsWithLayout: SessionWithLayout[] = todaySessions.map((session) => ({
-      ...session,
-      column: 0,
-      totalColumns: 1,
-    }));
+    const sessionsWithLayout: SessionWithLayout[] = todaySessions.map(
+      (session) => ({
+        ...session,
+        column: 0,
+        totalColumns: 1,
+      })
+    );
 
-    // 시작 시간 순으로 정렬
-    sessionsWithLayout.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+    // Start Time 순으로 정렬
+    sessionsWithLayout.sort(
+      (a, b) => a.startTime.getTime() - b.startTime.getTime()
+    );
 
-    // UI상 겹침 감지 함수 (실제 시간 + 최소 블록 높이 고려)
-    const isOverlappingUI = (session1: FocusSession, session2: FocusSession) => {
+    // UI상 겹침 감지 함수 (실제 Time + 최소 블록 높이 고려)
+    const isOverlappingUI = (
+      session1: FocusSession,
+      session2: FocusSession
+    ) => {
       const startHour1 = session1.startTime.getHours();
       const startMinute1 = session1.startTime.getMinutes();
-      const startY1 = TOP_MARGIN + startHour1 * HOUR_HEIGHT + (startMinute1 / 60) * HOUR_HEIGHT;
+      const startY1 =
+        TOP_MARGIN +
+        startHour1 * HOUR_HEIGHT +
+        (startMinute1 / 60) * HOUR_HEIGHT;
 
       const startHour2 = session2.startTime.getHours();
       const startMinute2 = session2.startTime.getMinutes();
-      const startY2 = TOP_MARGIN + startHour2 * HOUR_HEIGHT + (startMinute2 / 60) * HOUR_HEIGHT;
+      const startY2 =
+        TOP_MARGIN +
+        startHour2 * HOUR_HEIGHT +
+        (startMinute2 / 60) * HOUR_HEIGHT;
 
       // 실제 블록 높이 계산 (최소 높이 적용)
       const calculatedHeight1 = (session1.duration / 60000 / 60) * HOUR_HEIGHT;
@@ -201,7 +219,7 @@ export default function HourlyViewCanvas({ sessions, onSessionClick }: HourlyVie
         if (processed.has(other)) continue;
 
         // 그룹 내 어떤 세션과라도 겹치면 그룹에 추가
-        const overlaps = group.some(g => isOverlappingUI(g, other));
+        const overlaps = group.some((g) => isOverlappingUI(g, other));
         if (overlaps) {
           group.push(other);
           processed.add(other);
@@ -215,30 +233,36 @@ export default function HourlyViewCanvas({ sessions, onSessionClick }: HourlyVie
     for (const group of overlappingGroups) {
       if (group.length === 1) continue;
 
-      // 시작 시간 순으로 정렬
+      // Start Time 순으로 정렬
       group.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
 
-      // 각 컬럼의 마지막 종료 시간 추적
+      // 각 컬럼의 마지막 End Time 추적
       const columnEndTimes: number[] = [];
 
       for (const session of group) {
         // UI상 Y 좌표 계산
         const startHour = session.startTime.getHours();
         const startMinute = session.startTime.getMinutes();
-        const startY = TOP_MARGIN + startHour * HOUR_HEIGHT + (startMinute / 60) * HOUR_HEIGHT;
+        const startY =
+          TOP_MARGIN +
+          startHour * HOUR_HEIGHT +
+          (startMinute / 60) * HOUR_HEIGHT;
         const calculatedHeight = (session.duration / 60000 / 60) * HOUR_HEIGHT;
         const blockHeight = Math.max(calculatedHeight, MIN_BLOCK_HEIGHT);
         const endY = startY + blockHeight;
 
         // 사용 가능한 컬럼 찾기 (UI상 Y 좌표 기준)
         let column = 0;
-        while (column < columnEndTimes.length && columnEndTimes[column] > startY) {
+        while (
+          column < columnEndTimes.length &&
+          columnEndTimes[column] > startY
+        ) {
           column++;
         }
 
         session.column = column;
 
-        // 컬럼 종료 Y 좌표 업데이트
+        // 컬럼 End Y 좌표 업데이트
         if (column < columnEndTimes.length) {
           columnEndTimes[column] = endY;
         } else {
@@ -248,11 +272,10 @@ export default function HourlyViewCanvas({ sessions, onSessionClick }: HourlyVie
 
       // 그룹 내 모든 세션의 totalColumns 업데이트
       const totalColumns = columnEndTimes.length;
-      group.forEach(s => s.totalColumns = totalColumns);
-
+      group.forEach((s) => (s.totalColumns = totalColumns));
     }
 
-    // 블록 위치 정보 저장용 배열
+    // 블록 위치 정보 Save용 배열
     const blocks: Array<{
       session: FocusSession;
       x: number;
@@ -270,11 +293,11 @@ export default function HourlyViewCanvas({ sessions, onSessionClick }: HourlyVie
       const endHour = endTime.getHours();
       const endMinute = endTime.getMinutes();
 
-      // 시작 Y 위치 계산
+      // Start Y 위치 계산
       const startY =
         TOP_MARGIN + startHour * HOUR_HEIGHT + (startMinute / 60) * HOUR_HEIGHT;
 
-      // 높이 계산 (여러 시간대에 걸칠 수 있음)
+      // 높이 계산 (여러 Time대에 걸칠 수 있음)
       const totalMinutes = Math.round(durationMs / 60000);
       const calculatedHeight = (totalMinutes / 60) * HOUR_HEIGHT;
       const blockHeight = Math.max(calculatedHeight, MIN_BLOCK_HEIGHT);
@@ -287,7 +310,7 @@ export default function HourlyViewCanvas({ sessions, onSessionClick }: HourlyVie
       const blockX = LEFT_MARGIN + 8 + session.column * columnWidth;
       const blockWidth = columnWidth - columnGap;
 
-      // 블록 위치 정보 저장
+      // 블록 위치 정보 Save
       blocks.push({
         session,
         x: blockX,
@@ -338,27 +361,29 @@ export default function HourlyViewCanvas({ sessions, onSessionClick }: HourlyVie
       ctx.textBaseline = "top";
 
       if (blockHeight >= MIN_BLOCK_HEIGHT) {
-        // 충분한 높이: 제목 + 시간 표시
+        // 충분한 높이: Title + Time 표시
         ctx.font = "600 14px sans-serif";
         ctx.fillText(session.taskTitle, blockX + 16, startY + 12);
 
         const timeText = `${startHour.toString().padStart(2, "0")}:${startMinute
           .toString()
-          .padStart(2, "0")} - ${endHour.toString().padStart(2, "0")}:${endMinute
+          .padStart(2, "0")} - ${endHour
+          .toString()
+          .padStart(2, "0")}:${endMinute
           .toString()
           .padStart(2, "0")} (${totalMinutes}분)`;
         ctx.fillStyle = colors.text;
         ctx.font = "400 12px sans-serif";
         ctx.fillText(timeText, blockX + 16, startY + 32);
       } else if (blockHeight >= 30) {
-        // 중간 높이: 제목만 표시
+        // 중간 높이: Title만 표시
         ctx.font = "600 12px sans-serif";
         ctx.fillText(session.taskTitle, blockX + 12, startY + 8);
       }
       // blockHeight < 30: 텍스트 표시 안함
     });
 
-    // 현재 시간 막대
+    // 현재 Time 막대
     const currentY =
       TOP_MARGIN +
       currentHour * HOUR_HEIGHT +
@@ -371,13 +396,13 @@ export default function HourlyViewCanvas({ sessions, onSessionClick }: HourlyVie
     ctx.lineTo(canvasSize.width, currentY);
     ctx.stroke();
 
-    // 현재 시간 원
+    // 현재 Time 원
     ctx.fillStyle = colors.currentTimeLine;
     ctx.beginPath();
     ctx.arc(LEFT_MARGIN, currentY, 6, 0, Math.PI * 2);
     ctx.fill();
 
-    // 블록 정보를 ref에 저장
+    // 블록 정보를 ref에 Save
     sessionBlocksRef.current = blocks;
   }, [canvasSize, todaySessions, currentHour, currentMinute, isDarkMode]);
 
@@ -394,8 +419,12 @@ export default function HourlyViewCanvas({ sessions, onSessionClick }: HourlyVie
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    console.log('HourlyView - Click coords:', { x, y, scrollTop: containerRef.current.scrollTop });
-    console.log('HourlyView - Total blocks:', sessionBlocksRef.current.length);
+    console.log("HourlyView - Click coords:", {
+      x,
+      y,
+      scrollTop: containerRef.current.scrollTop,
+    });
+    console.log("HourlyView - Total blocks:", sessionBlocksRef.current.length);
 
     // 클릭된 블록 찾기 (역순으로 검색하여 가장 위의 블록 우선)
     let found = false;
@@ -405,14 +434,16 @@ export default function HourlyViewCanvas({ sessions, onSessionClick }: HourlyVie
       const inY = y >= block.y && y <= block.y + block.height;
 
       console.log(`Block ${i} "${block.session.taskTitle}":`, {
-        blockRange: `x:${block.x}-${block.x + block.width}, y:${block.y}-${block.y + block.height}`,
+        blockRange: `x:${block.x}-${block.x + block.width}, y:${block.y}-${
+          block.y + block.height
+        }`,
         clickInX: inX,
         clickInY: inY,
-        match: inX && inY
+        match: inX && inY,
       });
 
       if (inX && inY) {
-        console.log('✓ HourlyView - Clicked block:', block.session.taskTitle);
+        console.log("✓ HourlyView - Clicked block:", block.session.taskTitle);
         onSessionClick(block.session);
         found = true;
         break;
@@ -420,11 +451,11 @@ export default function HourlyViewCanvas({ sessions, onSessionClick }: HourlyVie
     }
 
     if (!found) {
-      console.log('✗ No block matched the click coordinates');
+      console.log("✗ No block matched the click coordinates");
     }
   };
 
-  // 현재 시간으로 스크롤
+  // 현재 Time으로 스크롤
   useEffect(() => {
     if (containerRef.current && canvasSize.height > 0) {
       const currentY = TOP_MARGIN + currentHour * HOUR_HEIGHT;

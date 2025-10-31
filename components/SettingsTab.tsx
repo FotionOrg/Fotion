@@ -45,14 +45,14 @@ export default function SettingsTab({ settings, onUpdateSettings }: SettingsTabP
       id: 'notion' as const,
       name: 'Notion',
       icon: '📝',
-      description: 'Notion 데이터베이스에서 작업을 가져옵니다',
+      description: 'Notion 데이터베이스에서 Task을 가져옵니다',
       connected: localSettings.notionConnected,
     },
     {
       id: 'todoist' as const,
       name: 'Todoist',
       icon: '✅',
-      description: 'Todoist 작업을 동기화합니다',
+      description: 'Todoist Task을 동기화합니다',
       connected: localSettings.todoistConnected,
     },
     {
@@ -69,23 +69,23 @@ export default function SettingsTab({ settings, onUpdateSettings }: SettingsTabP
       <div className="max-w-4xl mx-auto p-6 space-y-8">
         {/* 헤더 */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-foreground mb-2">설정</h1>
+          <h1 className="text-2xl font-bold text-foreground mb-2">Settings</h1>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
             앱 동작과 외부 서비스 연동을 관리합니다
           </p>
         </div>
 
-        {/* 타이머 설정 */}
+        {/* 타이머 Settings */}
         <section className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
           <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             <span className="text-xl">⏱️</span>
-            타이머 설정
+            타이머 Settings
           </h2>
 
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                기본 타이머 시간
+                기본 타이머 Time
               </label>
               <div className="flex items-center gap-4">
                 <input
@@ -111,7 +111,7 @@ export default function SettingsTab({ settings, onUpdateSettings }: SettingsTabP
                 </div>
               </div>
               <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-2">
-                집중 시작 시 기본으로 설정될 타이머 시간입니다
+                Start Focus 시 기본으로 Settings될 타이머 Time입니다
               </p>
             </div>
 
@@ -121,7 +121,7 @@ export default function SettingsTab({ settings, onUpdateSettings }: SettingsTabP
                 disabled={isSaving}
                 className="px-4 py-2 bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white rounded-lg text-sm font-medium transition-colors"
               >
-                {isSaving ? '저장 중...' : '저장'}
+                {isSaving ? 'Save 중...' : 'Save'}
               </button>
             </div>
           </div>
@@ -206,7 +206,7 @@ export default function SettingsTab({ settings, onUpdateSettings }: SettingsTabP
             </div>
             <div className="flex justify-between py-2">
               <span className="text-zinc-600 dark:text-zinc-400">설명</span>
-              <span className="font-medium text-foreground text-right">Task 관리 + 집중 모드</span>
+              <span className="font-medium text-foreground text-right">Task 관리 + Focus Mode</span>
             </div>
           </div>
         </section>

@@ -15,7 +15,7 @@ export default function WeeklyView({ sessions }: WeeklyViewProps) {
   const currentHourRef = useRef<HTMLDivElement>(null);
   const [weekOffset, setWeekOffset] = useState(0);
 
-  // 주의 시작(월요일) 구하기
+  // 주의 Start(월요일) 구하기
   const startOfWeek = new Date(now);
   const diff = now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1);
   startOfWeek.setDate(diff + weekOffset * 7);
@@ -24,14 +24,14 @@ export default function WeeklyView({ sessions }: WeeklyViewProps) {
   const weekDays = ["월", "화", "수", "목", "금", "토", "일"];
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
-  // 각 요일별 날짜 계산
+  // 각 요일별 Date 계산
   const weekDates = weekDays.map((_, index) => {
     const date = new Date(startOfWeek);
     date.setDate(startOfWeek.getDate() + index);
     return date;
   });
 
-  // 요일/시간별 세션 그룹핑
+  // 요일/Time별 세션 그룹핑
   const getSessionsForDayAndHour = (dayIndex: number, hour: number) => {
     const targetDate = weekDates[dayIndex].toDateString();
     return sessions.filter((session) => {
@@ -41,7 +41,7 @@ export default function WeeklyView({ sessions }: WeeklyViewProps) {
     });
   };
 
-  // 현재 시간으로 자동 스크롤
+  // 현재 Time으로 자동 스크롤
   useEffect(() => {
     if (weekOffset === 0 && currentHourRef.current && containerRef.current) {
       const container = containerRef.current;
@@ -121,7 +121,7 @@ export default function WeeklyView({ sessions }: WeeklyViewProps) {
       <div className="inline-block min-w-full">
         {/* 요일 헤더 (sticky) */}
         <div className="flex sticky top-[37px] bg-background dark:bg-background z-20 border-b-2 border-zinc-300 dark:border-zinc-700">
-          <div className="w-16 flex-shrink-0" /> {/* 시간 칼럼 공간 */}
+          <div className="w-16 flex-shrink-0" /> {/* Time 칼럼 공간 */}
           {weekDays.map((day, index) => {
             const isToday = weekOffset === 0 && (index + 1) % 7 === currentDay;
             return (
@@ -142,7 +142,7 @@ export default function WeeklyView({ sessions }: WeeklyViewProps) {
           })}
         </div>
 
-        {/* 시간대별 행 */}
+        {/* Time대별 행 */}
         {hours.map((hour) => {
           const isCurrentHour = weekOffset === 0 && hour === currentHour;
 
@@ -154,7 +154,7 @@ export default function WeeklyView({ sessions }: WeeklyViewProps) {
                 isCurrentHour ? "bg-primary-50/30 dark:bg-primary-950/20" : ""
               }`}
             >
-              {/* 시간 */}
+              {/* Time */}
               <div
                 className={`w-16 flex-shrink-0 py-2 px-2 text-xs text-center font-mono ${
                   isCurrentHour
@@ -179,7 +179,7 @@ export default function WeeklyView({ sessions }: WeeklyViewProps) {
                       isToday ? "bg-primary-50/20 dark:bg-primary-950/10" : ""
                     }`}
                   >
-                    {/* 현재 시간 표시 */}
+                    {/* 현재 Time 표시 */}
                     {isCurrentCell && (
                       <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-primary-500 dark:bg-primary-400 z-10">
                         <div className="absolute -left-1 -top-1 w-2 h-2 bg-primary-500 dark:bg-primary-400 rounded-full" />
