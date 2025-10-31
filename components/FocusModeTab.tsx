@@ -89,10 +89,19 @@ function FocusModeTab({
   // 트랙 변경 시 Play
   useEffect(() => {
     if (audioRef.current && isPlaying) {
-      audioRef.current.pause()
-      audioRef.current.src = MUSIC_TRACKS[currentTrackIndex].path
-      audioRef.current.volume = volume
-      audioRef.current.play().catch((e) => console.error('Audio play failed:', e))
+      const audio = audioRef.current
+
+      // pause()와 play()를 연속으로 호출하면 "interrupted" 에러 발생
+      // src를 변경하면 자동으로 pause되므로, pause()를 명시적으로 호출하지 않음
+      audio.src = MUSIC_TRACKS[currentTrackIndex].path
+      audio.volume = volume
+
+      // load()를 호출하여 새 소스를 로드한 후 play()
+      audio.load()
+      audio.play().catch((e) => {
+        // 사용자 상호작용 없이 play() 호출 시 브라우저에서 차단할 수 있음
+        console.warn('Audio play failed:', e)
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrackIndex])

@@ -50,6 +50,20 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
 
+  // ESC key handler
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose()
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape)
+      return () => document.removeEventListener('keydown', handleEscape)
+    }
+  }, [isOpen, onClose])
+
   if (!isOpen) return null
 
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -105,6 +119,9 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
     <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="create-task-title"
     >
       <div
         ref={modalRef}
@@ -112,10 +129,12 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
       >
         {/* 헤더 */}
         <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-800">
-          <h2 className="text-xl font-semibold">{t('task.createTask')}</h2>
+          <h2 id="create-task-title" className="text-xl font-semibold">{t('task.createTask')}</h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+            aria-label="Close modal"
+            tabIndex={0}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

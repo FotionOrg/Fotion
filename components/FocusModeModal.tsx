@@ -18,6 +18,7 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   const resetModal = () => {
     setSearchQuery('')
@@ -27,10 +28,28 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
   useEffect(() => {
     if (isOpen) {
       resetModal()
+      // Auto focus on search input
+      setTimeout(() => {
+        searchInputRef.current?.focus()
+      }, 100)
     }
     // resetModal은 useEffect 내에서만 호출되므로 의존성에 포함하지 않음
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
+
+  // ESC key handler
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose()
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape)
+      return () => document.removeEventListener('keydown', handleEscape)
+    }
+  }, [isOpen, onClose])
 
   if (!isOpen) return null
 
@@ -62,6 +81,9 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
     <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="focus-mode-title"
     >
       <div
         ref={modalRef}
@@ -69,10 +91,12 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
       >
         {/* 헤더 */}
         <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-800">
-          <h2 className="text-xl font-semibold">{t('focus.startFocus')}</h2>
+          <h2 id="focus-mode-title" className="text-xl font-semibold">{t('focus.startFocus')}</h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+            aria-label="Close modal"
+            tabIndex={0}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -86,11 +110,13 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
           <div>
             <label className="block text-sm font-medium mb-2">{t('task.selectTask')}</label>
             <input
+              ref={searchInputRef}
               type="text"
               placeholder={t('task.searchTasks')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              tabIndex={0}
             />
           </div>
 

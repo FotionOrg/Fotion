@@ -1,6 +1,7 @@
 'use client'
 
 import { Task } from '@/types'
+import { useEffect, useRef } from 'react'
 
 interface TaskDetailModalProps {
   isOpen: boolean
@@ -9,6 +10,27 @@ interface TaskDetailModalProps {
 }
 
 export default function TaskDetailModal({ isOpen, onClose, task }: TaskDetailModalProps) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (isOpen && closeButtonRef.current) {
+      closeButtonRef.current.focus()
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose()
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape)
+      return () => document.removeEventListener('keydown', handleEscape)
+    }
+  }, [isOpen, onClose])
+
   if (!isOpen || !task) return null
 
   const sourceLabels = {
@@ -41,14 +63,20 @@ export default function TaskDetailModal({ isOpen, onClose, task }: TaskDetailMod
     <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="task-detail-title"
     >
       <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
         {/* 헤더 */}
         <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-800">
-          <h2 className="text-xl font-semibold">Task 상세</h2>
+          <h2 id="task-detail-title" className="text-xl font-semibold">Task 상세</h2>
           <button
+            ref={closeButtonRef}
             onClick={onClose}
             className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+            aria-label="Close modal"
+            tabIndex={0}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -153,6 +181,7 @@ export default function TaskDetailModal({ isOpen, onClose, task }: TaskDetailMod
           <button
             onClick={onClose}
             className="w-full py-3 px-4 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors font-medium"
+            tabIndex={0}
           >
             닫기
           </button>
