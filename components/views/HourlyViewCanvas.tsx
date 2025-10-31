@@ -14,7 +14,7 @@ const HOUR_HEIGHT = 120; // 각 Time대의 높이 (px)
 const LEFT_MARGIN = 80; // Time 레이블 영역 너비
 const TOP_MARGIN = 60; // 상단 여백
 const BOTTOM_MARGIN = 40; // 하단 여백
-const MIN_BLOCK_HEIGHT = 60; // 최소 블록 높이 (텍스트가 들어갈 수 있는 크기)
+const MIN_BLOCK_HEIGHT = 30; // 최소 블록 높이 (텍스트가 들어갈 수 있는 크기)
 
 export default function HourlyViewCanvas({
   sessions,
@@ -323,7 +323,7 @@ export default function HourlyViewCanvas({
       });
 
       // Task 색상 가져오기
-      const task = tasks.find(t => t.id === session.taskId);
+      const task = tasks.find((t) => t.id === session.taskId);
       const taskColor = getTaskColor(task?.color);
 
       // 배경색 및 테두리색 (task 색상 사용)
@@ -373,32 +373,27 @@ export default function HourlyViewCanvas({
       ctx.fill();
       ctx.stroke();
 
-      // 텍스트 표시 (블록 높이에 따라 조정)
+      // 텍스트 표시 (한 줄로만 표시)
       ctx.fillStyle = colors.sessionText;
       ctx.textAlign = "left";
-      ctx.textBaseline = "top";
+      ctx.textBaseline = "middle";
 
-      if (blockHeight >= MIN_BLOCK_HEIGHT) {
-        // 충분한 높이: Title + Time 표시
-        ctx.font = "600 14px sans-serif";
-        ctx.fillText(session.taskTitle, blockX + 16, startY + 12);
+      if (blockHeight >= 20) {
+        // Title만 한 줄로 표시
+        ctx.font = "600 13px sans-serif";
 
-        const timeText = `${startHour.toString().padStart(2, "0")}:${startMinute
-          .toString()
-          .padStart(2, "0")} - ${endHour
-          .toString()
-          .padStart(2, "0")}:${endMinute
-          .toString()
-          .padStart(2, "0")} (${totalMinutes}분)`;
-        ctx.fillStyle = colors.text;
-        ctx.font = "400 12px sans-serif";
-        ctx.fillText(timeText, blockX + 16, startY + 32);
-      } else if (blockHeight >= 30) {
-        // 중간 높이: Title만 표시
-        ctx.font = "600 12px sans-serif";
-        ctx.fillText(session.taskTitle, blockX + 12, startY + 8);
+        // 텍스트가 블록을 넘어가지 않도록 클리핑
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(blockX + 12, startY, blockWidth - 24, blockHeight);
+        ctx.clip();
+
+        // 블록 중앙에 텍스트 표시
+        ctx.fillText(session.taskTitle, blockX + 16, startY + blockHeight / 2);
+
+        ctx.restore();
       }
-      // blockHeight < 30: 텍스트 표시 안함
+      // blockHeight < 20: 텍스트 표시 안함
     });
 
     // 현재 Time 막대
