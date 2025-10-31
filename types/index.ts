@@ -7,6 +7,7 @@ export interface Task {
   status: 'todo' | 'in_progress' | 'completed'
   priority?: 'low' | 'medium' | 'high'
   tags?: string[]
+  color?: string // 작업 블록 색상 (hex 코드 또는 미리 정의된 색상 이름)
   source: 'internal' | 'notion' | 'todoist' | 'linear' | 'google-calendar' // 작업 출처
   estimatedDuration?: number // 예상 소요 시간 (분)
 

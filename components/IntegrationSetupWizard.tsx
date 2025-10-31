@@ -33,8 +33,8 @@ const integrationInfo: Record<IntegrationType, {
         description: '선택한 데이터베이스에 다음 Property를 추가해주세요:\n• Fotion Sync (Checkbox)\n• Fotion ID (Text)'
       },
       {
-        title: '동기화 옵션 설정',
-        description: '자동 동기화 주기와 양방향 동기화 여부를 설정합니다.',
+        title: '동기화 옵션 Settings',
+        description: '자동 동기화 주기와 양방향 동기화 여부를 Settings합니다.',
         optional: true
       }
     ]
@@ -56,8 +56,8 @@ const integrationInfo: Record<IntegrationType, {
         description: 'Linear에서 "fotion-sync" Label을 생성하고,\n동기화하고 싶은 이슈에 이 라벨을 추가하세요.'
       },
       {
-        title: '동기화 옵션 설정',
-        description: 'Workflow 상태 매핑과 자동 동기화 주기를 설정합니다.',
+        title: '동기화 옵션 Settings',
+        description: 'Workflow 상태 매핑과 자동 동기화 주기를 Settings합니다.',
         optional: true
       }
     ]
@@ -75,13 +75,13 @@ const integrationInfo: Record<IntegrationType, {
         description: '동기화할 캘린더를 선택합니다. (복수 선택 가능)'
       },
       {
-        title: '필터 설정',
-        description: '가져올 이벤트 조건을 설정합니다:\n• 참석 상태 (참석 중만)\n• 일정 상태 (바쁨만)\n• 키워드 필터',
+        title: '필터 Settings',
+        description: '가져올 이벤트 조건을 Settings합니다:\n• 참석 상태 (참석 중만)\n• 일정 상태 (바쁨만)\n• 키워드 필터',
         optional: true
       },
       {
-        title: '동기화 옵션 설정',
-        description: '자동 동기화 주기와 시간 범위를 설정합니다.',
+        title: '동기화 옵션 Settings',
+        description: '자동 동기화 주기와 Time 범위를 Settings합니다.',
         optional: true
       }
     ]
@@ -98,7 +98,7 @@ export default function IntegrationSetupWizard({ isOpen, onClose, integrationTyp
     if (currentStep < info.setupSteps.length - 1) {
       setCurrentStep(currentStep + 1)
     } else {
-      // 완료 - 실제 설정 화면으로 이동
+      // 완료 - 실제 Settings 화면으로 이동
       onClose()
     }
   }
@@ -124,7 +124,7 @@ export default function IntegrationSetupWizard({ isOpen, onClose, integrationTyp
           <div className="flex items-center space-x-3">
             <span className="text-3xl">{info.icon}</span>
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              {info.name} 연동 설정
+              {info.name} 연동 Settings
             </h2>
           </div>
           <button
@@ -191,7 +191,7 @@ export default function IntegrationSetupWizard({ isOpen, onClose, integrationTyp
                 <li>"Labels" 메뉴 선택</li>
                 <li>"Create label" 클릭</li>
                 <li>이름: "fotion-sync" 입력</li>
-                <li>원하는 색상 선택 후 생성</li>
+                <li>원하는 Color 선택 후 생성</li>
                 <li>동기화할 이슈에 이 라벨 추가</li>
               </ol>
             </div>
@@ -201,11 +201,11 @@ export default function IntegrationSetupWizard({ isOpen, onClose, integrationTyp
             <div className="mt-6 space-y-4">
               <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
                 <p className="text-sm text-green-800 dark:text-green-200 font-medium mb-2">
-                  💡 추천 필터 설정:
+                  💡 추천 필터 Settings:
                 </p>
                 <ul className="text-sm text-green-700 dark:text-green-300 space-y-1 list-disc list-inside">
                   <li>참석 상태: "참석 중"만 선택 (초대받은 일정 제외)</li>
-                  <li>일정 상태: "바쁨"만 선택 (가용 시간 제외)</li>
+                  <li>일정 상태: "바쁨"만 선택 (가용 Time 제외)</li>
                   <li>키워드: "[Focus]" 포함 이벤트만 가져오기</li>
                 </ul>
               </div>
@@ -219,7 +219,7 @@ export default function IntegrationSetupWizard({ isOpen, onClose, integrationTyp
             onClick={handleSkip}
             className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-sm font-medium"
           >
-            나중에 설정하기
+            나중에 Settings하기
           </button>
           <div className="flex space-x-3">
             {currentStep > 0 && (
@@ -234,7 +234,7 @@ export default function IntegrationSetupWizard({ isOpen, onClose, integrationTyp
               onClick={handleNext}
               className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition-colors"
             >
-              {isLastStep ? '설정 시작하기' : '다음'}
+              {isLastStep ? 'Settings Start하기' : '다음'}
             </button>
           </div>
         </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { memo, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import { FocusSession } from '@/types'
 import MonthlyView from './views/MonthlyView'
 
@@ -9,7 +10,9 @@ interface StatisticsTabProps {
 }
 
 function StatisticsTab({ sessions }: StatisticsTabProps) {
-  // 통계 계산
+  const t = useTranslations('statistics')
+
+  // Statistics 계산
   const statistics = useMemo(() => {
     const now = new Date()
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
@@ -32,7 +35,7 @@ function StatisticsTab({ sessions }: StatisticsTabProps) {
     // 완료된 세션
     const completedSessions = sessions.filter(s => s.isCompleted)
 
-    // 시간 계산 (분 단위)
+    // Time 계산 (분 단위)
     const calculateTotalMinutes = (sessions: FocusSession[]) => {
       return sessions.reduce((total, s) => total + Math.round(s.duration / 60000), 0)
     }
@@ -42,7 +45,7 @@ function StatisticsTab({ sessions }: StatisticsTabProps) {
     const monthMinutes = calculateTotalMinutes(thisMonthSessions)
     const totalMinutes = calculateTotalMinutes(sessions)
 
-    // 평균 집중 시간
+    // 평균 Focus Time
     const avgSessionMinutes = sessions.length > 0
       ? Math.round(totalMinutes / sessions.length)
       : 0
@@ -71,73 +74,73 @@ function StatisticsTab({ sessions }: StatisticsTabProps) {
     const hours = Math.floor(minutes / 60)
     const mins = minutes % 60
     if (hours > 0) {
-      return `${hours}시간 ${mins}분`
+      return `${hours}h ${mins}m`
     }
-    return `${mins}분`
+    return `${mins}m`
   }
 
   return (
     <div className="flex flex-col h-full">
-      {/* 통계 카드 */}
+      {/* Statistics 카드 */}
       <div className="p-6 border-b border-zinc-200 dark:border-zinc-800 bg-surface dark:bg-surface overflow-x-auto">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 min-w-max">
           {/* 오늘 */}
           <StatCard
-            title="오늘"
+            title={t('today')}
             value={formatTime(statistics.todayMinutes)}
-            subtitle={`${statistics.todaySessions}회 집중`}
+            subtitle={t('focusCount', { count: statistics.todaySessions })}
             icon="📅"
           />
 
           {/* 이번 주 */}
           <StatCard
-            title="이번 주"
+            title={t('thisWeek')}
             value={formatTime(statistics.weekMinutes)}
-            subtitle={`${statistics.weekSessions}회 집중`}
+            subtitle={t('focusCount', { count: statistics.weekSessions })}
             icon="📊"
           />
 
           {/* 이번 달 */}
           <StatCard
-            title="이번 달"
+            title={t('thisMonth')}
             value={formatTime(statistics.monthMinutes)}
-            subtitle={`${statistics.monthSessions}회 집중`}
+            subtitle={t('focusCount', { count: statistics.monthSessions })}
             icon="📈"
           />
 
           {/* 전체 */}
           <StatCard
-            title="전체"
+            title={t('total')}
             value={formatTime(statistics.totalMinutes)}
-            subtitle={`${statistics.totalSessions}회 집중`}
+            subtitle={t('focusCount', { count: statistics.totalSessions })}
             icon="🎯"
           />
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4 min-w-max">
-          {/* 평균 집중 시간 */}
+          {/* 평균 Focus Time */}
           <StatCard
-            title="평균 집중 시간"
+            title={t('avgFocusTime')}
             value={formatTime(statistics.avgSessionMinutes)}
-            subtitle="세션당"
+            subtitle={t('perSession')}
             icon="⏱️"
             small
           />
 
           {/* 완료율 */}
           <StatCard
-            title="완료율"
+            title={t('completionRate')}
             value={`${statistics.completionRate}%`}
-            subtitle={`${statistics.completedSessions}/${statistics.totalSessions} 완료`}
+            subtitle={t('completedCount', { completed: statistics.completedSessions, total: statistics.totalSessions })}
             icon="✅"
             small
           />
 
           {/* 최장 스트릭 (추후 구현) */}
           <StatCard
-            title="최장 연속"
+            title={t('longestStreak')}
             value="-"
-            subtitle="연속 집중일"
+            subtitle={t('consecutiveDays')}
             icon="🔥"
             small
           />

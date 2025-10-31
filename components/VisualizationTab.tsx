@@ -1,7 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import { VisualizationView, FocusSession } from "@/types";
+import { VisualizationView, FocusSession, Task } from "@/types";
 import { useState } from "react";
 import HourlyViewCanvas from "./views/HourlyViewCanvas";
 import WeeklyViewCanvas from "./views/WeeklyViewCanvas";
@@ -9,10 +9,11 @@ import SessionDetailModal from "./SessionDetailModal";
 
 interface VisualizationTabProps {
   sessions: FocusSession[];
+  tasks: Task[];
   onStartFocus: () => void;
 }
 
-function VisualizationTab({ sessions, onStartFocus }: VisualizationTabProps) {
+function VisualizationTab({ sessions, tasks, onStartFocus }: VisualizationTabProps) {
   const [currentView, setCurrentView] = useState<VisualizationView>("hourly");
   const [selectedSession, setSelectedSession] = useState<FocusSession | null>(null);
   const [isSessionModalOpen, setIsSessionModalOpen] = useState(false);
@@ -31,7 +32,7 @@ function VisualizationTab({ sessions, onStartFocus }: VisualizationTabProps) {
             <ViewSwitchButton
               active={currentView === "hourly"}
               onClick={() => setCurrentView("hourly")}
-              title="시간별"
+              title="Time별"
               icon={<ClockIcon />}
             />
             <ViewSwitchButton
@@ -47,18 +48,18 @@ function VisualizationTab({ sessions, onStartFocus }: VisualizationTabProps) {
       {/* 뷰 내용 */}
       <div className="flex-1 overflow-hidden">
         {currentView === "hourly" && (
-          <HourlyViewCanvas sessions={sessions} onSessionClick={handleSessionClick} />
+          <HourlyViewCanvas sessions={sessions} tasks={tasks} onSessionClick={handleSessionClick} />
         )}
         {currentView === "daily" && (
-          <WeeklyViewCanvas sessions={sessions} onSessionClick={handleSessionClick} />
+          <WeeklyViewCanvas sessions={sessions} tasks={tasks} onSessionClick={handleSessionClick} />
         )}
       </div>
 
-      {/* 집중 시작 FAB */}
+      {/* Start Focus FAB */}
       <button
         onClick={onStartFocus}
         className="fixed bottom-20 right-4 w-14 h-14 bg-primary-600 dark:bg-primary-500 text-white rounded-full shadow-lg hover:bg-primary-700 dark:hover:bg-primary-600 transition-colors flex items-center justify-center z-40"
-        title="집중 모드 시작"
+        title="Focus Mode Start"
       >
         <svg
           className="w-6 h-6"

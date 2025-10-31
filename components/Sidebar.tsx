@@ -1,6 +1,8 @@
 "use client";
 
 import { AppTab } from "@/types";
+import { useTranslations } from 'next-intl';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 interface SidebarProps {
   tabs: AppTab[];
@@ -21,7 +23,9 @@ export default function Sidebar({
   isOpen,
   onClose,
 }: SidebarProps) {
-  // 현재 열린 시각화 탭과 작업관리 탭 찾기
+  const t = useTranslations('nav');
+
+  // 현재 열린 Visualization 탭과 Task관리 탭 찾기
   const visualizationTab = tabs.find((t) => t.type === "visualization");
   const tasksTab = tabs.find((t) => t.type === "tasks");
   const statisticsTab = tabs.find((t) => t.type === "statistics");
@@ -55,12 +59,15 @@ export default function Sidebar({
       >
         {/* 상단 로고/타이틀 영역 */}
         <div className="p-4 border-b border-zinc-200 dark:border-zinc-800">
-          <h1 className="text-lg font-semibold text-foreground">Fotion</h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-lg font-semibold text-foreground">Fotion</h1>
+            <LanguageSwitcher />
+          </div>
         </div>
 
         {/* 네비게이션 메뉴 */}
         <nav className="flex-1 p-2 overflow-y-auto">
-          {/* 시각화 탭 */}
+          {/* Visualization 탭 */}
           <button
             onClick={() => handleOpenTab("visualization")}
             className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left ${
@@ -70,13 +77,13 @@ export default function Sidebar({
             }`}
           >
             <span className="text-xl">🏠</span>
-            <span className="text-sm font-medium">시각화</span>
+            <span className="text-sm font-medium">{t("visualization")}</span>
             {visualizationTab && (
               <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary-500"></span>
             )}
           </button>
 
-          {/* 작업 관리 탭 */}
+          {/* Tasks 탭 */}
           <button
             onClick={() => handleOpenTab("tasks")}
             className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left mt-1 ${
@@ -86,13 +93,13 @@ export default function Sidebar({
             }`}
           >
             <span className="text-xl">📋</span>
-            <span className="text-sm font-medium">작업 관리</span>
+            <span className="text-sm font-medium">{t("tasks")}</span>
             {tasksTab && (
               <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary-500"></span>
             )}
           </button>
 
-          {/* 통계 탭 */}
+          {/* Statistics 탭 */}
           <button
             onClick={() => handleOpenTab("statistics")}
             className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left mt-1 ${
@@ -102,7 +109,7 @@ export default function Sidebar({
             }`}
           >
             <span className="text-xl">📊</span>
-            <span className="text-sm font-medium">통계</span>
+            <span className="text-sm font-medium">{t("statistics")}</span>
             {statisticsTab && (
               <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary-500"></span>
             )}
@@ -111,10 +118,10 @@ export default function Sidebar({
           {/* 구분선 */}
           <div className="my-4 border-t border-zinc-200 dark:border-zinc-800"></div>
 
-          {/* 집중 모드 탭들 */}
+          {/* Focus Mode 탭들 */}
           <div className="space-y-1">
             <p className="px-3 py-1 text-xs font-medium text-zinc-500 dark:text-zinc-400">
-              집중 세션
+              {t("focusSessions")}
             </p>
             {tabs
               .filter((tab) => tab.type === "focus")
@@ -139,7 +146,7 @@ export default function Sidebar({
 
         {/* 하단 영역 */}
         <div className="border-t border-zinc-200 dark:border-zinc-800">
-          {/* 설정 탭 */}
+          {/* Settings 탭 */}
           <div className="p-2">
             <button
               onClick={() => handleOpenTab("settings")}
@@ -150,7 +157,7 @@ export default function Sidebar({
               }`}
             >
               <span className="text-xl">⚙️</span>
-              <span className="text-sm font-medium">설정</span>
+              <span className="text-sm font-medium">{t("settings")}</span>
               {settingsTab && (
                 <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary-500"></span>
               )}
@@ -167,7 +174,7 @@ export default function Sidebar({
                 <kbd className="px-1.5 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded text-xs">
                   Shift + ?
                 </kbd>{" "}
-                단축키 보기
+                {t("showShortcuts")}
               </button>
             </div>
           )}

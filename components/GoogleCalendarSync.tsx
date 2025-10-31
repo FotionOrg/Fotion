@@ -12,7 +12,7 @@ function GoogleCalendarSync() {
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null)
   const [syncResult, setSyncResult] = useState<string | null>(null)
 
-  // 저장된 토큰 확인
+  // Save된 토큰 확인
   useEffect(() => {
     const storedToken = localStorage.getItem(STORAGE_KEY)
     if (storedToken) {
@@ -82,7 +82,7 @@ function GoogleCalendarSync() {
 
       if (result.success) {
         setLastSyncTime(new Date())
-        setSyncResult(`✅ ${result.tasksCreated}개의 작업을 가져왔습니다.`)
+        setSyncResult(`✅ ${result.tasksCreated}개의 Task을 가져왔습니다.`)
       } else {
         setSyncResult(`❌ 동기화 실패: ${result.error}`)
       }
@@ -131,7 +131,7 @@ function GoogleCalendarSync() {
       {isConnected && (
         <>
           <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
-            Google Calendar의 이벤트를 작업으로 가져옵니다.
+            Google Calendar의 이벤트를 Task으로 가져옵니다.
           </p>
 
           <button

@@ -24,7 +24,7 @@ export default function Logo({ className = "w-8 h-8 text-primary-600 dark:text-p
         opacity="0.3"
       />
 
-      {/* 시계 바늘 - 집중과 시간 관리 */}
+      {/* 시계 바늘 - Focus과 Time 관리 */}
       <line
         x1="50"
         y1="50"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -18,12 +18,21 @@ export default function ConfirmModal({
   title,
   message,
   confirmText = "확인",
-  cancelText = "취소",
+  cancelText = "Cancel",
   onConfirm,
   onCancel,
   variant = "warning",
 }: ConfirmModalProps) {
-  // ESC 키로 취소
+  const confirmButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Auto focus on confirm button when modal opens
+  useEffect(() => {
+    if (isOpen && confirmButtonRef.current) {
+      confirmButtonRef.current.focus();
+    }
+  }, [isOpen]);
+
+  // ESC 키로 Cancel
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -66,7 +75,7 @@ export default function ConfirmModal({
   const style = variantStyles[variant];
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
       {/* 배경 오버레이 */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -79,12 +88,12 @@ export default function ConfirmModal({
         <div className="flex items-start gap-4 p-6 pb-4">
           {/* 아이콘 */}
           <div className={`flex-shrink-0 w-12 h-12 rounded-full ${style.iconBg} flex items-center justify-center`}>
-            <span className="text-2xl">{style.icon}</span>
+            <span className="text-2xl" aria-hidden="true">{style.icon}</span>
           </div>
 
-          {/* 제목 */}
+          {/* Title */}
           <div className="flex-1 pt-1">
-            <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+            <h3 id="confirm-title" className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
               {title}
             </h3>
           </div>
@@ -102,12 +111,15 @@ export default function ConfirmModal({
           <button
             onClick={onCancel}
             className="flex-1 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+            tabIndex={0}
           >
             {cancelText}
           </button>
           <button
+            ref={confirmButtonRef}
             onClick={onConfirm}
             className={`flex-1 px-4 py-2.5 text-sm font-medium text-white rounded-lg transition-colors ${style.button}`}
+            tabIndex={0}
           >
             {confirmText}
           </button>

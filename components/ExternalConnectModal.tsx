@@ -28,7 +28,7 @@ const services: Array<{
     id: 'linear',
     name: 'Linear',
     icon: '🔵',
-    description: 'Linear 이슈를 작업으로 가져오기',
+    description: 'Linear 이슈를 Task으로 가져오기',
     color: 'bg-blue-100 dark:bg-blue-900/30',
   },
   {
@@ -162,7 +162,7 @@ export default function ExternalConnectModal({
             <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
               <p className="text-sm text-blue-800 dark:text-blue-300">
                 💡 {selectedServices.length}개의 서비스가 선택되었습니다.
-                연동하기 버튼을 클릭하여 설정을 완료하세요.
+                연동하기 버튼을 클릭하여 Settings을 완료하세요.
               </p>
             </div>
           )}
@@ -174,7 +174,7 @@ export default function ExternalConnectModal({
             onClick={onClose}
             className="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
           >
-            취소
+            Cancel
           </button>
           <button
             onClick={handleConnect}

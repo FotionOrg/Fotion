@@ -2,14 +2,17 @@
 
 import { Task } from '@/types'
 import { useState } from 'react'
+import { getTaskColorClasses, TASK_COLORS } from '@/lib/colors'
+import { useTranslations } from 'next-intl'
 
 interface TaskListProps {
   tasks: Task[]
-  queuedTaskIds?: string[] // 작업 큐에 있는 task ID 목록
+  queuedTaskIds?: string[] // Task Queue에 있는 task ID 목록
   onAddToQueue?: (taskId: string) => void
   onTaskClick?: (task: Task) => void
   onCreateTask: () => void
   onConnectExternal: () => void
+  onUpdateTask?: (taskId: string, updates: Partial<Task>) => void
 }
 
 export default function TaskList({
@@ -19,11 +22,15 @@ export default function TaskList({
   onTaskClick,
   onCreateTask,
   onConnectExternal,
+  onUpdateTask,
 }: TaskListProps) {
-  // 작업 큐에 없는 작업만 필터링
+  const t = useTranslations()
+  const [colorPickerTaskId, setColorPickerTaskId] = useState<string | null>(null)
+
+  // Task Queue에 없는 Task만 필터링
   const availableTasks = tasks.filter(task => !queuedTaskIds.includes(task.id))
 
-  // 내부 작업과 외부 연동 작업 분리
+  // 내부 Task과 외부 연동 Task 분리
   const internalTasks = availableTasks.filter(task => task.source === 'internal' || !task.source)
   const notionTasks = availableTasks.filter(task => task.source === 'notion')
   const linearTasks = availableTasks.filter(task => task.source === 'linear')
@@ -32,30 +39,36 @@ export default function TaskList({
   const [activeSection, setActiveSection] = useState<string>('internal')
 
   const sections = [
-    { id: 'internal', title: '내 앱에서 추가한 작업', tasks: internalTasks, icon: '📝' },
+    { id: 'internal', title: t('task.myTasks'), tasks: internalTasks, icon: '📝' },
     { id: 'notion', title: 'Notion', tasks: notionTasks, icon: '📋', external: true },
     { id: 'linear', title: 'Linear', tasks: linearTasks, icon: '🔵', external: true },
     { id: 'calendar', title: 'Google Calendar', tasks: calendarTasks, icon: '📅', external: true },
   ]
+
+  const handleColorChange = (taskId: string, colorName: string) => {
+    console.log('TaskList - Color change:', { taskId, colorName })
+    onUpdateTask?.(taskId, { color: colorName })
+    setColorPickerTaskId(null)
+  }
 
   return (
     <div className="h-full flex flex-col bg-background">
       {/* 헤더 */}
       <div className="p-4 border-b border-zinc-200 dark:border-zinc-800">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-foreground">작업 목록</h2>
+          <h2 className="text-lg font-semibold text-foreground">{t('task.taskList')}</h2>
           <div className="flex gap-2">
             <button
               onClick={onConnectExternal}
               className="px-3 py-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 transition-colors"
             >
-              외부 연동하기
+              {t('task.externalConnect')}
             </button>
             <button
               onClick={onCreateTask}
               className="px-3 py-1.5 text-xs font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors"
             >
-              + 새 작업
+              + {t('task.newTask')}
             </button>
           </div>
         </div>
@@ -80,7 +93,7 @@ export default function TaskList({
         </div>
       </div>
 
-      {/* 작업 리스트 */}
+      {/* Task 리스트 */}
       <div className="flex-1 overflow-y-auto p-4">
         {sections
           .filter(section => section.id === activeSection)
@@ -92,35 +105,39 @@ export default function TaskList({
                   {section.external ? (
                     <>
                       <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
-                        {section.title}와 연동되지 않았습니다
+                        {t('task.externalConnectDescription', { service: section.title })}
                       </p>
                       <button
                         onClick={onConnectExternal}
                         className="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors"
                       >
-                        외부 연동하기
+                        {t('task.externalConnect')}
                       </button>
                     </>
                   ) : (
                     <>
                       <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
-                        아직 작업이 없습니다
+                        {t('task.internalTasksEmpty')}
                       </p>
                       <button
                         onClick={onCreateTask}
                         className="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors"
                       >
-                        첫 작업 만들기
+                        {t('task.internalTasksEmptyDescription')}
                       </button>
                     </>
                   )}
                 </div>
               ) : (
                 <div className="grid gap-3">
-                  {section.tasks.map(task => (
+                  {section.tasks.map(task => {
+                    const colorClasses = getTaskColorClasses(task.color)
+                    const isColorPickerOpen = colorPickerTaskId === task.id
+
+                    return (
                     <div
                       key={task.id}
-                      className="group p-4 bg-surface hover:bg-surface-secondary rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-primary-300 dark:hover:border-primary-700 transition-all cursor-pointer"
+                      className={`group p-4 rounded-lg border transition-all cursor-pointer relative ${colorClasses.bgLight} ${colorClasses.border} hover:shadow-md`}
                       onClick={() => onTaskClick?.(task)}
                     >
                       <div className="flex items-start gap-3">
@@ -143,7 +160,7 @@ export default function TaskList({
                           </svg>
                         </div>
 
-                        {/* 작업 내용 */}
+                        {/* Task 내용 */}
                         <div className="flex-1 min-w-0">
                           <h3 className="text-sm font-medium text-foreground mb-1">
                             {task.title}
@@ -167,6 +184,42 @@ export default function TaskList({
                           </div>
                         </div>
 
+                        {/* 색상 버튼 */}
+                        {onUpdateTask && (
+                          <div className="relative">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setColorPickerTaskId(isColorPickerOpen ? null : task.id)
+                              }}
+                              className={`opacity-0 group-hover:opacity-100 p-2 rounded-lg transition-all ${colorClasses.bg} hover:opacity-90`}
+                              title="Change color"
+                            >
+                              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2z" clipRule="evenodd" />
+                              </svg>
+                            </button>
+
+                            {/* 색상 픽커 */}
+                            {isColorPickerOpen && (
+                              <div className="absolute top-full right-0 mt-2 p-3 bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-zinc-200 dark:border-zinc-800 z-50 grid grid-cols-6 gap-2"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {TASK_COLORS.map(color => (
+                                  <button
+                                    key={color.name}
+                                    onClick={() => handleColorChange(task.id, color.name)}
+                                    className={`w-8 h-8 rounded-md ${color.bg} hover:scale-110 transition-transform ${
+                                      task.color === color.name ? 'ring-2 ring-offset-2 ring-zinc-400 dark:ring-zinc-600' : ''
+                                    }`}
+                                    title={color.label}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
+
                         {/* 큐 추가 버튼 */}
                         {onAddToQueue && (
                           <button
@@ -175,7 +228,7 @@ export default function TaskList({
                               onAddToQueue(task.id)
                             }}
                             className="opacity-0 group-hover:opacity-100 p-2 hover:bg-primary-50 dark:hover:bg-primary-900/20 text-primary-600 dark:text-primary-400 rounded-lg transition-all"
-                            title="작업 큐에 추가"
+                            title={t('task.addToQueue')}
                           >
                             <svg
                               className="w-5 h-5"
@@ -194,7 +247,8 @@ export default function TaskList({
                         )}
                       </div>
                     </div>
-                  ))}
+                    )
+                  })}
                 </div>
               )}
             </div>

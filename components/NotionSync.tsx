@@ -34,7 +34,7 @@ export default function NotionSync() {
     hasFotionId: boolean
   } | null>(null)
 
-  // 저장된 토큰 및 선택된 데이터베이스 확인
+  // Save된 토큰 및 선택된 데이터베이스 확인
   useEffect(() => {
     const storedToken = localStorage.getItem(STORAGE_KEY)
     const storedDatabase = localStorage.getItem(DATABASE_KEY)
@@ -268,7 +268,7 @@ export default function NotionSync() {
                   <span>동기화 중...</span>
                 </>
               ) : (
-                <span>동기화 시작</span>
+                <span>동기화 Start</span>
               )}
             </button>
           )}
