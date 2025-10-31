@@ -20,6 +20,15 @@ export const metadata: Metadata = {
   title: "Fotion - Task & Focus Management",
   description: "Task management and focus mode combined for enhanced productivity",
   manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -50,15 +59,15 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
+        <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <RegisterServiceWorker />
         <NextIntlClientProvider messages={messages}>
-          <RegisterServiceWorker />
           <QueryProvider>{children}</QueryProvider>
         </NextIntlClientProvider>
       </body>

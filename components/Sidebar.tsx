@@ -121,7 +121,7 @@ export default function Sidebar({
           {/* Focus Mode 탭들 */}
           <div className="space-y-1">
             <p className="px-3 py-1 text-xs font-medium text-zinc-500 dark:text-zinc-400">
-              Focus 세션
+              {t("focusSessions")}
             </p>
             {tabs
               .filter((tab) => tab.type === "focus")
@@ -174,7 +174,7 @@ export default function Sidebar({
                 <kbd className="px-1.5 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded text-xs">
                   Shift + ?
                 </kbd>{" "}
-                단축키 보기
+                {t("showShortcuts")}
               </button>
             </div>
           )}

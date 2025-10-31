@@ -110,9 +110,9 @@ function StatisticsTab({ sessions }: StatisticsTabProps) {
 
           {/* 전체 */}
           <StatCard
-            title="전체"
+            title={t('total')}
             value={formatTime(statistics.totalMinutes)}
-            subtitle={`${statistics.totalSessions}회 Focus`}
+            subtitle={t('focusCount', { count: statistics.totalSessions })}
             icon="🎯"
           />
         </div>
@@ -120,27 +120,27 @@ function StatisticsTab({ sessions }: StatisticsTabProps) {
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4 min-w-max">
           {/* 평균 Focus Time */}
           <StatCard
-            title="평균 Focus Time"
+            title={t('avgFocusTime')}
             value={formatTime(statistics.avgSessionMinutes)}
-            subtitle="세션당"
+            subtitle={t('perSession')}
             icon="⏱️"
             small
           />
 
           {/* 완료율 */}
           <StatCard
-            title="완료율"
+            title={t('completionRate')}
             value={`${statistics.completionRate}%`}
-            subtitle={`${statistics.completedSessions}/${statistics.totalSessions} 완료`}
+            subtitle={t('completedCount', { completed: statistics.completedSessions, total: statistics.totalSessions })}
             icon="✅"
             small
           />
 
           {/* 최장 스트릭 (추후 구현) */}
           <StatCard
-            title="최장 연속"
+            title={t('longestStreak')}
             value="-"
-            subtitle="연속 Focus일"
+            subtitle={t('consecutiveDays')}
             icon="🔥"
             small
           />

@@ -16,7 +16,7 @@ export default function TaskQueue({
 }: TaskQueueProps) {
   const t = useTranslations();
 
-  const handleDragOver = (e: Reactㅁㅋ.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     e.currentTarget.classList.add("bg-primary-50", "dark:bg-primary-900/20");
   };

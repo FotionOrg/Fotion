@@ -29,7 +29,9 @@
     "tasks": "Tasks",
     "statistics": "Statistics",
     "settings": "Settings",
-    "openMenu": "Open menu"
+    "openMenu": "Open menu",
+    "focusSessions": "Focus Sessions",
+    "showShortcuts": "Show Shortcuts"
   },
   "task": {
     "title": "Title",
@@ -75,13 +77,13 @@
     "addToQueue": "Add to Task Queue",
     "removeFromQueue": "Remove from queue",
     "dragToAdd": "Drag from Task List\nto add tasks",
-    "taskCount": "{{count}} tasks",
+    "taskCount": "{count} tasks",
     "taskDetails": "Task Details",
     "source": "Source",
     "createdAt": "Created",
     "updatedAt": "Updated",
     "externalConnect": "Connect External",
-    "externalConnectDescription": "Not connected to {{service}}",
+    "externalConnectDescription": "Not connected to {service}",
     "internalTasksEmpty": "No tasks yet",
     "internalTasksEmptyDescription": "Create your first task"
   },
@@ -96,7 +98,7 @@
     "paused": "Paused",
     "running": "Running",
     "completed": "Completed",
-    "timerInfo": "Timer: {{duration}} min",
+    "timerInfo": "Timer: {duration} min",
     "timerSettingsNote": "You can change the default timer duration in Settings tab",
     "inProgress": "In Progress",
     "enterFullscreen": "Enter Fullscreen",
@@ -105,7 +107,7 @@
     "nextTrack": "Next Track",
     "volume": "Volume",
     "lofiMusic": "Lo-fi Music",
-    "trackCount": "{{current}} / {{total}}",
+    "trackCount": "{current} / {total}",
     "endTimer": "End Timer",
     "endTimerMessage": "Are you sure you want to end the timer in progress?\nYour progress will be recorded.",
     "beUnloadWarning": "There is a timer in progress. Are you sure you want to leave?"
@@ -137,11 +139,11 @@
     "thisWeek": "This Week",
     "thisMonth": "This Month",
     "total": "Total",
-    "focusCount": "{{count}} Focus",
+    "focusCount": "{count} Focus",
     "avgFocusTime": "Avg Focus Time",
     "perSession": "per session",
     "completionRate": "Completion Rate",
-    "completedCount": "{{completed}}/{{total}} completed",
+    "completedCount": "{completed}/{total} completed",
     "longestStreak": "Longest Streak",
     "consecutiveDays": "consecutive days"
   },

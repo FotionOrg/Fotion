@@ -29,7 +29,9 @@
     "tasks": "작업 관리",
     "statistics": "통계",
     "settings": "설정",
-    "openMenu": "메뉴 열기"
+    "openMenu": "메뉴 열기",
+    "focusSessions": "Focus 세션",
+    "showShortcuts": "단축키 보기"
   },
   "task": {
     "title": "제목",
@@ -75,13 +77,13 @@
     "addToQueue": "작업 큐에 추가",
     "removeFromQueue": "큐에서 제거",
     "dragToAdd": "작업 목록에서 드래그하여\n작업을 추가하세요",
-    "taskCount": "총 {{count}}개 작업",
+    "taskCount": "총 {count}개 작업",
     "taskDetails": "작업 상세",
     "source": "출처",
     "createdAt": "생성일",
     "updatedAt": "수정일",
     "externalConnect": "외부 연동하기",
-    "externalConnectDescription": "{{service}}와 연동되지 않았습니다",
+    "externalConnectDescription": "{service}와 연동되지 않았습니다",
     "internalTasksEmpty": "아직 작업이 없습니다",
     "internalTasksEmptyDescription": "첫 작업 만들기"
   },
@@ -96,7 +98,7 @@
     "paused": "일시정지됨",
     "running": "진행 중",
     "completed": "완료됨",
-    "timerInfo": "타이머: {{duration}}분",
+    "timerInfo": "타이머: {duration}분",
     "timerSettingsNote": "설정 탭에서 기본 타이머 시간을 변경할 수 있습니다",
     "inProgress": "작업 중",
     "enterFullscreen": "전체화면",
@@ -105,7 +107,7 @@
     "nextTrack": "다음 트랙",
     "volume": "볼륨",
     "lofiMusic": "Lo-fi 음악",
-    "trackCount": "{{current}} / {{total}}",
+    "trackCount": "{current} / {total}",
     "endTimer": "타이머 종료",
     "endTimerMessage": "진행 중인 타이머를 종료하시겠습니까?\n저장되지 않은 진행 상황은 기록됩니다.",
     "beUnloadWarning": "진행 중인 타이머가 있습니다. 페이지를 나가시겠습니까?"
@@ -137,11 +139,11 @@
     "thisWeek": "이번 주",
     "thisMonth": "이번 달",
     "total": "전체",
-    "focusCount": "{{count}}회 집중",
+    "focusCount": "{count}회 집중",
     "avgFocusTime": "평균 집중 시간",
     "perSession": "세션당",
     "completionRate": "완료율",
-    "completedCount": "{{completed}}/{{total}} 완료",
+    "completedCount": "{completed}/{total} 완료",
     "longestStreak": "최장 연속",
     "consecutiveDays": "연속 집중일"
   },
