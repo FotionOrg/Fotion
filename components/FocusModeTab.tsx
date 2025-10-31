@@ -74,6 +74,16 @@ function FocusModeTab({
       }
       audioRef.current.addEventListener('ended', handleEnded)
 
+      // 첫 진입 시 자동 재생 (이미 재생 중이 아니면)
+      if (!isGlobalMusicPlaying) {
+        audioRef.current.play().then(() => {
+          setIsPlaying(true)
+          onMusicPlayingChange?.(true)
+        }).catch((e) => {
+          console.warn('Auto-play failed on mount:', e)
+        })
+      }
+
       return () => {
         // 전역 오디오가 아닌 경우에만 정리
         if (!globalAudioRef && audioRef.current) {

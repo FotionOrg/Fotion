@@ -2,6 +2,7 @@
 
 import { Task } from "@/types";
 import { useTranslations } from "next-intl";
+import { getTaskColorClasses } from "@/lib/colors";
 
 interface TaskQueueProps {
   tasks: Task[];
@@ -75,14 +76,17 @@ export default function TaskQueue({
           </div>
         ) : (
           <div className="space-y-2">
-            {tasks.map((task, index) => (
+            {tasks.map((task, index) => {
+              const colorClasses = getTaskColorClasses(task.color);
+
+              return (
               <div
                 key={task.id}
-                className="group relative p-3 bg-background dark:bg-background rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-primary-300 dark:hover:border-primary-700 transition-colors cursor-move"
+                className={`group relative p-3 rounded-lg border transition-colors cursor-move ${colorClasses.bgLight} ${colorClasses.border} hover:shadow-md`}
                 draggable
               >
                 {/* 순서 표시 */}
-                <div className="absolute -left-2 -top-2 w-6 h-6 bg-primary-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                <div className={`absolute -left-2 -top-2 w-6 h-6 text-white text-xs font-bold rounded-full flex items-center justify-center ${colorClasses.bg}`}>
                   {index + 1}
                 </div>
 
@@ -134,7 +138,7 @@ export default function TaskQueue({
                   )}
                 </div>
               </div>
-            ))}
+            )})}
           </div>
         )}
       </div>

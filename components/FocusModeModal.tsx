@@ -3,6 +3,7 @@
 import { Task, TimerMode } from '@/types'
 import { useState, useRef, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
+import { getTaskColorClasses } from '@/lib/colors'
 
 interface FocusModeModalProps {
   isOpen: boolean
@@ -199,6 +200,8 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
 }
 
 function TaskItem({ task, isSelected, onSelect, t }: { task: Task; isSelected: boolean; onSelect: () => void; t: any }) {
+  const colorClasses = getTaskColorClasses(task.color)
+
   const sourceColors = {
     internal: 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400',
     notion: 'bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400',
@@ -216,10 +219,10 @@ function TaskItem({ task, isSelected, onSelect, t }: { task: Task; isSelected: b
   return (
     <button
       onClick={onSelect}
-      className={`w-full p-3 rounded-lg border-2 transition-all text-left ${
+      className={`w-full p-3 rounded-lg border-2 transition-all text-left ${colorClasses.bgLight} ${
         isSelected
-          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-          : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600'
+          ? `${colorClasses.border} ring-2 ${colorClasses.border.replace('border-', 'ring-')}`
+          : `${colorClasses.border} hover:shadow-md`
       }`}
     >
       <div className="flex items-start justify-between gap-2">

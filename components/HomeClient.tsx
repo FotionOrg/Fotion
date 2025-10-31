@@ -121,11 +121,7 @@ export default function HomeClient() {
     setActiveTabId(newTabId)
     setIsFocusModalOpen(false)
 
-    // Focus 세션 Start 시 음악 자동 Play
-    if (globalAudioRef.current && !isGlobalMusicPlaying) {
-      globalAudioRef.current.play().catch((e) => console.error('Auto-play failed:', e))
-      setIsGlobalMusicPlaying(true)
-    }
+    // 음악은 FocusModeTab에서 자동으로 시작됨 (이미 재생 중이 아닐 때만)
   }
 
   // Task 생성
