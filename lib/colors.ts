@@ -28,15 +28,44 @@ export function getTaskColor(colorName?: string): TaskColor | undefined {
   return TASK_COLORS.find(c => c.name === colorName || c.value === colorName)
 }
 
+// 색상별 배경 클래스 매핑 (Tailwind가 정적으로 감지할 수 있도록)
+const COLOR_BG_LIGHT_MAP: Record<string, string> = {
+  'gray': 'bg-gray-100 dark:bg-gray-900/50',
+  'red': 'bg-red-100 dark:bg-red-900/50',
+  'orange': 'bg-orange-100 dark:bg-orange-900/50',
+  'amber': 'bg-amber-100 dark:bg-amber-900/50',
+  'yellow': 'bg-yellow-100 dark:bg-yellow-900/50',
+  'lime': 'bg-lime-100 dark:bg-lime-900/50',
+  'green': 'bg-green-100 dark:bg-green-900/50',
+  'emerald': 'bg-emerald-100 dark:bg-emerald-900/50',
+  'teal': 'bg-teal-100 dark:bg-teal-900/50',
+  'cyan': 'bg-cyan-100 dark:bg-cyan-900/50',
+  'sky': 'bg-sky-100 dark:bg-sky-900/50',
+  'blue': 'bg-blue-100 dark:bg-blue-900/50',
+  'indigo': 'bg-indigo-100 dark:bg-indigo-900/50',
+  'violet': 'bg-violet-100 dark:bg-violet-900/50',
+  'purple': 'bg-purple-100 dark:bg-purple-900/50',
+  'fuchsia': 'bg-fuchsia-100 dark:bg-fuchsia-900/50',
+  'pink': 'bg-pink-100 dark:bg-pink-900/50',
+  'rose': 'bg-rose-100 dark:bg-rose-900/50',
+}
+
 // 색상 스타일 클래스 가져오기
-export function getTaskColorClasses(colorName?: string): { bg: string; text: string; border: string } {
+export function getTaskColorClasses(colorName?: string): { bg: string; text: string; border: string; bgLight: string } {
   const color = getTaskColor(colorName)
   if (!color) {
-    return { bg: 'bg-blue-500', text: 'text-white', border: 'border-blue-500' }
+    return {
+      bg: 'bg-blue-500',
+      text: 'text-white',
+      border: 'border-blue-500',
+      bgLight: 'bg-blue-100 dark:bg-blue-900/50'
+    }
   }
+
   return {
     bg: color.bg,
     text: color.text,
-    border: color.bg.replace('bg-', 'border-')
+    border: color.bg.replace('bg-', 'border-'),
+    bgLight: COLOR_BG_LIGHT_MAP[color.name] || 'bg-blue-100 dark:bg-blue-900/50'
   }
 }

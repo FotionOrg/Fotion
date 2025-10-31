@@ -1,7 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import { VisualizationView, FocusSession } from "@/types";
+import { VisualizationView, FocusSession, Task } from "@/types";
 import { useState } from "react";
 import HourlyViewCanvas from "./views/HourlyViewCanvas";
 import WeeklyViewCanvas from "./views/WeeklyViewCanvas";
@@ -9,10 +9,11 @@ import SessionDetailModal from "./SessionDetailModal";
 
 interface VisualizationTabProps {
   sessions: FocusSession[];
+  tasks: Task[];
   onStartFocus: () => void;
 }
 
-function VisualizationTab({ sessions, onStartFocus }: VisualizationTabProps) {
+function VisualizationTab({ sessions, tasks, onStartFocus }: VisualizationTabProps) {
   const [currentView, setCurrentView] = useState<VisualizationView>("hourly");
   const [selectedSession, setSelectedSession] = useState<FocusSession | null>(null);
   const [isSessionModalOpen, setIsSessionModalOpen] = useState(false);
@@ -47,10 +48,10 @@ function VisualizationTab({ sessions, onStartFocus }: VisualizationTabProps) {
       {/* 뷰 내용 */}
       <div className="flex-1 overflow-hidden">
         {currentView === "hourly" && (
-          <HourlyViewCanvas sessions={sessions} onSessionClick={handleSessionClick} />
+          <HourlyViewCanvas sessions={sessions} tasks={tasks} onSessionClick={handleSessionClick} />
         )}
         {currentView === "daily" && (
-          <WeeklyViewCanvas sessions={sessions} onSessionClick={handleSessionClick} />
+          <WeeklyViewCanvas sessions={sessions} tasks={tasks} onSessionClick={handleSessionClick} />
         )}
       </div>
 

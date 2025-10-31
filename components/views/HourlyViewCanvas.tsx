@@ -1,10 +1,12 @@
 "use client";
 
-import { FocusSession } from "@/types";
+import { FocusSession, Task } from "@/types";
 import { useRef, useEffect, useState } from "react";
+import { getTaskColor } from "@/lib/colors";
 
 interface HourlyViewCanvasProps {
   sessions: FocusSession[];
+  tasks: Task[];
   onSessionClick?: (session: FocusSession) => void;
 }
 
@@ -16,6 +18,7 @@ const MIN_BLOCK_HEIGHT = 60; // 최소 블록 높이 (텍스트가 들어갈 수
 
 export default function HourlyViewCanvas({
   sessions,
+  tasks,
   onSessionClick,
 }: HourlyViewCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -319,9 +322,24 @@ export default function HourlyViewCanvas({
         height: blockHeight,
       });
 
-      // 배경
-      ctx.fillStyle = colors.sessionBg;
-      ctx.strokeStyle = colors.sessionBorder;
+      // Task 색상 가져오기
+      const task = tasks.find(t => t.id === session.taskId);
+      const taskColor = getTaskColor(task?.color);
+
+      // 배경색 및 테두리색 (task 색상 사용)
+      if (taskColor) {
+        // Task에 색상이 지정된 경우
+        // 배경: 밝은 색상 (hex value에서 투명도 적용)
+        const hexColor = taskColor.value;
+        ctx.fillStyle = isDarkMode
+          ? `${hexColor}30` // 어두운 모드: 불투명도 18% (30 in hex)
+          : `${hexColor}20`; // 밝은 모드: 불투명도 12% (20 in hex)
+        ctx.strokeStyle = taskColor.value; // 테두리: 원색
+      } else {
+        // 기본 색상
+        ctx.fillStyle = colors.sessionBg;
+        ctx.strokeStyle = colors.sessionBorder;
+      }
       ctx.lineWidth = 2;
 
       // 둥근 모서리 사각형

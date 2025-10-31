@@ -1,6 +1,7 @@
 'use client'
 
 import { FocusSession } from '@/types'
+import { useEffect, useRef } from 'react'
 
 interface SessionDetailModalProps {
   isOpen: boolean
@@ -9,6 +10,29 @@ interface SessionDetailModalProps {
 }
 
 export default function SessionDetailModal({ isOpen, onClose, session }: SessionDetailModalProps) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+
+  // Auto-focus on close button when modal opens
+  useEffect(() => {
+    if (isOpen && closeButtonRef.current) {
+      closeButtonRef.current.focus()
+    }
+  }, [isOpen])
+
+  // ESC key handler
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose()
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape)
+      return () => document.removeEventListener('keydown', handleEscape)
+    }
+  }, [isOpen, onClose])
+
   if (!isOpen || !session) return null
 
   const startTime = session.startTime
@@ -34,14 +58,20 @@ export default function SessionDetailModal({ isOpen, onClose, session }: Session
     <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="session-detail-title"
     >
       <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
         {/* 헤더 */}
         <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-800">
-          <h2 className="text-xl font-semibold">Focus 세션 상세</h2>
+          <h2 id="session-detail-title" className="text-xl font-semibold">Focus 세션 상세</h2>
           <button
+            ref={closeButtonRef}
             onClick={onClose}
             className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+            aria-label="Close modal"
+            tabIndex={0}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

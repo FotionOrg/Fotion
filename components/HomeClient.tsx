@@ -25,7 +25,7 @@ const initialTabs: AppTab[] = []
 
 export default function HomeClient() {
   const t = useTranslations()
-  const { tasks, addTask, isLoaded: tasksLoaded } = useTasks()
+  const { tasks, addTask, updateTask, isLoaded: tasksLoaded } = useTasks()
   const { sessions, startSession, endSession, isLoaded: sessionsLoaded } = useFocusSessions()
   const { taskQueue, addToQueue, removeFromQueue, isLoaded: queueLoaded } = useTaskQueue()
   const { settings, updateSettings, isLoaded: settingsLoaded } = useSettings()
@@ -474,7 +474,7 @@ export default function HomeClient() {
           )}
 
           {activeTab?.type === 'visualization' && (
-            <VisualizationTab sessions={sessions} onStartFocus={handleStartFocus} />
+            <VisualizationTab sessions={sessions} tasks={tasks} onStartFocus={handleStartFocus} />
           )}
 
           {activeTab?.type === 'tasks' && (
@@ -484,6 +484,7 @@ export default function HomeClient() {
               onAddToQueue={addToQueue}
               onRemoveFromQueue={removeFromQueue}
               onCreateTask={handleCreateTask}
+              onUpdateTask={updateTask}
             />
           )}
 

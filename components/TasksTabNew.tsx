@@ -13,9 +13,10 @@ interface TasksTabProps {
   onAddToQueue: (taskId: string) => void
   onRemoveFromQueue: (taskId: string) => void
   onCreateTask: () => void
+  onUpdateTask: (taskId: string, updates: Partial<Task>) => void
 }
 
-function TasksTabNew({ tasks, taskQueue, onAddToQueue, onRemoveFromQueue, onCreateTask }: TasksTabProps) {
+function TasksTabNew({ tasks, taskQueue, onAddToQueue, onRemoveFromQueue, onCreateTask, onUpdateTask }: TasksTabProps) {
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false)
@@ -57,6 +58,7 @@ function TasksTabNew({ tasks, taskQueue, onAddToQueue, onRemoveFromQueue, onCrea
             onTaskClick={handleTaskClick}
             onCreateTask={onCreateTask}
             onConnectExternal={() => setIsConnectModalOpen(true)}
+            onUpdateTask={onUpdateTask}
           />
         </div>
       </div>

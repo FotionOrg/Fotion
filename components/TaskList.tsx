@@ -2,7 +2,7 @@
 
 import { Task } from '@/types'
 import { useState } from 'react'
-import { getTaskColorClasses } from '@/lib/colors'
+import { getTaskColorClasses, TASK_COLORS } from '@/lib/colors'
 import { useTranslations } from 'next-intl'
 
 interface TaskListProps {
@@ -12,6 +12,7 @@ interface TaskListProps {
   onTaskClick?: (task: Task) => void
   onCreateTask: () => void
   onConnectExternal: () => void
+  onUpdateTask?: (taskId: string, updates: Partial<Task>) => void
 }
 
 export default function TaskList({
@@ -21,8 +22,10 @@ export default function TaskList({
   onTaskClick,
   onCreateTask,
   onConnectExternal,
+  onUpdateTask,
 }: TaskListProps) {
   const t = useTranslations()
+  const [colorPickerTaskId, setColorPickerTaskId] = useState<string | null>(null)
 
   // Task Queue에 없는 Task만 필터링
   const availableTasks = tasks.filter(task => !queuedTaskIds.includes(task.id))
@@ -41,6 +44,12 @@ export default function TaskList({
     { id: 'linear', title: 'Linear', tasks: linearTasks, icon: '🔵', external: true },
     { id: 'calendar', title: 'Google Calendar', tasks: calendarTasks, icon: '📅', external: true },
   ]
+
+  const handleColorChange = (taskId: string, colorName: string) => {
+    console.log('TaskList - Color change:', { taskId, colorName })
+    onUpdateTask?.(taskId, { color: colorName })
+    setColorPickerTaskId(null)
+  }
 
   return (
     <div className="h-full flex flex-col bg-background">
@@ -123,16 +132,15 @@ export default function TaskList({
                 <div className="grid gap-3">
                   {section.tasks.map(task => {
                     const colorClasses = getTaskColorClasses(task.color)
+                    const isColorPickerOpen = colorPickerTaskId === task.id
+
                     return (
                     <div
                       key={task.id}
-                      className="group p-4 bg-surface hover:bg-surface-secondary rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-primary-300 dark:hover:border-primary-700 transition-all cursor-pointer relative"
+                      className={`group p-4 rounded-lg border transition-all cursor-pointer relative ${colorClasses.bgLight} ${colorClasses.border} hover:shadow-md`}
                       onClick={() => onTaskClick?.(task)}
                     >
-                      {/* Color 인디케이터 바 */}
-                      <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-lg ${colorClasses.bg}`} />
-
-                      <div className="flex items-start gap-3 pl-2">
+                      <div className="flex items-start gap-3">
                         {/* 드래그 핸들 */}
                         <div
                           className="opacity-0 group-hover:opacity-100 pt-1 transition-opacity cursor-move"
@@ -175,6 +183,42 @@ export default function TaskList({
                             )}
                           </div>
                         </div>
+
+                        {/* 색상 버튼 */}
+                        {onUpdateTask && (
+                          <div className="relative">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setColorPickerTaskId(isColorPickerOpen ? null : task.id)
+                              }}
+                              className={`opacity-0 group-hover:opacity-100 p-2 rounded-lg transition-all ${colorClasses.bg} hover:opacity-90`}
+                              title="Change color"
+                            >
+                              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2z" clipRule="evenodd" />
+                              </svg>
+                            </button>
+
+                            {/* 색상 픽커 */}
+                            {isColorPickerOpen && (
+                              <div className="absolute top-full right-0 mt-2 p-3 bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-zinc-200 dark:border-zinc-800 z-50 grid grid-cols-6 gap-2"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {TASK_COLORS.map(color => (
+                                  <button
+                                    key={color.name}
+                                    onClick={() => handleColorChange(task.id, color.name)}
+                                    className={`w-8 h-8 rounded-md ${color.bg} hover:scale-110 transition-transform ${
+                                      task.color === color.name ? 'ring-2 ring-offset-2 ring-zinc-400 dark:ring-zinc-600' : ''
+                                    }`}
+                                    title={color.label}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
 
                         {/* 큐 추가 버튼 */}
                         {onAddToQueue && (

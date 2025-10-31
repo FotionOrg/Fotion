@@ -36,8 +36,10 @@ export async function updateTaskAction(
   id: string,
   updates: Partial<Task>
 ): Promise<Task | null> {
+  console.log('updateTaskAction called:', { id, updates })
   const db = getDB()
   const updated = db.updateTask(id, updates)
+  console.log('updateTaskAction result:', updated)
 
   if (updated) {
     revalidatePath('/')
