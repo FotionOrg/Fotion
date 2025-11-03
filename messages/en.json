@@ -153,7 +153,10 @@
     "whyDesktopApp": "Why Desktop App?",
     "desktopFeature1": "Global hotkeys - Control Fotion from anywhere",
     "desktopFeature2": "Better performance and offline support",
-    "desktopFeature3": "Native desktop integration"
+    "desktopFeature3": "Native desktop integration",
+    "viewAllReleases": "View all releases on GitHub",
+    "downloadInfoUnavailable": "Unable to load download information automatically.",
+    "goToGitHubReleases": "Go to GitHub Releases"
   },
   "statistics": {
     "today": "Today",

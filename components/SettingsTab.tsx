@@ -407,6 +407,53 @@ export default function SettingsTab({
                 </li>
               </ul>
             </div>
+
+            {/* GitHub 링크 */}
+            <div className="mt-4">
+              <a
+                href="https://github.com/FotionOrg/Fotion/releases"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+              >
+                <span>📦</span>
+                <span>{t("settings.viewAllReleases")}</span>
+                <span className="text-xs opacity-60">↗</span>
+              </a>
+            </div>
+          </section>
+        )}
+
+        {/* 다운로드 정보 로딩 실패 시 fallback */}
+        {!isElectron() && !isLoadingDownloads && !downloadInfo && (
+          <section className="bg-gradient-to-br from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/20 rounded-lg border-2 border-primary-200 dark:border-primary-800 p-6">
+            <div className="flex items-start gap-4 mb-4">
+              <span className="text-3xl">💻</span>
+              <div>
+                <h2 className="text-lg font-semibold text-foreground mb-1">
+                  {t("settings.desktopAppTitle")}
+                </h2>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  {t("settings.desktopAppDescription")}
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 bg-white dark:bg-zinc-900 rounded-lg text-center">
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+                {t("settings.downloadInfoUnavailable")}
+              </p>
+              <a
+                href="https://github.com/FotionOrg/Fotion/releases/latest"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg transition-colors"
+              >
+                <span>📦</span>
+                <span>{t("settings.goToGitHubReleases")}</span>
+                <span className="text-xs opacity-80">↗</span>
+              </a>
+            </div>
           </section>
         )}
 

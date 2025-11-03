@@ -153,7 +153,10 @@
     "whyDesktopApp": "데스크톱 앱을 사용하는 이유",
     "desktopFeature1": "글로벌 단축키 - 어디서든 Fotion 제어",
     "desktopFeature2": "더 나은 성능과 오프라인 지원",
-    "desktopFeature3": "네이티브 데스크톱 통합"
+    "desktopFeature3": "네이티브 데스크톱 통합",
+    "viewAllReleases": "GitHub에서 모든 릴리스 보기",
+    "downloadInfoUnavailable": "다운로드 정보를 자동으로 불러올 수 없습니다.",
+    "goToGitHubReleases": "GitHub 릴리스로 이동"
   },
   "statistics": {
     "today": "오늘",
