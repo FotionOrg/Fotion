@@ -121,7 +121,24 @@ export default function HomeClient() {
     setActiveTabId(newTabId)
     setIsFocusModalOpen(false)
 
-    // 음악은 FocusModeTab에서 자동으로 시작됨 (이미 재생 중이 아닐 때만)
+    // 첫 집중 세션일 때만 음악 시작 (사용자 상호작용 컨텍스트 내에서 실행)
+    if (!isGlobalMusicPlaying && typeof window !== 'undefined') {
+      // 전역 오디오 객체가 없으면 생성
+      if (!globalAudioRef.current) {
+        globalAudioRef.current = new Audio('/music/04-Bilateral-Stillness.mp3')
+        globalAudioRef.current.volume = 0.5
+        globalAudioRef.current.loop = false
+      }
+
+      // 사용자 상호작용 내에서 음악 시작
+      globalAudioRef.current.play()
+        .then(() => {
+          setIsGlobalMusicPlaying(true)
+        })
+        .catch((e) => {
+          console.warn('Music auto-play failed:', e)
+        })
+    }
   }
 
   // Task 생성
