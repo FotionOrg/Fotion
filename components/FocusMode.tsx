@@ -51,15 +51,13 @@ export default function FocusMode({
     return () => clearInterval(interval)
   }, [timerState.isRunning, timerState.startTime])
 
-  useEffect(() => {
-    if (!timerState.isRunning) {
-      setDisplayTime(timerState.elapsedTime)
-    }
-  }, [timerState.elapsedTime, timerState.isRunning])
+  // 타이머가 멈췄을 때 displayTime을 timerState.elapsedTime으로 동기화
+  const currentDisplayTime = timerState.isRunning ? displayTime : timerState.elapsedTime
 
   // 전체화면 진입/End
   useEffect(() => {
     if (!isActive) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       void exitFullscreen()
       return
     }
@@ -105,15 +103,15 @@ export default function FocusMode({
 
   const getDisplayTime = () => {
     if (timerState.mode === 'timer' && timerState.duration) {
-      const remaining = timerState.duration - displayTime
+      const remaining = timerState.duration - currentDisplayTime
       return remaining > 0 ? formatTime(remaining) : '00:00'
     }
-    return formatTime(displayTime)
+    return formatTime(currentDisplayTime)
   }
 
   const getProgress = () => {
     if (timerState.mode === 'timer' && timerState.duration) {
-      return Math.min((displayTime / timerState.duration) * 100, 100)
+      return Math.min((currentDisplayTime / timerState.duration) * 100, 100)
     }
     return 0
   }

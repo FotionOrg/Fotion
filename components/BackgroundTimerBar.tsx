@@ -35,11 +35,8 @@ export default function BackgroundTimerBar({
     return () => clearInterval(interval)
   }, [timerState.isRunning, timerState.startTime])
 
-  useEffect(() => {
-    if (!timerState.isRunning) {
-      setDisplayTime(timerState.elapsedTime)
-    }
-  }, [timerState.elapsedTime, timerState.isRunning])
+  // 타이머가 멈췄을 때 displayTime을 timerState.elapsedTime으로 동기화
+  const currentDisplayTime = timerState.isRunning ? displayTime : timerState.elapsedTime
 
   const formatTime = (ms: number) => {
     const totalSeconds = Math.floor(ms / 1000)
@@ -55,10 +52,10 @@ export default function BackgroundTimerBar({
 
   const getDisplayTime = () => {
     if (timerState.mode === 'timer' && timerState.duration) {
-      const remaining = timerState.duration - displayTime
+      const remaining = timerState.duration - currentDisplayTime
       return remaining > 0 ? formatTime(remaining) : '00:00'
     }
-    return formatTime(displayTime)
+    return formatTime(currentDisplayTime)
   }
 
   if (!timerState.isRunning && timerState.elapsedTime === 0) {

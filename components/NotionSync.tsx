@@ -17,7 +17,7 @@ interface Database {
   id: string
   title: string
   url: string
-  icon: any
+  icon: string | null
   lastEditedTime: string
 }
 

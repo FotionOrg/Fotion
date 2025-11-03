@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { UserSettings } from '@/types'
 
 const STORAGE_KEY = 'fotion-settings'
@@ -27,12 +27,7 @@ export function useSettings() {
     }
     return defaultSettings
   })
-  const [isLoaded, setIsLoaded] = useState(false)
-
-  // 초기 로드 완료 표시
-  useEffect(() => {
-    setIsLoaded(true)
-  }, [])
+  const [isLoaded] = useState(true)
 
   // 설정 업데이트
   const updateSettings = (newSettings: UserSettings) => {
