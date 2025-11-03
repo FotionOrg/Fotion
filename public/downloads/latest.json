@@ -1,0 +1,90 @@
+{
+  "version": "1.0.0",
+  "releaseDate": "2025-11-03",
+  "releaseNotes": {
+    "en": "Initial release with global hotkeys support",
+    "ko": "글로벌 단축키를 지원하는 첫 번째 릴리스"
+  },
+  "platforms": {
+    "mac": {
+      "name": "macOS",
+      "files": [
+        {
+          "type": "dmg",
+          "url": "Fotion-1.0.0-mac.dmg",
+          "size": "~120 MB",
+          "arch": "universal"
+        },
+        {
+          "type": "zip",
+          "url": "Fotion-1.0.0-mac.zip",
+          "size": "~110 MB",
+          "arch": "universal"
+        }
+      ],
+      "minVersion": "macOS 10.13+",
+      "notes": {
+        "en": "Apple Silicon and Intel supported",
+        "ko": "Apple Silicon 및 Intel 모두 지원"
+      }
+    },
+    "windows": {
+      "name": "Windows",
+      "files": [
+        {
+          "type": "exe",
+          "url": "Fotion-Setup-1.0.0.exe",
+          "size": "~90 MB",
+          "arch": "x64"
+        },
+        {
+          "type": "portable",
+          "url": "Fotion-1.0.0-portable.exe",
+          "size": "~85 MB",
+          "arch": "x64"
+        }
+      ],
+      "minVersion": "Windows 10+",
+      "notes": {
+        "en": "64-bit only",
+        "ko": "64비트만 지원"
+      }
+    },
+    "linux": {
+      "name": "Linux",
+      "files": [
+        {
+          "type": "AppImage",
+          "url": "Fotion-1.0.0.AppImage",
+          "size": "~100 MB",
+          "arch": "x64"
+        },
+        {
+          "type": "deb",
+          "url": "fotion_1.0.0_amd64.deb",
+          "size": "~85 MB",
+          "arch": "x64"
+        }
+      ],
+      "minVersion": "Ubuntu 20.04+ / Debian 10+",
+      "notes": {
+        "en": "64-bit only",
+        "ko": "64비트만 지원"
+      }
+    }
+  },
+  "features": {
+    "en": [
+      "Global hotkeys (Cmd+Shift+F to focus app, Cmd+Shift+S to start focus)",
+      "Native desktop integration",
+      "Offline support",
+      "Auto-update support (coming soon)"
+    ],
+    "ko": [
+      "글로벌 단축키 (Cmd+Shift+F 앱 포커스, Cmd+Shift+S 집중 시작)",
+      "네이티브 데스크톱 통합",
+      "오프라인 지원",
+      "자동 업데이트 지원 (곧 출시)"
+    ]
+  }
+}

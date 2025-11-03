@@ -52,7 +52,7 @@ export default function Sidebar({
       {/* 사이드바 */}
       <aside
         className={`
-          fixed lg:relative top-0 left-0 h-screen w-60 bg-surface border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-50
+          fixed lg:relative top-0 left-0 h-screen lg:h-full w-60 bg-surface border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-50
           transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
         `}

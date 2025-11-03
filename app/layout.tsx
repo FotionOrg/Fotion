@@ -5,6 +5,7 @@ import { getMessages } from 'next-intl/server';
 import "./globals.css";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { RegisterServiceWorker } from "./register-sw";
+import { ElectronDetector } from "@/components/ElectronDetector";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -66,6 +67,7 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <ElectronDetector />
         <RegisterServiceWorker />
         <NextIntlClientProvider messages={messages}>
           <QueryProvider>{children}</QueryProvider>
