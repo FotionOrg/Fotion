@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { UserSettings } from "@/types";
+import { useTranslations } from "next-intl";
 
 interface SettingsTabProps {
   settings: UserSettings;
@@ -9,6 +10,7 @@ interface SettingsTabProps {
 }
 
 export default function SettingsTab({ settings, onUpdateSettings }: SettingsTabProps) {
+  const t = useTranslations();
   const [localSettings, setLocalSettings] = useState<UserSettings>(settings);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -25,7 +27,7 @@ export default function SettingsTab({ settings, onUpdateSettings }: SettingsTabP
   const handleOAuthConnect = (provider: 'google' | 'notion' | 'todoist' | 'linear') => {
     // TODO: OAuth 연동 로직 구현
     console.log(`Connecting to ${provider}...`);
-    alert(`${provider} 연동 기능은 곧 추가될 예정입니다.`);
+    alert(t('settings.oauthComingSoon'));
   };
 
   const handleOAuthDisconnect = (provider: 'google' | 'notion' | 'todoist' | 'linear') => {
@@ -36,30 +38,30 @@ export default function SettingsTab({ settings, onUpdateSettings }: SettingsTabP
   const oauthProviders = [
     {
       id: 'google' as const,
-      name: 'Google Calendar',
+      name: t('settings.googleCalendar'),
       icon: '📅',
-      description: '구글 캘린더와 일정을 동기화합니다',
+      description: t('settings.googleCalendarDescription'),
       connected: localSettings.googleConnected,
     },
     {
       id: 'notion' as const,
       name: 'Notion',
       icon: '📝',
-      description: 'Notion 데이터베이스에서 Task을 가져옵니다',
+      description: t('settings.notionDescription'),
       connected: localSettings.notionConnected,
     },
     {
       id: 'todoist' as const,
       name: 'Todoist',
       icon: '✅',
-      description: 'Todoist Task을 동기화합니다',
+      description: t('settings.todoistDescription'),
       connected: localSettings.todoistConnected,
     },
     {
       id: 'linear' as const,
       name: 'Linear',
       icon: '🎯',
-      description: 'Linear 이슈를 가져옵니다',
+      description: t('settings.linearDescription'),
       connected: localSettings.linearConnected,
     },
   ];
@@ -69,9 +71,9 @@ export default function SettingsTab({ settings, onUpdateSettings }: SettingsTabP
       <div className="max-w-4xl mx-auto p-6 space-y-8">
         {/* 헤더 */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-foreground mb-2">Settings</h1>
+          <h1 className="text-2xl font-bold text-foreground mb-2">{t('nav.settings')}</h1>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            앱 동작과 외부 서비스 연동을 관리합니다
+            {t('settings.settingsDescription')}
           </p>
         </div>
 
@@ -79,13 +81,13 @@ export default function SettingsTab({ settings, onUpdateSettings }: SettingsTabP
         <section className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
           <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             <span className="text-xl">⏱️</span>
-            타이머 Settings
+            {t('settings.timerSettings')}
           </h2>
 
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                기본 타이머 Time
+                {t('settings.defaultTimerDuration')}
               </label>
               <div className="flex items-center gap-4">
                 <input
@@ -107,11 +109,11 @@ export default function SettingsTab({ settings, onUpdateSettings }: SettingsTabP
                     onChange={(e) => handleTimerDurationChange(Number(e.target.value))}
                     className="w-20 px-3 py-2 text-sm bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
-                  <span className="text-sm text-zinc-600 dark:text-zinc-400">분</span>
+                  <span className="text-sm text-zinc-600 dark:text-zinc-400">{t('common.minute')}</span>
                 </div>
               </div>
               <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-2">
-                Start Focus 시 기본으로 Settings될 타이머 Time입니다
+                {t('settings.defaultTimerNote')}
               </p>
             </div>
 
@@ -121,7 +123,7 @@ export default function SettingsTab({ settings, onUpdateSettings }: SettingsTabP
                 disabled={isSaving}
                 className="px-4 py-2 bg-primary-600 hover:bg-primary-700 disabled:bg-primary-400 text-white rounded-lg text-sm font-medium transition-colors"
               >
-                {isSaving ? 'Save 중...' : 'Save'}
+                {isSaving ? t('common.saving') : t('common.save')}
               </button>
             </div>
           </div>
@@ -131,7 +133,7 @@ export default function SettingsTab({ settings, onUpdateSettings }: SettingsTabP
         <section className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
           <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             <span className="text-xl">🔗</span>
-            외부 서비스 연동
+            {t('settings.externalServices')}
           </h2>
 
           <div className="space-y-4">
@@ -153,7 +155,7 @@ export default function SettingsTab({ settings, onUpdateSettings }: SettingsTabP
                       <div className="flex items-center gap-2 mt-2">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                         <span className="text-xs text-green-600 dark:text-green-400 font-medium">
-                          연결됨
+                          {t('common.connected')}
                         </span>
                       </div>
                     )}
@@ -166,14 +168,14 @@ export default function SettingsTab({ settings, onUpdateSettings }: SettingsTabP
                       onClick={() => handleOAuthDisconnect(provider.id)}
                       className="px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
                     >
-                      연결 해제
+                      {t('common.disconnect')}
                     </button>
                   ) : (
                     <button
                       onClick={() => handleOAuthConnect(provider.id)}
                       className="px-3 py-1.5 text-xs font-medium text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-md transition-colors"
                     >
-                      연결하기
+                      {t('common.connect')}
                     </button>
                   )}
                 </div>
@@ -183,7 +185,7 @@ export default function SettingsTab({ settings, onUpdateSettings }: SettingsTabP
 
           <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
             <p className="text-xs text-blue-700 dark:text-blue-400">
-              ℹ️ 외부 서비스 연동 기능은 향후 업데이트에서 제공될 예정입니다. 연결하기 버튼을 클릭하면 OAuth 인증 페이지로 이동합니다.
+              ℹ️ {t('settings.oauthComingSoon')}
             </p>
           </div>
         </section>
@@ -192,21 +194,21 @@ export default function SettingsTab({ settings, onUpdateSettings }: SettingsTabP
         <section className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
           <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             <span className="text-xl">ℹ️</span>
-            앱 정보
+            {t('settings.appInfo')}
           </h2>
 
           <div className="space-y-3 text-sm">
             <div className="flex justify-between py-2 border-b border-zinc-200 dark:border-zinc-800">
-              <span className="text-zinc-600 dark:text-zinc-400">버전</span>
+              <span className="text-zinc-600 dark:text-zinc-400">{t('common.version')}</span>
               <span className="font-medium text-foreground">1.0.0</span>
             </div>
             <div className="flex justify-between py-2 border-b border-zinc-200 dark:border-zinc-800">
-              <span className="text-zinc-600 dark:text-zinc-400">프로젝트명</span>
+              <span className="text-zinc-600 dark:text-zinc-400">{t('settings.projectName')}</span>
               <span className="font-medium text-foreground">Fotion (Project Linnaeus)</span>
             </div>
             <div className="flex justify-between py-2">
-              <span className="text-zinc-600 dark:text-zinc-400">설명</span>
-              <span className="font-medium text-foreground text-right">Task 관리 + Focus Mode</span>
+              <span className="text-zinc-600 dark:text-zinc-400">{t('task.description')}</span>
+              <span className="font-medium text-foreground text-right">{t('settings.projectDescription')}</span>
             </div>
           </div>
         </section>

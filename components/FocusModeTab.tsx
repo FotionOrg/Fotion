@@ -44,6 +44,7 @@ function FocusModeTab({
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(isGlobalMusicPlaying)
   const [volume, setVolume] = useState(0.5)
+  const previousTrackIndexRef = useRef(0) // 이전 트랙 인덱스 추적
 
   // 전역 음악 Play 상태 동기화
   useEffect(() => {
@@ -63,26 +64,12 @@ function FocusModeTab({
 
   // 오디오 초기화 (전역 오디오 사용 시 탭 전환 시에도 음악 유지)
   useEffect(() => {
-    if (typeof window !== 'undefined' && !audioRef.current) {
-      audioRef.current = new Audio(MUSIC_TRACKS[0].path)
-      audioRef.current.volume = volume
-      audioRef.current.loop = false
-
+    if (typeof window !== 'undefined' && audioRef.current) {
       // 트랙 End 시 다음 트랙으로
       const handleEnded = () => {
         setCurrentTrackIndex((prev) => (prev + 1) % MUSIC_TRACKS.length)
       }
       audioRef.current.addEventListener('ended', handleEnded)
-
-      // 첫 진입 시 자동 재생 (이미 재생 중이 아니면)
-      if (!isGlobalMusicPlaying) {
-        audioRef.current.play().then(() => {
-          setIsPlaying(true)
-          onMusicPlayingChange?.(true)
-        }).catch((e) => {
-          console.warn('Auto-play failed on mount:', e)
-        })
-      }
 
       return () => {
         // 전역 오디오가 아닌 경우에만 정리
@@ -90,16 +77,19 @@ function FocusModeTab({
           audioRef.current.removeEventListener('ended', handleEnded)
           audioRef.current.pause()
           audioRef.current = null
+        } else if (audioRef.current) {
+          audioRef.current.removeEventListener('ended', handleEnded)
         }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // 트랙 변경 시 Play
+  // 트랙 변경 시 Play (실제로 인덱스가 변경되었을 때만)
   useEffect(() => {
-    if (audioRef.current && isPlaying) {
+    if (audioRef.current && previousTrackIndexRef.current !== currentTrackIndex) {
       const audio = audioRef.current
+      previousTrackIndexRef.current = currentTrackIndex
 
       // pause()와 play()를 연속으로 호출하면 "interrupted" 에러 발생
       // src를 변경하면 자동으로 pause되므로, pause()를 명시적으로 호출하지 않음
@@ -108,10 +98,13 @@ function FocusModeTab({
 
       // load()를 호출하여 새 소스를 로드한 후 play()
       audio.load()
-      audio.play().catch((e) => {
-        // 사용자 상호작용 없이 play() 호출 시 브라우저에서 차단할 수 있음
-        console.warn('Audio play failed:', e)
-      })
+
+      // 재생 중일 때만 자동 재생
+      if (isPlaying) {
+        audio.play().catch((e) => {
+          console.warn('Audio play failed:', e)
+        })
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrackIndex])
