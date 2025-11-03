@@ -38,23 +38,66 @@ export default function SettingsTab({
   const [downloadInfo, setDownloadInfo] = useState<DownloadInfo | null>(null);
   const [isLoadingDownloads, setIsLoadingDownloads] = useState(false);
 
-  // 다운로드 정보 가져오기
+  // 다운로드 정보 가져오기 (GitHub Releases API 사용)
   useEffect(() => {
     if (!isElectron()) {
-      setIsLoadingDownloads(true);
-      fetch("/downloads/latest.json")
-        .then((res) => res.json())
-        .then((data) => setDownloadInfo(data))
-        .catch((err) => console.error("Failed to load download info:", err))
-        .finally(() => setIsLoadingDownloads(false));
+      const loadDownloadInfo = async () => {
+        try {
+          const res = await fetch("https://api.github.com/repos/FotionOrg/Fotion/releases/latest");
+          const data = await res.json();
+
+          // GitHub Release 데이터를 우리 형식으로 변환
+          interface GitHubAsset {
+            name: string;
+            browser_download_url: string;
+            size: number;
+          }
+
+          const assets: GitHubAsset[] = data.assets || [];
+          const macFiles = assets.filter((a) =>
+            a.name.endsWith('.dmg') || a.name.endsWith('.zip')
+          );
+          const winFiles = assets.filter((a) => a.name.endsWith('.exe'));
+
+          const transformedData: DownloadInfo = {
+            version: data.tag_name || "v0.1.0",
+            releaseDate: new Date(data.published_at).toLocaleDateString(),
+            platforms: {
+              mac: {
+                name: "macOS",
+                files: macFiles.map((file) => ({
+                  type: file.name.endsWith('.dmg') ? 'dmg' : 'zip',
+                  url: file.browser_download_url,
+                  size: `${(file.size / 1024 / 1024).toFixed(1)} MB`,
+                  arch: "universal"
+                })),
+                minVersion: "macOS 10.15+"
+              },
+              windows: {
+                name: "Windows",
+                files: winFiles.map((file) => ({
+                  type: 'exe',
+                  url: file.browser_download_url,
+                  size: `${(file.size / 1024 / 1024).toFixed(1)} MB`,
+                  arch: "x64"
+                })),
+                minVersion: "Windows 10+"
+              }
+            },
+            features: {}
+          };
+          setDownloadInfo(transformedData);
+        } catch (err) {
+          console.error("Failed to load download info:", err);
+          setDownloadInfo(null);
+        } finally {
+          setIsLoadingDownloads(false);
+        }
+      };
+
+      loadDownloadInfo();
     }
   }, []);
-
-  // 다운로드 URL 생성 (환경 변수 기반)
-  const getDownloadUrl = (filename: string) => {
-    const baseUrl = process.env.NEXT_PUBLIC_DOWNLOADS_BASE_URL || "/downloads";
-    return `${baseUrl}/${filename}`;
-  };
 
   const handleSave = () => {
     setIsSaving(true);
@@ -282,7 +325,7 @@ export default function SettingsTab({
             </div>
 
             {/* 플랫폼별 다운로드 */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               {/* macOS */}
               <div className="bg-white dark:bg-zinc-900 rounded-lg p-4 border border-zinc-200 dark:border-zinc-800">
                 <div className="flex items-center gap-2 mb-3">
@@ -298,8 +341,9 @@ export default function SettingsTab({
                   {downloadInfo.platforms.mac.files.map((file, idx) => (
                     <a
                       key={idx}
-                      href={getDownloadUrl(file.url)}
-                      download
+                      href={file.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="block w-full px-3 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg transition-colors text-center"
                     >
                       {t("settings.downloadNow")} (.{file.type})
@@ -326,41 +370,14 @@ export default function SettingsTab({
                   {downloadInfo.platforms.windows.files.map((file, idx) => (
                     <a
                       key={idx}
-                      href={getDownloadUrl(file.url)}
-                      download
+                      href={file.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="block w-full px-3 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg transition-colors text-center"
                     >
                       {file.type === "exe"
                         ? t("settings.installer")
                         : t("settings.portable")}
-                      <div className="text-xs opacity-80 mt-0.5">
-                        {file.size}
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              </div>
-
-              {/* Linux */}
-              <div className="bg-white dark:bg-zinc-900 rounded-lg p-4 border border-zinc-200 dark:border-zinc-800">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-2xl">🐧</span>
-                  <div>
-                    <h3 className="font-semibold text-foreground">Linux</h3>
-                    <p className="text-xs text-zinc-500">
-                      {downloadInfo.platforms.linux.minVersion}
-                    </p>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  {downloadInfo.platforms.linux.files.map((file, idx) => (
-                    <a
-                      key={idx}
-                      href={getDownloadUrl(file.url)}
-                      download
-                      className="block w-full px-3 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg transition-colors text-center"
-                    >
-                      {t("settings.downloadNow")} (.{file.type})
                       <div className="text-xs opacity-80 mt-0.5">
                         {file.size}
                       </div>
@@ -409,29 +426,6 @@ export default function SettingsTab({
             </div>
           </section>
         )}
-
-        {/* 앱 정보 */}
-        {/* <section className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
-          <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-            <span className="text-xl">ℹ️</span>
-            {t('settings.appInfo')}
-          </h2>
-
-          <div className="space-y-3 text-sm">
-            <div className="flex justify-between py-2 border-b border-zinc-200 dark:border-zinc-800">
-              <span className="text-zinc-600 dark:text-zinc-400">{t('common.version')}</span>
-              <span className="font-medium text-foreground">1.0.0</span>
-            </div>
-            <div className="flex justify-between py-2 border-b border-zinc-200 dark:border-zinc-800">
-              <span className="text-zinc-600 dark:text-zinc-400">{t('settings.projectName')}</span>
-              <span className="font-medium text-foreground">Fotion (Project Linnaeus)</span>
-            </div>
-            <div className="flex justify-between py-2">
-              <span className="text-zinc-600 dark:text-zinc-400">{t('task.description')}</span>
-              <span className="font-medium text-foreground text-right">{t('settings.projectDescription')}</span>
-            </div>
-          </div>
-        </section> */}
       </div>
     </div>
   );
