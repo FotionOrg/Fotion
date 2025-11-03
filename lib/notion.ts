@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Client } from '@notionhq/client'
 import { Task } from '@/types'
 
@@ -63,7 +64,6 @@ export function createNotionClient(accessToken: string) {
 export async function listDatabases(accessToken: string) {
   const notion = createNotionClient(accessToken)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const response = await notion.search({
     filter: {
       property: 'object',
@@ -117,7 +117,6 @@ export async function checkDatabaseProperties(accessToken: string, databaseId: s
 export async function fetchSyncedPages(accessToken: string, databaseId: string) {
   const notion = createNotionClient(accessToken)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const response = await (notion.databases as any).query({
     database_id: databaseId,
     filter: {

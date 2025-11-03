@@ -17,7 +17,7 @@ export interface Task {
 
   // 외부 연동 데이터
   externalId?: string // 외부 서비스의 ID (Notion Page ID 등)
-  externalData?: any // 외부 서비스에서 가져온 추가 데이터
+  externalData?: Record<string, unknown> // 외부 서비스에서 가져온 추가 데이터
 
   // 메타데이터
   createdAt: Date

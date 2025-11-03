@@ -46,8 +46,6 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
         titleInputRef.current?.focus()
       }, 100)
     }
-    // resetForm은 useEffect 내에서만 호출되므로 의존성에 포함하지 않음
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
 
   // ESC key handler

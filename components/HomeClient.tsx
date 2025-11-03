@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { AppTab, Task, TimerMode, TimerState, FocusSession } from '@/types'
+import { AppTab, Task, TimerMode, TimerState } from '@/types'
 import Sidebar from '@/components/Sidebar'
 import BrowserTabBar from '@/components/BrowserTabBar'
 import VisualizationTab from '@/components/VisualizationTab'
@@ -319,6 +319,7 @@ export default function HomeClient() {
   }, [])
 
   // 키보드 단축키 정의
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const shortcuts = useMemo<KeyboardShortcut[]>(() => [
     // 일반
     {

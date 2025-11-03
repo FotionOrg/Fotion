@@ -34,8 +34,6 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
         searchInputRef.current?.focus()
       }, 100)
     }
-    // resetModal은 useEffect 내에서만 호출되므로 의존성에 포함하지 않음
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
 
   // ESC key handler
@@ -199,7 +197,7 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
   )
 }
 
-function TaskItem({ task, isSelected, onSelect, t }: { task: Task; isSelected: boolean; onSelect: () => void; t: any }) {
+function TaskItem({ task, isSelected, onSelect, t }: { task: Task; isSelected: boolean; onSelect: () => void; t: (key: string) => string }) {
   const colorClasses = getTaskColorClasses(task.color)
 
   const sourceColors = {

@@ -31,9 +31,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Generate Prisma Client
-        run: pnpm prisma generate
-
       - name: Build Next.js app
         run: pnpm build
 
