@@ -18,6 +18,7 @@ import { useFocusSessions } from '@/hooks/useFocusSessions'
 import { useTaskQueue } from '@/hooks/useTaskQueue'
 import { useSettings } from '@/hooks/useSettings'
 import { useKeyboardShortcuts, KeyboardShortcut } from '@/hooks/useKeyboardShortcuts'
+import { useElectronShortcuts } from '@/hooks/useElectronShortcuts'
 import { useTranslations } from 'next-intl'
 
 // 초기 탭 없음 (사이드바에서 선택하여 열기)
@@ -268,6 +269,20 @@ export default function HomeClient() {
     }
   }, [])
 
+  // 현재 활성 Focus 탭 종료 (글로벌 단축키용)
+  const handleEndCurrentSession = () => {
+    const currentTab = tabs.find(tab => tab.id === activeTabId)
+    if (currentTab && currentTab.type === 'focus') {
+      handleTabClose(currentTab.id)
+    }
+  }
+
+  // Electron 글로벌 단축키 등록
+  useElectronShortcuts({
+    onStartFocus: handleStartFocus,
+    onEndSession: handleEndCurrentSession,
+  })
+
   // 새로고침/창 닫힘 시 타이머 확인
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -421,7 +436,7 @@ export default function HomeClient() {
   }
 
   return (
-    <div className="flex h-screen" style={{ backgroundColor: 'var(--background)' }}>
+    <div className="electron-main-container flex h-screen" style={{ backgroundColor: 'var(--background)' }}>
       {/* 좌측 사이드바 (전체화면이 아닐 때만 표시) */}
       {!fullscreenTabId && (
         <Sidebar
