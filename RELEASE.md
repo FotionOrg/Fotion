@@ -144,13 +144,54 @@ Examples:
 
 ### macOS
 
-1. Download `Fotion-*.dmg` from Releases page
-2. Open the DMG file
-3. Drag Fotion to Applications folder
-4. If "unidentified developer" warning appears:
-   - Right-click the app
-   - Select "Open"
-   - Click "Open" in the dialog
+#### 방법 1: 자동 설치 스크립트 (권장)
+
+1. DMG 파일을 다운로드합니다
+2. 설치 스크립트를 다운로드합니다: `install-mac.sh`
+3. 터미널에서 실행:
+   ```bash
+   chmod +x install-mac.sh
+   ./install-mac.sh
+   ```
+
+#### 방법 2: 터미널로 수동 설치
+
+1. DMG 파일을 다운로드합니다
+2. 터미널에서 실행:
+   ```bash
+   # Gatekeeper 속성 제거
+   xattr -cr ~/Downloads/Fotion-*.dmg
+
+   # DMG 열기 및 Applications로 복사
+   open ~/Downloads/Fotion-*.dmg
+   # Applications 폴더로 드래그
+
+   # 앱의 속성도 제거
+   xattr -cr /Applications/Fotion.app
+   ```
+
+#### 방법 3: 수동 설치
+
+1. `Fotion-*.dmg` 다운로드
+2. DMG 파일 열기
+3. Fotion을 Applications 폴더로 드래그
+4. **"손상되었기 때문에 열 수 없습니다"** 경고가 나타나면:
+
+   **해결방법 A - 우클릭 열기:**
+   - Applications 폴더에서 Fotion.app을 **우클릭** (또는 Control+클릭)
+   - **열기** 선택
+   - 경고 창에서 **열기** 클릭
+
+   **해결방법 B - 시스템 설정:**
+   - **시스템 설정** → **개인정보 보호 및 보안**
+   - **보안** 섹션에서 "확인 없이 열기" 클릭
+
+   **해결방법 C - 터미널 (가장 간단):**
+   ```bash
+   xattr -cr /Applications/Fotion.app
+   ```
+
+> **참고**: 이 경고는 Apple Developer 인증서로 코드 서명이 되지 않았기 때문에 발생합니다. 앱은 안전하며, 소스 코드는 GitHub에 공개되어 있습니다.
 
 ### Windows
 
