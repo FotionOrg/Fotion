@@ -27,10 +27,10 @@ function createWindow() {
   });
 
   // 개발 모드: Next.js dev 서버에 연결
-  // 프로덕션 모드: 빌드된 Next.js 앱 로드
+  // 프로덕션 모드: fotion.io 원격 서버 사용
   const startURL = isDev
     ? 'http://localhost:3000'
-    : `file://${path.join(__dirname, '../out/index.html')}`;
+    : 'https://fotion.io';
 
   mainWindow.loadURL(startURL);
 
