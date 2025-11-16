@@ -67,14 +67,14 @@ export default function TaskDetailModal({ isOpen, onClose, task }: TaskDetailMod
       aria-modal="true"
       aria-labelledby="task-detail-title"
     >
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
         {/* 헤더 */}
-        <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-800">
-          <h2 id="task-detail-title" className="text-xl font-semibold">Task 상세</h2>
+        <div className="flex items-center justify-between p-6 border-b border-border">
+          <h2 id="task-detail-title" className="text-xl font-semibold text-foreground">Task 상세</h2>
           <button
             ref={closeButtonRef}
             onClick={onClose}
-            className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+            className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors text-foreground"
             aria-label="Close modal"
             tabIndex={0}
           >
@@ -91,7 +91,7 @@ export default function TaskDetailModal({ isOpen, onClose, task }: TaskDetailMod
             <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
               Title
             </label>
-            <p className="text-lg font-semibold">{task.title}</p>
+            <p className="text-lg font-semibold text-foreground">{task.title}</p>
           </div>
 
           {/* 출처 */}
@@ -125,7 +125,7 @@ export default function TaskDetailModal({ isOpen, onClose, task }: TaskDetailMod
               <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
                 예상 소요 Time
               </label>
-              <p className="text-base">
+              <p className="text-base text-foreground">
                 {Math.floor(task.estimatedDuration / 60) > 0 && (
                   <span className="font-semibold">{Math.floor(task.estimatedDuration / 60)}Time </span>
                 )}
@@ -140,7 +140,7 @@ export default function TaskDetailModal({ isOpen, onClose, task }: TaskDetailMod
               <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
                 예정된 Time
               </label>
-              <p className="text-base font-mono">{task.scheduledTime}</p>
+              <p className="text-base font-mono text-foreground">{task.scheduledTime}</p>
             </div>
           )}
 
@@ -164,7 +164,7 @@ export default function TaskDetailModal({ isOpen, onClose, task }: TaskDetailMod
           )}
 
           {/* 생성/수정 Date */}
-          <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800">
+          <div className="pt-4 border-t border-border">
             <div className="grid grid-cols-2 gap-4 text-sm text-zinc-500 dark:text-zinc-400">
               <div>
                 <span className="font-medium">생성일:</span> {formatDate(task.createdAt)}
@@ -177,10 +177,10 @@ export default function TaskDetailModal({ isOpen, onClose, task }: TaskDetailMod
         </div>
 
         {/* 푸터 */}
-        <div className="p-6 border-t border-zinc-200 dark:border-zinc-800">
+        <div className="p-6 border-t border-border">
           <button
             onClick={onClose}
-            className="w-full py-3 px-4 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors font-medium"
+            className="w-full py-3 px-4 bg-surface-secondary hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors font-medium text-foreground"
             tabIndex={0}
           >
             닫기

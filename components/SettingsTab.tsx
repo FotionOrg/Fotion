@@ -194,7 +194,7 @@ export default function SettingsTab({
         </div>
 
         {/* 언어 설정 */}
-        <section className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
+        <section className="bg-white dark:bg-zinc-900 rounded-lg border border-border p-6">
           <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             <span className="text-xl">🌐</span>
             {t("settings.language")}
@@ -242,8 +242,83 @@ export default function SettingsTab({
           </div>
         </section>
 
+        {/* 테마 설정 */}
+        <section className="bg-white dark:bg-zinc-900 rounded-lg border border-border p-6">
+          <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+            <span className="text-xl">🎨</span>
+            {t("settings.theme")}
+          </h2>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-3">
+                {t("settings.selectTheme") || "테마 선택"}
+              </label>
+              <div className="grid grid-cols-3 gap-3">
+                <button
+                  onClick={() => {
+                    setIsSaving(true);
+                    onUpdateSettings({ ...localSettings, theme: 'light' });
+                    setLocalSettings({ ...localSettings, theme: 'light' });
+                    setIsSaving(false);
+                  }}
+                  className={`px-4 py-3 rounded-lg border-2 transition-all ${
+                    localSettings.theme === 'light'
+                      ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
+                      : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 text-zinc-700 dark:text-zinc-300'
+                  }`}
+                >
+                  <div className="text-center">
+                    <div className="text-2xl mb-1">☀️</div>
+                    <div className="font-semibold text-sm">{t("settings.lightTheme") || "라이트"}</div>
+                  </div>
+                </button>
+                <button
+                  onClick={() => {
+                    setIsSaving(true);
+                    onUpdateSettings({ ...localSettings, theme: 'dark' });
+                    setLocalSettings({ ...localSettings, theme: 'dark' });
+                    setIsSaving(false);
+                  }}
+                  className={`px-4 py-3 rounded-lg border-2 transition-all ${
+                    localSettings.theme === 'dark'
+                      ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
+                      : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 text-zinc-700 dark:text-zinc-300'
+                  }`}
+                >
+                  <div className="text-center">
+                    <div className="text-2xl mb-1">🌙</div>
+                    <div className="font-semibold text-sm">{t("settings.darkTheme") || "다크"}</div>
+                  </div>
+                </button>
+                <button
+                  onClick={() => {
+                    setIsSaving(true);
+                    onUpdateSettings({ ...localSettings, theme: 'system' });
+                    setLocalSettings({ ...localSettings, theme: 'system' });
+                    setIsSaving(false);
+                  }}
+                  className={`px-4 py-3 rounded-lg border-2 transition-all ${
+                    localSettings.theme === 'system'
+                      ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
+                      : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 text-zinc-700 dark:text-zinc-300'
+                  }`}
+                >
+                  <div className="text-center">
+                    <div className="text-2xl mb-1">💻</div>
+                    <div className="font-semibold text-sm">{t("settings.systemTheme") || "시스템"}</div>
+                  </div>
+                </button>
+              </div>
+              <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-3">
+                {t("settings.themeNote") || "시스템 설정을 따르거나 원하는 테마를 선택하세요."}
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* 타이머 Settings */}
-        <section className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
+        <section className="bg-white dark:bg-zinc-900 rounded-lg border border-border p-6">
           <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             <span className="text-xl">⏱️</span>
             {t("settings.timerSettings")}
@@ -276,7 +351,7 @@ export default function SettingsTab({
                     onChange={(e) =>
                       handleTimerDurationChange(Number(e.target.value))
                     }
-                    className="w-20 px-3 py-2 text-sm bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-20 px-3 py-2 text-sm bg-zinc-100 dark:bg-zinc-800 border border-border-secondary rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
                   <span className="text-sm text-zinc-600 dark:text-zinc-400">
                     {t("common.minute")}
@@ -301,7 +376,7 @@ export default function SettingsTab({
         </section>
 
         {/* OAuth 연동 */}
-        <section className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
+        <section className="bg-white dark:bg-zinc-900 rounded-lg border border-border p-6">
           <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             <span className="text-xl">🔗</span>
             {t("settings.externalServices")}
@@ -401,7 +476,7 @@ export default function SettingsTab({
             {/* 플랫폼별 다운로드 */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               {/* macOS */}
-              <div className="bg-white dark:bg-zinc-900 rounded-lg p-4 border border-zinc-200 dark:border-zinc-800">
+              <div className="bg-white dark:bg-zinc-900 rounded-lg p-4 border border-border">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-2xl">🍎</span>
                   <div>
@@ -430,7 +505,7 @@ export default function SettingsTab({
               </div>
 
               {/* Windows */}
-              <div className="bg-white dark:bg-zinc-900 rounded-lg p-4 border border-zinc-200 dark:border-zinc-800">
+              <div className="bg-white dark:bg-zinc-900 rounded-lg p-4 border border-border">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-2xl">🪟</span>
                   <div>

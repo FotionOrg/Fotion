@@ -83,7 +83,7 @@ export default function ConfirmModal({
       />
 
       {/* 모달 */}
-      <div className="relative bg-white dark:bg-zinc-900 rounded-lg shadow-xl max-w-md w-full animate-in fade-in zoom-in duration-200">
+      <div className="relative bg-surface rounded-lg shadow-xl max-w-md w-full animate-in fade-in zoom-in duration-200">
         {/* 헤더 */}
         <div className="flex items-start gap-4 p-6 pb-4">
           {/* 아이콘 */}
@@ -93,7 +93,7 @@ export default function ConfirmModal({
 
           {/* Title */}
           <div className="flex-1 pt-1">
-            <h3 id="confirm-title" className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+            <h3 id="confirm-title" className="text-lg font-semibold text-foreground">
               {title}
             </h3>
           </div>
@@ -110,7 +110,7 @@ export default function ConfirmModal({
         <div className="flex gap-3 px-6 pb-6">
           <button
             onClick={onCancel}
-            className="flex-1 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+            className="flex-1 px-4 py-2.5 text-sm font-medium text-foreground bg-surface-secondary rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
             tabIndex={0}
           >
             {cancelText}

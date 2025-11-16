@@ -5,6 +5,7 @@ const STORAGE_KEY = 'fotion-settings'
 
 const defaultSettings: UserSettings = {
   defaultTimerDuration: 50, // 기본 50분
+  theme: 'system', // 기본 시스템 설정 따름
   googleConnected: false,
   notionConnected: false,
   todoistConnected: false,

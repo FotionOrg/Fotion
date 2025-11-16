@@ -39,7 +39,7 @@ function TasksTab({ tasks, onCreateTask }: TasksTabProps) {
   return (
     <div className="flex flex-col md:flex-row h-full">
       {/* 좌측: 예정된 Task */}
-      <div className="flex-1 md:border-r border-b md:border-b-0 border-zinc-200 dark:border-zinc-800 overflow-auto">
+      <div className="flex-1 md:border-r border-b md:border-b-0 border-border overflow-auto">
         <div className="p-4 h-full flex flex-col">
           <h2 className="text-lg font-semibold mb-4">예정된 Task</h2>
 
@@ -71,7 +71,7 @@ function TasksTab({ tasks, onCreateTask }: TasksTabProps) {
       </div>
 
       {/* 중앙: 미분류 Task (Backlog) */}
-      <div className="w-full md:w-80 md:border-r border-b md:border-b-0 border-zinc-200 dark:border-zinc-800 overflow-auto bg-surface dark:bg-surface">
+      <div className="w-full md:w-80 md:border-r border-b md:border-b-0 border-border overflow-auto bg-surface dark:bg-surface">
         <div className="p-4 h-full flex flex-col">
           <div className="flex-shrink-0 mb-4">
             <h2 className="text-lg font-semibold">미분류 Task</h2>

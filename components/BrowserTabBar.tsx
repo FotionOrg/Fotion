@@ -40,7 +40,7 @@ export default function BrowserTabBar({
   };
 
   return (
-    <div className="bg-surface-secondary dark:bg-surface border-b border-zinc-200 dark:border-zinc-800">
+    <div className="bg-surface-secondary dark:bg-surface border-b border-border">
       {/* 탭들 - 좌측 정렬 */}
       <div className="flex items-start overflow-x-auto">
         {tabs.map((tab) => {
@@ -52,7 +52,7 @@ export default function BrowserTabBar({
               onClick={() => onTabChange(tab.id)}
               className={`
                 relative flex items-center gap-2 px-4 py-2.5 min-w-[120px] max-w-[200px]
-                transition-all border-r border-zinc-200 dark:border-zinc-800 cursor-pointer
+                transition-all border-r border-border cursor-pointer
                 ${
                   isActive
                     ? "bg-background dark:bg-background text-foreground dark:text-foreground border-b-2 border-b-primary-500"

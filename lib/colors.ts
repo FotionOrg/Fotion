@@ -50,15 +50,44 @@ const COLOR_BG_LIGHT_MAP: Record<string, string> = {
   'rose': 'bg-rose-100 dark:bg-rose-900/50',
 }
 
+// 색상별 텍스트 클래스 매핑 (bgLight용 - 항상 어두운 텍스트)
+const COLOR_TEXT_LIGHT_MAP: Record<string, string> = {
+  'gray': 'text-gray-700 dark:text-gray-300',
+  'red': 'text-red-700 dark:text-red-300',
+  'orange': 'text-orange-700 dark:text-orange-300',
+  'amber': 'text-amber-700 dark:text-amber-300',
+  'yellow': 'text-yellow-700 dark:text-yellow-300',
+  'lime': 'text-lime-700 dark:text-lime-300',
+  'green': 'text-green-700 dark:text-green-300',
+  'emerald': 'text-emerald-700 dark:text-emerald-300',
+  'teal': 'text-teal-700 dark:text-teal-300',
+  'cyan': 'text-cyan-700 dark:text-cyan-300',
+  'sky': 'text-sky-700 dark:text-sky-300',
+  'blue': 'text-blue-700 dark:text-blue-300',
+  'indigo': 'text-indigo-700 dark:text-indigo-300',
+  'violet': 'text-violet-700 dark:text-violet-300',
+  'purple': 'text-purple-700 dark:text-purple-300',
+  'fuchsia': 'text-fuchsia-700 dark:text-fuchsia-300',
+  'pink': 'text-pink-700 dark:text-pink-300',
+  'rose': 'text-rose-700 dark:text-rose-300',
+}
+
 // 색상 스타일 클래스 가져오기
-export function getTaskColorClasses(colorName?: string): { bg: string; text: string; border: string; bgLight: string } {
+export function getTaskColorClasses(colorName?: string): {
+  bg: string;
+  text: string;
+  border: string;
+  bgLight: string;
+  textLight: string;
+} {
   const color = getTaskColor(colorName)
   if (!color) {
     return {
       bg: 'bg-blue-500',
       text: 'text-white',
       border: 'border-blue-500',
-      bgLight: 'bg-blue-100 dark:bg-blue-900/50'
+      bgLight: 'bg-blue-100 dark:bg-blue-900/50',
+      textLight: 'text-blue-700 dark:text-blue-300'
     }
   }
 
@@ -66,6 +95,7 @@ export function getTaskColorClasses(colorName?: string): { bg: string; text: str
     bg: color.bg,
     text: color.text,
     border: color.bg.replace('bg-', 'border-'),
-    bgLight: COLOR_BG_LIGHT_MAP[color.name] || 'bg-blue-100 dark:bg-blue-900/50'
+    bgLight: COLOR_BG_LIGHT_MAP[color.name] || 'bg-blue-100 dark:bg-blue-900/50',
+    textLight: COLOR_TEXT_LIGHT_MAP[color.name] || 'text-blue-700 dark:text-blue-300'
   }
 }

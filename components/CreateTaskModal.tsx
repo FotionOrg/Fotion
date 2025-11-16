@@ -123,14 +123,14 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
     >
       <div
         ref={modalRef}
-        className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
+        className="bg-surface rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
       >
         {/* 헤더 */}
-        <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-800">
-          <h2 id="create-task-title" className="text-xl font-semibold">{t('task.createTask')}</h2>
+        <div className="flex items-center justify-between p-6 border-b border-border">
+          <h2 id="create-task-title" className="text-xl font-semibold text-foreground">{t('task.createTask')}</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+            className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors text-foreground"
             aria-label="Close modal"
             tabIndex={0}
           >
@@ -144,7 +144,7 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
         <form onSubmit={handleSubmit} className="flex-1 overflow-auto p-6 space-y-6">
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               {t('task.title')} <span className="text-red-500">*</span>
             </label>
             <input
@@ -153,21 +153,21 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder={t('task.enterTitlePlaceholder')}
-              className="w-full px-4 py-3 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+              className="w-full px-4 py-3 border border-border-secondary rounded-lg bg-white dark:bg-zinc-800 text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
               required
             />
           </div>
 
           {/* Description (향후 WYSIWYG 에디터로 교체) */}
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               {t('task.description')}
             </label>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder={t('task.enterContentPlaceholder')}
-              className="w-full px-4 py-3 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[200px] resize-y"
+              className="w-full px-4 py-3 border border-border-secondary rounded-lg bg-white dark:bg-zinc-800 text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[200px] resize-y"
             />
             <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">
               💡 {t('task.editorUpgradeNote')}
@@ -177,35 +177,35 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
           {/* Date/Time */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">{t('task.date')} ({t('task.optional')})</label>
+              <label className="block text-sm font-medium text-foreground mb-2">{t('task.date')} ({t('task.optional')})</label>
               <input
                 type="date"
                 value={scheduledDate}
                 onChange={(e) => setScheduledDate(e.target.value)}
-                className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border-secondary rounded-lg bg-white dark:bg-zinc-800 text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">{t('task.time')} ({t('task.optional')})</label>
+              <label className="block text-sm font-medium text-foreground mb-2">{t('task.time')} ({t('task.optional')})</label>
               <input
                 type="time"
                 value={scheduledTime}
                 onChange={(e) => setScheduledTime(e.target.value)}
-                className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-border-secondary rounded-lg bg-white dark:bg-zinc-800 text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
 
           {/* 예상 소요 Time */}
           <div>
-            <label className="block text-sm font-medium mb-2">{t('task.estimatedDuration')} ({t('task.optional')})</label>
+            <label className="block text-sm font-medium text-foreground mb-2">{t('task.estimatedDuration')} ({t('task.optional')})</label>
             <input
               type="number"
               min="1"
               value={estimatedDuration}
               onChange={(e) => setEstimatedDuration(e.target.value)}
               placeholder={t('task.estimatedDurationPlaceholder')}
-              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-border-secondary rounded-lg bg-white dark:bg-zinc-800 text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
               {t('task.estimatedDurationNote')}
@@ -214,7 +214,7 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
 
           {/* Priority */}
           <div>
-            <label className="block text-sm font-medium mb-2">{t('task.priority')}</label>
+            <label className="block text-sm font-medium text-foreground mb-2">{t('task.priority')}</label>
             <div className="flex gap-3">
               {[
                 { value: 'low', label: t('task.low'), color: 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300' },
@@ -239,7 +239,7 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
 
           {/* Color */}
           <div>
-            <label className="block text-sm font-medium mb-2">{t('task.blockColor')}</label>
+            <label className="block text-sm font-medium text-foreground mb-2">{t('task.blockColor')}</label>
             <div className="grid grid-cols-9 gap-2">
               {TASK_COLORS.map((c) => (
                 <button
@@ -262,7 +262,7 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
 
           {/* Tags */}
           <div>
-            <label className="block text-sm font-medium mb-2">{t('task.tags')}</label>
+            <label className="block text-sm font-medium text-foreground mb-2">{t('task.tags')}</label>
             <div className="flex gap-2 mb-2">
               <input
                 type="text"
@@ -270,12 +270,12 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={handleTagInputKeyDown}
                 placeholder={t('task.enterTagsPlaceholder')}
-                className="flex-1 px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 px-4 py-2 border border-border-secondary rounded-lg bg-white dark:bg-zinc-800 text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <button
                 type="button"
                 onClick={handleAddTag}
-                className="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors"
+                className="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors text-foreground"
               >
                 {t('common.add')}
               </button>
@@ -305,11 +305,11 @@ export default function CreateTaskModal({ isOpen, onClose, onCreate }: CreateTas
         </form>
 
         {/* 푸터 */}
-        <div className="p-6 border-t border-zinc-200 dark:border-zinc-800 flex gap-3">
+        <div className="p-6 border-t border-border flex gap-3">
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 py-3 px-4 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors font-medium"
+            className="flex-1 py-3 px-4 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors font-medium text-foreground"
           >
             {t('common.cancel')}
           </button>

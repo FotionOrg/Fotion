@@ -82,7 +82,7 @@ function StatisticsTab({ sessions }: StatisticsTabProps) {
   return (
     <div className="flex flex-col h-full">
       {/* Statistics 카드 */}
-      <div className="p-6 border-b border-zinc-200 dark:border-zinc-800 bg-surface dark:bg-surface overflow-x-auto">
+      <div className="p-6 border-b border-border bg-surface dark:bg-surface overflow-x-auto">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 min-w-max">
           {/* 오늘 */}
           <StatCard
@@ -165,7 +165,7 @@ interface StatCardProps {
 
 function StatCard({ title, value, subtitle, icon, small = false }: StatCardProps) {
   return (
-    <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 hover:border-primary-300 dark:hover:border-primary-700 transition-colors">
+    <div className="bg-white dark:bg-zinc-900 rounded-xl border border-border p-4 hover:border-primary-300 dark:hover:border-primary-700 transition-colors">
       <div className="flex items-start justify-between mb-2">
         <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
           {title}

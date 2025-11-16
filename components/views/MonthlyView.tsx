@@ -105,7 +105,7 @@ export default function MonthlyView({ sessions }: MonthlyViewProps) {
       </div>
 
       {/* 요일 헤더 */}
-      <div className="grid grid-cols-7 gap-px bg-zinc-200 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800">
+      <div className="grid grid-cols-7 gap-px bg-zinc-200 dark:bg-zinc-800 border border-border">
         {["월", "화", "수", "목", "금", "토", "일"].map((day, index) => (
           <div
             key={day}
@@ -121,7 +121,7 @@ export default function MonthlyView({ sessions }: MonthlyViewProps) {
       </div>
 
       {/* Date 그리드 */}
-      <div className="grid grid-cols-7 gap-px bg-zinc-200 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800">
+      <div className="grid grid-cols-7 gap-px bg-zinc-200 dark:bg-zinc-800 border border-border">
         {calendarDays.map((date, index) => {
           const isCurrentMonth = date.getMonth() === month;
           const isToday = date.toDateString() === today.toDateString();

@@ -12,6 +12,7 @@ import { useTasks } from '@/hooks/useTasks'
 import { useFocusSessions } from '@/hooks/useFocusSessions'
 import { useTaskQueue } from '@/hooks/useTaskQueue'
 import { useSettings } from '@/hooks/useSettings'
+import { useTheme } from '@/hooks/useTheme'
 import { useKeyboardShortcuts, KeyboardShortcut } from '@/hooks/useKeyboardShortcuts'
 import { useElectronShortcuts } from '@/hooks/useElectronShortcuts'
 import { useTranslations } from 'next-intl'
@@ -34,6 +35,9 @@ export default function HomeClient() {
   const { taskQueue, addToQueue, removeFromQueue, isLoaded: queueLoaded } = useTaskQueue()
   const { settings, updateSettings, isLoaded: settingsLoaded } = useSettings()
   const isLoaded = tasksLoaded && sessionsLoaded && queueLoaded && settingsLoaded
+
+  // 테마 적용
+  useTheme(settings.theme)
 
   // 전역 오디오 객체 (모든 Focus Mode 탭에서 공유)
   const globalAudioRef = useRef<HTMLAudioElement | null>(null)
@@ -96,9 +100,15 @@ export default function HomeClient() {
   }
 
   // Focus Mode 탭 생성
-  const handleFocusStart = async (taskId: string, mode: TimerMode, duration?: number) => {
-    const task = tasks.find(t => t.id === taskId)
-    if (!task) return
+  const handleFocusStart = async (taskId: string, mode: TimerMode, duration?: number, providedTask?: Task) => {
+    // providedTask가 있으면 사용 (Quick Start), 없으면 tasks에서 검색
+    const task = providedTask || tasks.find(t => t.id === taskId)
+    if (!task) {
+      console.error('[HomeClient] Task not found:', taskId)
+      return
+    }
+
+    console.log('[HomeClient] Starting focus with task:', task)
 
     // FocusSession Start
     const session = await startSession(taskId, task.title, mode, duration)
@@ -150,8 +160,8 @@ export default function HomeClient() {
     setIsCreateTaskModalOpen(true)
   }
 
-  const handleTaskCreate = (taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
-    addTask(taskData)
+  const handleTaskCreate = async (taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
+    return await addTask(taskData)
   }
 
   // 탭 닫기
@@ -458,7 +468,7 @@ export default function HomeClient() {
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* 상단 바 (전체화면이 아닐 때만 표시) */}
         {!fullscreenTabId && (
-          <div className="flex items-center bg-surface-secondary dark:bg-surface border-b border-zinc-200 dark:border-zinc-800">
+          <div className="flex items-center bg-surface-secondary dark:bg-surface border-b border-border">
             {/* 모바일 햄버거 메뉴 */}
             <button
               onClick={() => setIsSidebarOpen(true)}
@@ -553,6 +563,8 @@ export default function HomeClient() {
         queuedTaskIds={taskQueue}
         defaultTimerDuration={settings.defaultTimerDuration}
         onStart={handleFocusStart}
+        onOpenTasksTab={() => handleOpenTab('tasks')}
+        onCreateTask={handleTaskCreate}
       />
 
       {/* Task 생성 모달 */}

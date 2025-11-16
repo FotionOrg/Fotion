@@ -627,7 +627,7 @@ export default function WeeklyViewCanvas({
         ref={containerRef}
         className="overflow-y-auto overflow-x-hidden h-full"
       >
-        <div className="sticky top-0 bg-background dark:bg-background z-10 py-3 px-4 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="sticky top-0 bg-background dark:bg-background z-10 py-3 px-4 border-b border-border">
           <div className="flex items-center justify-center">
             {/* 주간 네비게이션 */}
             <div className="flex items-center gap-2">

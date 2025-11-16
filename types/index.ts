@@ -71,6 +71,9 @@ export interface UserSettings {
   // 타이머 설정
   defaultTimerDuration: number // 기본 타이머 시간 (분)
 
+  // 테마 설정
+  theme: 'light' | 'dark' | 'system' // 테마 모드
+
   // OAuth 설정
   googleConnected: boolean
   notionConnected: boolean

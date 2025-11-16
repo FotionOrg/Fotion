@@ -31,12 +31,12 @@ function KeyboardShortcutsModal({
       onClick={onClose}
     >
       <div
-        className="bg-white dark:bg-zinc-900 rounded-lg shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-auto"
+        className="bg-surface rounded-lg shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 헤더 */}
-        <div className="sticky top-0 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 px-6 py-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+        <div className="sticky top-0 bg-surface border-b border-border px-6 py-4 flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-foreground">
             ⌨️ 키보드 단축키
           </h2>
           <button
@@ -76,7 +76,7 @@ function KeyboardShortcutsModal({
                     <span className="text-sm text-zinc-700 dark:text-zinc-300">
                       {shortcut.description}
                     </span>
-                    <kbd className="px-3 py-1.5 text-xs font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded border border-zinc-300 dark:border-zinc-700 shadow-sm">
+                    <kbd className="px-3 py-1.5 text-xs font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded border border-border-secondary shadow-sm">
                       {formatShortcut(shortcut)}
                     </kbd>
                   </div>
@@ -87,9 +87,9 @@ function KeyboardShortcutsModal({
         </div>
 
         {/* 푸터 */}
-        <div className="sticky bottom-0 bg-zinc-50 dark:bg-zinc-800/50 border-t border-zinc-200 dark:border-zinc-800 px-6 py-3">
+        <div className="sticky bottom-0 bg-zinc-50 dark:bg-zinc-800/50 border-t border-border px-6 py-3">
           <p className="text-xs text-zinc-500 dark:text-zinc-400 text-center">
-            <kbd className="px-2 py-1 text-xs font-mono bg-white dark:bg-zinc-900 rounded border border-zinc-300 dark:border-zinc-700">
+            <kbd className="px-2 py-1 text-xs font-mono bg-white dark:bg-zinc-900 rounded border border-border-secondary">
               ?
             </kbd>{' '}
             를 눌러 언제든지 이 창을 열 수 있습니다

@@ -62,14 +62,14 @@ export default function SessionDetailModal({ isOpen, onClose, session }: Session
       aria-modal="true"
       aria-labelledby="session-detail-title"
     >
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
         {/* 헤더 */}
-        <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-800">
-          <h2 id="session-detail-title" className="text-xl font-semibold">Focus 세션 상세</h2>
+        <div className="flex items-center justify-between p-6 border-b border-border">
+          <h2 id="session-detail-title" className="text-xl font-semibold text-foreground">Focus 세션 상세</h2>
           <button
             ref={closeButtonRef}
             onClick={onClose}
-            className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+            className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors text-foreground"
             aria-label="Close modal"
             tabIndex={0}
           >
@@ -94,7 +94,7 @@ export default function SessionDetailModal({ isOpen, onClose, session }: Session
             <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
               Task
             </label>
-            <p className="text-lg font-semibold">{session.taskTitle}</p>
+            <p className="text-lg font-semibold text-foreground">{session.taskTitle}</p>
           </div>
 
           {/* Date */}
@@ -102,7 +102,7 @@ export default function SessionDetailModal({ isOpen, onClose, session }: Session
             <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
               Date
             </label>
-            <p className="text-base">{formatDate(startTime)}</p>
+            <p className="text-base text-foreground">{formatDate(startTime)}</p>
           </div>
 
           {/* Time */}
@@ -111,13 +111,13 @@ export default function SessionDetailModal({ isOpen, onClose, session }: Session
               <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
                 Start Time
               </label>
-              <p className="text-base font-mono">{formatTime(startTime)}</p>
+              <p className="text-base font-mono text-foreground">{formatTime(startTime)}</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
                 End Time
               </label>
-              <p className="text-base font-mono">{formatTime(endTime)}</p>
+              <p className="text-base font-mono text-foreground">{formatTime(endTime)}</p>
             </div>
           </div>
 
@@ -126,7 +126,7 @@ export default function SessionDetailModal({ isOpen, onClose, session }: Session
             <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
               실제 소요 Time
             </label>
-            <p className="text-base">
+            <p className="text-base text-foreground">
               {Math.floor(actualMinutes / 60) > 0 && (
                 <span className="font-semibold">{Math.floor(actualMinutes / 60)}Time </span>
               )}
@@ -139,7 +139,7 @@ export default function SessionDetailModal({ isOpen, onClose, session }: Session
             <label className="block text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">
               모드
             </label>
-            <p className="text-base">
+            <p className="text-base text-foreground">
               {session.mode === 'timer' ? '타이머' : '스톱워치'}
             </p>
           </div>
@@ -170,10 +170,10 @@ export default function SessionDetailModal({ isOpen, onClose, session }: Session
         </div>
 
         {/* 푸터 */}
-        <div className="p-6 border-t border-zinc-200 dark:border-zinc-800">
+        <div className="p-6 border-t border-border">
           <button
             onClick={onClose}
-            className="w-full py-3 px-4 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors font-medium"
+            className="w-full py-3 px-4 bg-surface-secondary hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors font-medium text-foreground"
           >
             닫기
           </button>

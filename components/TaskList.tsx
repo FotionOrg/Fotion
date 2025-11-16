@@ -54,7 +54,7 @@ export default function TaskList({
   return (
     <div className="h-full flex flex-col bg-background">
       {/* 헤더 */}
-      <div className="p-4 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-foreground">{t('task.taskList')}</h2>
           <div className="flex gap-2">
@@ -162,7 +162,7 @@ export default function TaskList({
 
                         {/* Task 내용 */}
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-sm font-medium text-foreground mb-1">
+                          <h3 className={`text-sm font-medium mb-1 ${colorClasses.textLight}`}>
                             {task.title}
                           </h3>
                           {task.description && (
@@ -202,7 +202,7 @@ export default function TaskList({
 
                             {/* 색상 픽커 */}
                             {isColorPickerOpen && (
-                              <div className="absolute top-full right-0 mt-2 p-3 bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-zinc-200 dark:border-zinc-800 z-50 grid grid-cols-6 gap-2"
+                              <div className="absolute top-full right-0 mt-2 p-3 bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-border z-50 grid grid-cols-6 gap-2"
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 {TASK_COLORS.map(color => (

@@ -68,7 +68,7 @@ export default function WeeklyView({ sessions }: WeeklyViewProps) {
       className="overflow-auto h-full relative max-w-7xl mx-auto px-4"
     >
       {/* 헤더 + 주간 네비게이션 */}
-      <div className="sticky top-0 bg-background dark:bg-background z-30 pb-2 flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800">
+      <div className="sticky top-0 bg-background dark:bg-background z-30 pb-2 flex items-center justify-between border-b border-border">
         <h2 className="text-lg font-semibold"></h2>
         <div className="flex gap-1">
           <button
@@ -120,7 +120,7 @@ export default function WeeklyView({ sessions }: WeeklyViewProps) {
 
       <div className="inline-block min-w-full">
         {/* 요일 헤더 (sticky) */}
-        <div className="flex sticky top-[37px] bg-background dark:bg-background z-20 border-b-2 border-zinc-300 dark:border-zinc-700">
+        <div className="flex sticky top-[37px] bg-background dark:bg-background z-20 border-b-2 border-border-secondary">
           <div className="w-16 flex-shrink-0" /> {/* Time 칼럼 공간 */}
           {weekDays.map((day, index) => {
             const isToday = weekOffset === 0 && (index + 1) % 7 === currentDay;
@@ -150,7 +150,7 @@ export default function WeeklyView({ sessions }: WeeklyViewProps) {
             <div
               key={hour}
               ref={isCurrentHour ? currentHourRef : null}
-              className={`flex border-b border-zinc-200 dark:border-zinc-800 ${
+              className={`flex border-b border-border ${
                 isCurrentHour ? "bg-primary-50/30 dark:bg-primary-950/20" : ""
               }`}
             >

@@ -44,7 +44,7 @@ function TasksTabNew({ tasks, taskQueue, onAddToQueue, onRemoveFromQueue, onCrea
     <>
       <div className="h-full flex flex-col lg:flex-row">
         {/* Task Queue (모바일: 상단, 데스크톱: 좌측) */}
-        <div className="h-1/3 lg:h-full lg:w-80 border-b lg:border-b-0 lg:border-r border-zinc-200 dark:border-zinc-800">
+        <div className="h-1/3 lg:h-full lg:w-80 border-b lg:border-b-0 lg:border-r border-border">
           <TaskQueue
             tasks={queueTasks}
             onRemoveFromQueue={onRemoveFromQueue}

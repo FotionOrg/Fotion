@@ -11,30 +11,39 @@ interface FocusModeModalProps {
   tasks: Task[]
   queuedTaskIds: string[] // Task Queue에 있는 task ID 목록
   defaultTimerDuration: number // 기본 타이머 Time (분)
-  onStart: (taskId: string, mode: TimerMode, duration?: number) => void
+  onStart: (taskId: string, mode: TimerMode, duration?: number, task?: Task) => void
+  onOpenTasksTab?: () => void // Tasks 탭 열기
+  onCreateTask?: (taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => Promise<Task> // Quick Start용 task 생성
 }
 
-export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, defaultTimerDuration, onStart }: FocusModeModalProps) {
+export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, defaultTimerDuration, onStart, onOpenTasksTab, onCreateTask }: FocusModeModalProps) {
   const t = useTranslations()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
+  const [quickStartTitle, setQuickStartTitle] = useState('')
   const modalRef = useRef<HTMLDivElement>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
+  const quickStartInputRef = useRef<HTMLInputElement>(null)
 
   const resetModal = () => {
     setSearchQuery('')
     setSelectedTask(null)
+    setQuickStartTitle('')
   }
 
   useEffect(() => {
     if (isOpen) {
       resetModal()
-      // Auto focus on search input
+      // Auto focus on appropriate input
       setTimeout(() => {
-        searchInputRef.current?.focus()
+        if (queuedTaskIds.length === 0) {
+          quickStartInputRef.current?.focus()
+        } else {
+          searchInputRef.current?.focus()
+        }
       }, 100)
     }
-  }, [isOpen])
+  }, [isOpen, queuedTaskIds.length])
 
   // ESC key handler
   useEffect(() => {
@@ -61,10 +70,40 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
     task.title.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const handleStart = () => {
+  const handleStart = async () => {
+    // Quick Start 모드 (큐가 없을 때)
+    if (queuedTasks.length === 0 && quickStartTitle.trim() && onCreateTask) {
+      const taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt'> = {
+        title: quickStartTitle,
+        description: '',
+        status: 'in_progress',
+        priority: 'medium',
+        source: 'internal',
+        color: 'blue',
+      }
+
+      try {
+        console.log('[FocusModeModal] Creating task:', taskData)
+        // Task 생성을 기다림
+        const createdTask = await onCreateTask(taskData)
+        console.log('[FocusModeModal] Task created:', createdTask)
+
+        const duration = defaultTimerDuration * 60 * 1000
+
+        // 생성된 task로 바로 집중 모드 시작
+        console.log('[FocusModeModal] Starting focus with task:', createdTask.id)
+        onStart(createdTask.id, 'timer', duration, createdTask)
+        onClose()
+      } catch (error) {
+        console.error('[FocusModeModal] Failed to create task:', error)
+        // 에러 발생 시에도 모달은 닫지 않음 (사용자가 다시 시도할 수 있도록)
+      }
+      return
+    }
+
+    // 일반 모드 (task 선택)
     if (!selectedTask) return
 
-    // 기본 타이머 모드로 Start (Settings에서 지정한 Time 사용)
     const duration = defaultTimerDuration * 60 * 1000
     onStart(selectedTask.id, 'timer', duration)
     onClose()
@@ -86,14 +125,15 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
     >
       <div
         ref={modalRef}
-        className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-hidden flex flex-col"
+        className="bg-surface rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col"
+        style={{ maxHeight: '85vh' }}
       >
         {/* 헤더 */}
-        <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-800">
-          <h2 id="focus-mode-title" className="text-xl font-semibold">{t('focus.startFocus')}</h2>
+        <div className="flex items-center justify-between p-6 border-b border-border shrink-0">
+          <h2 id="focus-mode-title" className="text-xl font-semibold text-foreground">{t('focus.startFocus')}</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+            className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors text-foreground"
             aria-label="Close modal"
             tabIndex={0}
           >
@@ -103,32 +143,87 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
           </button>
         </div>
 
-        {/* 내용 */}
-        <div className="flex-1 overflow-auto p-6 space-y-6">
-          {/* Task 검색 */}
-          <div>
-            <label className="block text-sm font-medium mb-2">{t('task.selectTask')}</label>
-            <input
-              ref={searchInputRef}
-              type="text"
-              placeholder={t('task.searchTasks')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              tabIndex={0}
-            />
-          </div>
+        {/* 검색/Quick Start 입력 영역 */}
+        <div className="p-6 pb-4 shrink-0">
+          {queuedTasks.length > 0 ? (
+            // 큐가 있을 때: 검색창
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">{t('task.selectTask')}</label>
+              <input
+                ref={searchInputRef}
+                type="text"
+                placeholder={t('task.searchTasks')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-2 border border-border-secondary rounded-lg bg-surface-secondary text-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
+                tabIndex={0}
+              />
+            </div>
+          ) : (
+            // 큐가 없을 때: Quick Start 입력창
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                {t('focus.quickStart') || 'Quick Start'}
+              </label>
+              <input
+                ref={quickStartInputRef}
+                type="text"
+                placeholder={t('focus.quickStartPlaceholder') || "무엇에 집중하시겠습니까?"}
+                value={quickStartTitle}
+                onChange={(e) => setQuickStartTitle(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && quickStartTitle.trim()) {
+                    handleStart()
+                  }
+                }}
+                className="w-full px-4 py-3 border-2 border-primary-300 dark:border-primary-700 rounded-lg bg-surface-secondary text-foreground focus:outline-none focus:ring-2 focus:ring-primary-500"
+                autoFocus
+              />
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">
+                {t('focus.quickStartNote') || "Enter 키를 눌러 바로 시작하세요"}
+              </p>
+            </div>
+          )}
+        </div>
 
-          {/* Task 리스트 */}
-          <div className="space-y-2 max-h-80 overflow-auto">
+        {/* Task 리스트 - 스크롤 영역 */}
+        <div className="flex-1 overflow-y-auto px-6 min-h-0">
+          <div className="space-y-2">
             {queuedTasks.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-2">
-                  {t('task.queueEmpty')}
-                </p>
-                <p className="text-xs text-zinc-400 dark:text-zinc-500">
-                  {t('task.queueEmptyDescription')}
-                </p>
+              // 큐가 비어있을 때: Tasks 탭 바로가기만 표시
+              <div className="space-y-4 py-4">
+                <div className="text-center py-4">
+                  <div className="text-4xl mb-3">📋</div>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-1 font-medium">
+                    {t('task.queueEmpty')}
+                  </p>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                    {t('task.queueEmptyDescription')}
+                  </p>
+                </div>
+
+                {/* Tasks 탭 바로가기 */}
+                {onOpenTasksTab && (
+                  <button
+                    onClick={() => {
+                      onOpenTasksTab()
+                      onClose()
+                    }}
+                    className="w-full px-4 py-3 bg-surface-secondary hover:bg-zinc-100 dark:hover:bg-zinc-700 border-2 border-border rounded-lg transition-colors text-left"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">📝</span>
+                      <div>
+                        <div className="font-semibold text-sm text-zinc-700 dark:text-zinc-300">
+                          {t('focus.goToTasks') || 'Tasks 탭으로 이동'}
+                        </div>
+                        <div className="text-xs text-zinc-600 dark:text-zinc-400">
+                          {t('focus.goToTasksDescription') || '작업을 관리하고 큐에 추가하기'}
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                )}
               </div>
             ) : searchQuery ? (
               filteredTasks.length > 0 ? (
@@ -161,33 +256,32 @@ export default function FocusModeModal({ isOpen, onClose, tasks, queuedTaskIds, 
               </>
             )}
           </div>
+        </div>
 
-          {/* 타이머 Time 안내 */}
-          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+        {/* 타이머 Time 안내 - 고정 영역 */}
+        <div className="px-6 py-4 shrink-0">
+          <div className="bg-primary-50 dark:bg-primary-950 rounded-lg p-4 border border-primary-200 dark:border-primary-800">
             <div className="flex items-center gap-2 text-sm">
-              <span className="text-blue-600 dark:text-blue-400 font-medium">⏱️</span>
-              <span className="text-blue-700 dark:text-blue-300">
+              <span className="text-primary-600 dark:text-primary-400 font-medium">⏱️</span>
+              <span className="text-primary-700 dark:text-primary-300">
                 {t('focus.timerInfo', { duration: defaultTimerDuration })}
               </span>
             </div>
-            <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-              {t('focus.timerSettingsNote')}
-            </p>
           </div>
         </div>
 
         {/* 푸터 */}
-        <div className="p-6 border-t border-zinc-200 dark:border-zinc-800 flex gap-3">
+        <div className="p-6 pt-0 shrink-0 flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-3 px-4 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors font-medium"
+            className="flex-1 py-3 px-4 bg-surface-secondary hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors font-medium text-foreground"
           >
             {t('common.cancel')}
           </button>
           <button
             onClick={handleStart}
-            disabled={!selectedTask}
-            className="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-300 dark:disabled:bg-zinc-700 text-white rounded-lg transition-colors font-medium disabled:cursor-not-allowed"
+            disabled={queuedTasks.length === 0 ? !quickStartTitle.trim() : !selectedTask}
+            className="flex-1 py-3 px-4 bg-primary-600 hover:bg-primary-700 disabled:bg-zinc-300 dark:disabled:bg-zinc-700 text-white rounded-lg transition-colors font-medium disabled:cursor-not-allowed"
           >
             {t('common.start')}
           </button>
@@ -225,7 +319,7 @@ function TaskItem({ task, isSelected, onSelect, t }: { task: Task; isSelected: b
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <h3 className="font-medium text-sm truncate">{task.title}</h3>
+          <h3 className={`font-medium text-sm truncate ${colorClasses.textLight}`}>{task.title}</h3>
           <div className="flex items-center gap-2 mt-1 text-xs text-zinc-500 dark:text-zinc-400">
             {task.scheduledTime && (
               <span>🕐 {task.scheduledTime}</span>

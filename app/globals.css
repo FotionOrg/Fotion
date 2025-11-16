@@ -5,6 +5,8 @@
   --foreground: #18181b;
   --surface: #ffffff;
   --surface-secondary: #f4f4f5;
+  --border: #e4e4e7; /* zinc-200 */
+  --border-secondary: #d4d4d8; /* zinc-300 */
 
   /* 브랜드 색상 - Rize 스타일 남색 계열 */
   --primary-50: #eef2ff;
@@ -46,12 +48,15 @@
   --color-primary-950: #1e1b4b;
 }
 
+/* 다크모드 - 시스템 설정 또는 클래스 기반 */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #09090b;
     --foreground: #fafafa;
     --surface: #18181b;
     --surface-secondary: #27272a;
+    --border: rgba(63, 63, 70, 0.4); /* zinc-700 with opacity */
+    --border-secondary: rgba(82, 82, 91, 0.3); /* zinc-600 with opacity */
 
     /* 다크모드에서는 약간 밝은 톤 사용 */
     --primary: var(--primary-500);
@@ -59,6 +64,37 @@
     --primary-light: var(--primary-950);
     --primary-dark: var(--primary-300);
   }
+}
+
+/* 클래스 기반 다크모드 */
+:root.dark {
+  --background: #09090b;
+  --foreground: #fafafa;
+  --surface: #18181b;
+  --surface-secondary: #27272a;
+  --border: rgba(63, 63, 70, 0.4); /* zinc-700 with opacity */
+  --border-secondary: rgba(82, 82, 91, 0.3); /* zinc-600 with opacity */
+
+  /* 다크모드에서는 약간 밝은 톤 사용 */
+  --primary: var(--primary-500);
+  --primary-hover: var(--primary-400);
+  --primary-light: var(--primary-950);
+  --primary-dark: var(--primary-300);
+}
+
+/* 라이트모드 클래스 (명시적) */
+:root.light {
+  --background: #fafafa;
+  --foreground: #18181b;
+  --surface: #ffffff;
+  --surface-secondary: #f4f4f5;
+  --border: #e4e4e7; /* zinc-200 */
+  --border-secondary: #d4d4d8; /* zinc-300 */
+
+  --primary: var(--primary-600);
+  --primary-hover: var(--primary-700);
+  --primary-light: var(--primary-100);
+  --primary-dark: var(--primary-800);
 }
 
 body {
@@ -106,6 +142,19 @@ body {
   *::-webkit-scrollbar-thumb:hover {
     background-color: #52525b;
   }
+}
+
+/* 커스텀 스크롤바 - 클래스 기반 다크 모드 */
+:root.dark * {
+  scrollbar-color: #3f3f46 transparent;
+}
+
+:root.dark *::-webkit-scrollbar-thumb {
+  background-color: #3f3f46;
+}
+
+:root.dark *::-webkit-scrollbar-thumb:hover {
+  background-color: #52525b;
 }
 
 /* Primary 색상 유틸리티 클래스 강제 생성 */
@@ -207,9 +256,15 @@ body.electron-app.platform-linux .electron-main-container {
   .text-foreground {
     color: var(--foreground);
   }
+  .border-border {
+    border-color: var(--border);
+  }
+  .border-border-secondary {
+    border-color: var(--border-secondary);
+  }
 }
 
-/* 다크모드 Primary 색상 */
+/* 다크모드 Primary 색상 - 미디어 쿼리 기반 */
 @media (prefers-color-scheme: dark) {
   @layer utilities {
     .dark\:bg-primary-50 {
@@ -248,5 +303,45 @@ body.electron-app.platform-linux .electron-main-container {
     .dark\:text-foreground {
       color: var(--foreground);
     }
+  }
+}
+
+/* 다크모드 Primary 색상 - 클래스 기반 */
+@layer utilities {
+  :root.dark .dark\:bg-primary-50 {
+    background-color: #eef2ff;
+  }
+  :root.dark .dark\:bg-primary-900 {
+    background-color: #312e81;
+  }
+  :root.dark .dark\:bg-primary-950 {
+    background-color: #1e1b4b;
+  }
+  :root.dark .dark\:text-primary-400 {
+    color: #818cf8;
+  }
+  :root.dark .dark\:text-primary-500 {
+    color: #6366f1;
+  }
+  :root.dark .dark\:border-primary-400 {
+    border-color: #818cf8;
+  }
+  :root.dark .dark\:border-primary-800 {
+    border-color: #3730a3;
+  }
+  :root.dark .dark\:border-b-primary-400 {
+    border-bottom-color: #818cf8;
+  }
+  :root.dark .dark\:bg-background {
+    background-color: var(--background);
+  }
+  :root.dark .dark\:bg-surface {
+    background-color: var(--surface);
+  }
+  :root.dark .dark\:bg-surface-secondary {
+    background-color: var(--surface-secondary);
+  }
+  :root.dark .dark\:text-foreground {
+    color: var(--foreground);
   }
 }

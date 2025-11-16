@@ -69,11 +69,11 @@ export default function ExternalConnectModal({
       onClick={onClose}
     >
       <div
-        className="bg-background dark:bg-surface w-full max-w-2xl rounded-xl shadow-xl"
+        className="bg-surface w-full max-w-2xl rounded-xl shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 헤더 */}
-        <div className="p-6 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="p-6 border-b border-border">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold text-foreground">
@@ -116,7 +116,7 @@ export default function ExternalConnectModal({
                   className={`relative p-4 rounded-lg border-2 transition-all text-left ${
                     isSelected
                       ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                      : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 bg-surface'
+                      : 'border-border hover:border-zinc-300 dark:hover:border-zinc-700 bg-surface'
                   }`}
                 >
                   <div className="flex items-start gap-4">
@@ -169,7 +169,7 @@ export default function ExternalConnectModal({
         </div>
 
         {/* 하단 버튼 */}
-        <div className="p-6 border-t border-zinc-200 dark:border-zinc-800 flex justify-end gap-3">
+        <div className="p-6 border-t border-border flex justify-end gap-3">
           <button
             onClick={onClose}
             className="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"

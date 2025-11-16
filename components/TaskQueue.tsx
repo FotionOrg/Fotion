@@ -37,9 +37,9 @@ export default function TaskQueue({
   };
 
   return (
-    <div className="h-full flex flex-col bg-surface border-r border-zinc-200 dark:border-zinc-800">
+    <div className="h-full flex flex-col bg-surface border-r border-border">
       {/* 헤더 */}
-      <div className="p-4 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="p-4 border-b border-border">
         <h2 className="text-lg font-semibold text-foreground">
           {t("task.taskQueue")}
         </h2>
@@ -85,11 +85,6 @@ export default function TaskQueue({
                 className={`group relative p-3 rounded-lg border transition-colors cursor-move ${colorClasses.bgLight} ${colorClasses.border} hover:shadow-md`}
                 draggable
               >
-                {/* 순서 표시 */}
-                <div className={`absolute -left-2 -top-2 w-6 h-6 text-white text-xs font-bold rounded-full flex items-center justify-center ${colorClasses.bg}`}>
-                  {index + 1}
-                </div>
-
                 {/* Task 내용 */}
                 <div className="flex items-start gap-3">
                   {/* 출처 로고 */}
@@ -104,7 +99,7 @@ export default function TaskQueue({
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-medium text-foreground truncate">
+                    <h3 className={`text-sm font-medium truncate ${colorClasses.textLight}`}>
                       {task.title}
                     </h3>
                     {task.description && (
@@ -144,7 +139,7 @@ export default function TaskQueue({
       </div>
 
       {/* 하단 정보 */}
-      <div className="p-3 border-t border-zinc-200 dark:border-zinc-800 bg-surface-secondary">
+      <div className="p-3 border-t border-border bg-surface-secondary">
         <p className="text-xs text-zinc-500 dark:text-zinc-400 text-center">
           {t("task.taskCount", { count: tasks.length })}
         </p>

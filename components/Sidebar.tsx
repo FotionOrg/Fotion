@@ -51,13 +51,13 @@ export default function Sidebar({
       {/* 사이드바 */}
       <aside
         className={`
-          fixed lg:relative top-0 left-0 h-screen lg:h-full w-60 bg-surface border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-50
+          fixed lg:relative top-0 left-0 h-screen lg:h-full w-60 bg-surface border-r border-border flex flex-col z-50
           transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
         `}
       >
         {/* 상단 로고/타이틀 영역 */}
-        <div className="p-4 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="p-4 border-b border-border">
           <h1 className="text-lg font-semibold text-foreground">Fotion</h1>
         </div>
 
@@ -112,7 +112,7 @@ export default function Sidebar({
           </button>
 
           {/* 구분선 */}
-          <div className="my-4 border-t border-zinc-200 dark:border-zinc-800"></div>
+          <div className="my-4 border-t border-border"></div>
 
           {/* Focus Mode 탭들 */}
           <div className="space-y-1">
@@ -141,7 +141,7 @@ export default function Sidebar({
         </nav>
 
         {/* 하단 영역 */}
-        <div className="border-t border-zinc-200 dark:border-zinc-800">
+        <div className="border-t border-border">
           {/* Settings 탭 */}
           <div className="p-2">
             <button
@@ -162,7 +162,7 @@ export default function Sidebar({
 
           {/* 단축키 정보 */}
           {onShowShortcuts && (
-            <div className="p-2 border-t border-zinc-200 dark:border-zinc-800">
+            <div className="p-2 border-t border-border">
               <button
                 onClick={onShowShortcuts}
                 className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"

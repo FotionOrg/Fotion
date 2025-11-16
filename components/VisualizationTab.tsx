@@ -27,24 +27,30 @@ function VisualizationTab({ sessions, tasks, onStartFocus }: VisualizationTabPro
   };
 
   return (
-    <div className="flex flex-col h-full">
-      {/* 뷰 전환 탭 */}
-      <div className="border-b border-zinc-200 dark:border-zinc-800 bg-surface dark:bg-surface">
-        <div className="max-w-screen-xl mx-auto">
-          <div className="flex md:justify-start justify-stretch w-full md:w-auto">
-            <ViewSwitchButton
-              active={currentView === "hourly"}
-              onClick={() => setCurrentView("hourly")}
-              title="Time별"
-              icon={<ClockIcon />}
-            />
-            <ViewSwitchButton
-              active={currentView === "daily"}
-              onClick={() => setCurrentView("daily")}
-              title="주간"
-              icon={<CalendarIcon />}
-            />
-          </div>
+    <div className="flex flex-col h-full relative">
+      {/* 뷰 전환 토글 버튼 - 우측 상단 */}
+      <div className="absolute top-4 right-4 z-30">
+        <div className="inline-flex rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-1 shadow-sm">
+          <button
+            onClick={() => setCurrentView("hourly")}
+            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+              currentView === "hourly"
+                ? "bg-primary-600 text-white"
+                : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            }`}
+          >
+            Day
+          </button>
+          <button
+            onClick={() => setCurrentView("daily")}
+            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+              currentView === "daily"
+                ? "bg-primary-600 text-white"
+                : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            }`}
+          >
+            Week
+          </button>
         </div>
       </div>
 
@@ -86,72 +92,6 @@ function VisualizationTab({ sessions, tasks, onStartFocus }: VisualizationTabPro
         session={selectedSession}
       />
     </div>
-  );
-}
-
-// 뷰 전환 버튼 컴포넌트
-interface ViewSwitchButtonProps {
-  active: boolean;
-  onClick: () => void;
-  title: string;
-  icon: React.ReactNode;
-}
-
-function ViewSwitchButton({
-  active,
-  onClick,
-  title,
-  icon,
-}: ViewSwitchButtonProps) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex-1 md:flex-none md:w-24 py-3 flex items-center justify-center transition-colors ${
-        active
-          ? "text-primary-600 dark:text-primary-400 border-b-2 border-primary-600 dark:border-primary-400"
-          : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200"
-      }`}
-      title={title}
-    >
-      {icon}
-    </button>
-  );
-}
-
-// 아이콘 컴포넌트들
-function ClockIcon() {
-  return (
-    <svg
-      className="w-5 h-5"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
-    </svg>
-  );
-}
-
-function CalendarIcon() {
-  return (
-    <svg
-      className="w-5 h-5"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-      />
-    </svg>
   );
 }
 
