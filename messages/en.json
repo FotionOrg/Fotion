@@ -31,7 +31,7 @@
     "settings": "Settings",
     "openMenu": "Open menu",
     "focusSessions": "Focus Sessions",
-    "showShortcuts": "Show Shortcuts"
+    "showShortcuts": "Shortcuts"
   },
   "task": {
     "title": "Title",
@@ -114,6 +114,8 @@
   },
   "settings": {
     "language": "Language",
+    "selectLanguage": "Select Language",
+    "languageNote": "Page will refresh when changing language",
     "theme": "Theme",
     "defaultTimer": "Default Timer Duration",
     "integrations": "Integrations",

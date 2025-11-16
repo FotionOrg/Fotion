@@ -114,6 +114,8 @@
   },
   "settings": {
     "language": "언어",
+    "selectLanguage": "언어 선택",
+    "languageNote": "언어 변경 시 페이지가 새로고침됩니다",
     "theme": "테마",
     "defaultTimer": "기본 타이머 시간",
     "integrations": "외부 연동",

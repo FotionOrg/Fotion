@@ -2,7 +2,6 @@
 
 import { AppTab } from "@/types";
 import { useTranslations } from 'next-intl';
-import { LanguageSwitcher } from './LanguageSwitcher';
 
 interface SidebarProps {
   tabs: AppTab[];
@@ -59,10 +58,7 @@ export default function Sidebar({
       >
         {/* 상단 로고/타이틀 영역 */}
         <div className="p-4 border-b border-zinc-200 dark:border-zinc-800">
-          <div className="flex items-center justify-between">
-            <h1 className="text-lg font-semibold text-foreground">Fotion</h1>
-            <LanguageSwitcher />
-          </div>
+          <h1 className="text-lg font-semibold text-foreground">Fotion</h1>
         </div>
 
         {/* 네비게이션 메뉴 */}
@@ -166,15 +162,24 @@ export default function Sidebar({
 
           {/* 단축키 정보 */}
           {onShowShortcuts && (
-            <div className="p-3 border-t border-zinc-200 dark:border-zinc-800">
+            <div className="p-2 border-t border-zinc-200 dark:border-zinc-800">
               <button
-                className="w-full text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300 text-left"
                 onClick={onShowShortcuts}
+                className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
               >
-                <kbd className="px-1.5 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded text-xs">
-                  Shift + ?
-                </kbd>{" "}
-                {t("showShortcuts")}
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">⌨️</span>
+                  <span className="text-sm font-medium">{t("showShortcuts")}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <kbd className="px-2 py-1 text-xs font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded border border-zinc-200 dark:border-zinc-700 shadow-sm">
+                    ⌘
+                  </kbd>
+                  <span className="text-zinc-400 dark:text-zinc-600">/</span>
+                  <kbd className="px-2 py-1 text-xs font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded border border-zinc-200 dark:border-zinc-700 shadow-sm">
+                    ?
+                  </kbd>
+                </div>
               </button>
             </div>
           )}

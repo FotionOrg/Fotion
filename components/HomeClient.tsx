@@ -1,18 +1,13 @@
 'use client'
 
 import { useState, useEffect, useMemo, useRef } from 'react'
+import dynamic from 'next/dynamic'
 import { AppTab, Task, TimerMode, TimerState } from '@/types'
 import Sidebar from '@/components/Sidebar'
 import BrowserTabBar from '@/components/BrowserTabBar'
 import VisualizationTab from '@/components/VisualizationTab'
 import TasksTabNew from '@/components/TasksTabNew'
-import StatisticsTab from '@/components/StatisticsTab'
-import SettingsTab from '@/components/SettingsTab'
-import FocusModeModal from '@/components/FocusModeModal'
 import FocusModeTab from '@/components/FocusModeTab'
-import CreateTaskModal from '@/components/CreateTaskModal'
-import KeyboardShortcutsModal from '@/components/KeyboardShortcutsModal'
-import ConfirmModal from '@/components/ConfirmModal'
 import { useTasks } from '@/hooks/useTasks'
 import { useFocusSessions } from '@/hooks/useFocusSessions'
 import { useTaskQueue } from '@/hooks/useTaskQueue'
@@ -20,6 +15,14 @@ import { useSettings } from '@/hooks/useSettings'
 import { useKeyboardShortcuts, KeyboardShortcut } from '@/hooks/useKeyboardShortcuts'
 import { useElectronShortcuts } from '@/hooks/useElectronShortcuts'
 import { useTranslations } from 'next-intl'
+
+// 동적 임포트 - 모달 컴포넌트들 (초기 로딩 시 불필요)
+const StatisticsTab = dynamic(() => import('@/components/StatisticsTab'), { ssr: false })
+const SettingsTab = dynamic(() => import('@/components/SettingsTab'), { ssr: false })
+const FocusModeModal = dynamic(() => import('@/components/FocusModeModal'), { ssr: false })
+const CreateTaskModal = dynamic(() => import('@/components/CreateTaskModal'), { ssr: false })
+const KeyboardShortcutsModal = dynamic(() => import('@/components/KeyboardShortcutsModal'), { ssr: false })
+const ConfirmModal = dynamic(() => import('@/components/ConfirmModal'), { ssr: false })
 
 // 초기 탭 없음 (사이드바에서 선택하여 열기)
 const initialTabs: AppTab[] = []

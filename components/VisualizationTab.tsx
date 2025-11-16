@@ -1,11 +1,14 @@
 "use client";
 
 import { memo } from "react";
+import dynamic from "next/dynamic";
 import { VisualizationView, FocusSession, Task } from "@/types";
 import { useState } from "react";
 import HourlyViewCanvas from "./views/HourlyViewCanvas";
 import WeeklyViewCanvas from "./views/WeeklyViewCanvas";
-import SessionDetailModal from "./SessionDetailModal";
+
+// 동적 임포트 - 모달 (세션 클릭 시에만 필요)
+const SessionDetailModal = dynamic(() => import("./SessionDetailModal"), { ssr: false });
 
 interface VisualizationTabProps {
   sessions: FocusSession[];

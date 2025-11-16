@@ -1,11 +1,14 @@
 'use client'
 
 import { memo, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { Task } from '@/types'
 import TaskQueue from './TaskQueue'
 import TaskList from './TaskList'
-import ExternalConnectModal from './ExternalConnectModal'
-import TaskDetailModal from './TaskDetailModal'
+
+// 동적 임포트 - 모달들 (버튼 클릭/태스크 클릭 시에만 필요)
+const ExternalConnectModal = dynamic(() => import('./ExternalConnectModal'), { ssr: false })
+const TaskDetailModal = dynamic(() => import('./TaskDetailModal'), { ssr: false })
 
 interface TasksTabProps {
   tasks: Task[]

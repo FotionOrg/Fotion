@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { UserSettings } from "@/types";
 import { useTranslations } from "next-intl";
 import { isElectron } from "@/hooks/useElectronShortcuts";
+import { useRouter } from "next/navigation";
 
 interface SettingsTabProps {
   settings: UserSettings;
@@ -33,10 +34,34 @@ export default function SettingsTab({
   onUpdateSettings,
 }: SettingsTabProps) {
   const t = useTranslations();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [localSettings, setLocalSettings] = useState<UserSettings>(settings);
   const [isSaving, setIsSaving] = useState(false);
   const [downloadInfo, setDownloadInfo] = useState<DownloadInfo | null>(null);
   const [isLoadingDownloads, setIsLoadingDownloads] = useState(false);
+  const [currentLocale, setCurrentLocale] = useState<string>('en');
+
+  // 현재 언어 감지
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      const cookies = document.cookie.split(';');
+      const localeCookie = cookies.find(c => c.trim().startsWith('NEXT_LOCALE='));
+      if (localeCookie) {
+        const locale = localeCookie.split('=')[1];
+        setCurrentLocale(locale);
+      }
+    }
+  }, []);
+
+  // 언어 전환 함수
+  const switchLanguage = (locale: string) => {
+    startTransition(() => {
+      document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=31536000`;
+      setCurrentLocale(locale);
+      router.refresh();
+    });
+  };
 
   // 다운로드 정보 가져오기 (GitHub Releases API 사용)
   useEffect(() => {
@@ -167,6 +192,55 @@ export default function SettingsTab({
             {t("settings.settingsDescription")}
           </p>
         </div>
+
+        {/* 언어 설정 */}
+        <section className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
+          <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+            <span className="text-xl">🌐</span>
+            {t("settings.language")}
+          </h2>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-3">
+                {t("settings.selectLanguage") || "언어 선택 / Select Language"}
+              </label>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => switchLanguage('en')}
+                  disabled={isPending}
+                  className={`flex-1 px-4 py-3 rounded-lg border-2 transition-all disabled:opacity-50 ${
+                    currentLocale === 'en'
+                      ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
+                      : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 text-zinc-700 dark:text-zinc-300'
+                  }`}
+                >
+                  <div className="text-center">
+                    <div className="text-2xl mb-1">🇺🇸</div>
+                    <div className="font-semibold text-sm">English</div>
+                  </div>
+                </button>
+                <button
+                  onClick={() => switchLanguage('ko')}
+                  disabled={isPending}
+                  className={`flex-1 px-4 py-3 rounded-lg border-2 transition-all disabled:opacity-50 ${
+                    currentLocale === 'ko'
+                      ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
+                      : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 text-zinc-700 dark:text-zinc-300'
+                  }`}
+                >
+                  <div className="text-center">
+                    <div className="text-2xl mb-1">🇰🇷</div>
+                    <div className="font-semibold text-sm">한국어</div>
+                  </div>
+                </button>
+              </div>
+              <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-3">
+                {t("settings.languageNote") || "언어 변경 시 페이지가 새로고침됩니다. / Page will refresh when changing language."}
+              </p>
+            </div>
+          </div>
+        </section>
 
         {/* 타이머 Settings */}
         <section className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6">
