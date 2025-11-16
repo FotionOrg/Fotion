@@ -564,6 +564,7 @@ export default function HomeClient() {
         defaultTimerDuration={settings.defaultTimerDuration}
         onStart={handleFocusStart}
         onOpenTasksTab={() => handleOpenTab('tasks')}
+        onOpenSettingsTab={() => handleOpenTab('settings')}
         onCreateTask={handleTaskCreate}
       />
 

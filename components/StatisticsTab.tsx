@@ -165,17 +165,17 @@ interface StatCardProps {
 
 function StatCard({ title, value, subtitle, icon, small = false }: StatCardProps) {
   return (
-    <div className="bg-white dark:bg-zinc-900 rounded-xl border border-border p-4 hover:border-primary-300 dark:hover:border-primary-700 transition-colors">
+    <div className="bg-white dark:bg-white rounded-xl border border-border p-4 hover:border-primary-300 dark:hover:border-primary-300 transition-colors">
       <div className="flex items-start justify-between mb-2">
-        <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+        <span className="text-xs font-medium text-zinc-500 dark:text-zinc-700">
           {title}
         </span>
         <span className={small ? "text-lg" : "text-2xl"}>{icon}</span>
       </div>
-      <div className={`font-bold text-foreground ${small ? 'text-xl' : 'text-2xl'}`}>
+      <div className={`font-bold text-zinc-900 dark:text-zinc-900 ${small ? 'text-xl' : 'text-2xl'}`}>
         {value}
       </div>
-      <div className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+      <div className="text-xs text-zinc-500 dark:text-zinc-700 mt-1">
         {subtitle}
       </div>
     </div>
