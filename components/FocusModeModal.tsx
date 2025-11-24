@@ -51,36 +51,6 @@ export default function FocusModeModal({
     setQuickStartTitle("");
   };
 
-  useEffect(() => {
-    if (isOpen) {
-      resetModal();
-      // Auto focus on appropriate input
-      setTimeout(() => {
-        if (queuedTaskIds.length === 0) {
-          quickStartInputRef.current?.focus();
-        } else {
-          searchInputRef.current?.focus();
-        }
-      }, 100);
-    }
-  }, [isOpen, queuedTaskIds.length]);
-
-  // ESC key handler
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("keydown", handleEscape);
-      return () => document.removeEventListener("keydown", handleEscape);
-    }
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
-
   // Task Queue에 있는 Task들만 표시
   const queuedTasks = queuedTaskIds
     .map((id) => tasks.find((t) => t.id === id))
@@ -132,11 +102,84 @@ export default function FocusModeModal({
     onClose();
   };
 
+  useEffect(() => {
+    if (isOpen) {
+      resetModal();
+      // Auto focus on appropriate input
+      setTimeout(() => {
+        if (queuedTaskIds.length === 0) {
+          quickStartInputRef.current?.focus();
+        } else {
+          searchInputRef.current?.focus();
+        }
+      }, 100);
+    }
+  }, [isOpen, queuedTaskIds.length]);
+
+  // ESC key handler & Command/Ctrl+Enter handler
+  useEffect(() => {
+    const handleKeyDown = async (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+
+      // Command+Enter (Mac) or Ctrl+Enter (Windows/Linux)
+      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+
+        // Check if can start
+        const canStart = !hasFocusSession && (
+          queuedTasks.length === 0
+            ? quickStartTitle.trim() !== ""
+            : selectedTask !== null
+        );
+
+        if (!canStart) return;
+
+        // Quick Start 모드 (큐가 없을 때)
+        if (queuedTasks.length === 0 && quickStartTitle.trim() && onCreateTask) {
+          const taskData: Omit<Task, "id" | "createdAt" | "updatedAt"> = {
+            title: quickStartTitle,
+            description: "",
+            status: "in_progress",
+            priority: "medium",
+            source: "internal",
+            color: "blue",
+          };
+
+          try {
+            const createdTask = await onCreateTask(taskData);
+            const duration = defaultTimerDuration * 60 * 1000;
+            onStart(createdTask.id, "timer", duration, createdTask);
+            onClose();
+          } catch (error) {
+            console.error("[FocusModeModal] Failed to create task:", error);
+          }
+          return;
+        }
+
+        // 일반 모드 (task 선택)
+        if (selectedTask) {
+          const duration = defaultTimerDuration * 60 * 1000;
+          onStart(selectedTask.id, "timer", duration);
+          onClose();
+        }
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+      return () => document.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [isOpen, onClose, hasFocusSession, queuedTasks, quickStartTitle, selectedTask, onCreateTask, defaultTimerDuration, onStart]);
+
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
   };
+
+  if (!isOpen) return null;
 
   return (
     <div
@@ -354,6 +397,11 @@ export default function FocusModeModal({
               {t("common.start")}
             </button>
           </div>
+          {!hasFocusSession && (
+            <p className="text-xs text-center text-zinc-500 dark:text-zinc-400 mt-2">
+              Tip: Press <kbd className="px-1.5 py-0.5 bg-zinc-200 dark:bg-zinc-700 rounded text-zinc-700 dark:text-zinc-300 font-mono text-xs">⌘+Enter</kbd> or <kbd className="px-1.5 py-0.5 bg-zinc-200 dark:bg-zinc-700 rounded text-zinc-700 dark:text-zinc-300 font-mono text-xs">Ctrl+Enter</kbd> to start
+            </p>
+          )}
         </div>
       </div>
     </div>

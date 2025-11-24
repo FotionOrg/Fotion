@@ -25,8 +25,15 @@ const CreateTaskModal = dynamic(() => import('@/components/CreateTaskModal'), { 
 const KeyboardShortcutsModal = dynamic(() => import('@/components/KeyboardShortcutsModal'), { ssr: false })
 const ConfirmModal = dynamic(() => import('@/components/ConfirmModal'), { ssr: false })
 
-// 초기 탭 없음 (사이드바에서 선택하여 열기)
-const initialTabs: AppTab[] = []
+// 초기 탭: Home (Visualization) 탭 자동 열기
+const getInitialTabs = (t: (key: string) => string): AppTab[] => [
+  {
+    id: 'visualization',
+    type: 'visualization',
+    title: t('nav.visualization'),
+    isPinned: false,
+  }
+]
 
 export default function HomeClient() {
   const t = useTranslations()
@@ -42,8 +49,8 @@ export default function HomeClient() {
   // 전역 오디오 객체 (모든 Focus Mode 탭에서 공유)
   const globalAudioRef = useRef<HTMLAudioElement | null>(null)
   const [isGlobalMusicPlaying, setIsGlobalMusicPlaying] = useState(false)
-  const [tabs, setTabs] = useState<AppTab[]>(initialTabs)
-  const [activeTabId, setActiveTabId] = useState<string | null>(null)
+  const [tabs, setTabs] = useState<AppTab[]>(() => getInitialTabs(t))
+  const [activeTabId, setActiveTabId] = useState<string | null>('visualization')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isFocusModalOpen, setIsFocusModalOpen] = useState(false)
   const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false)
@@ -221,21 +228,24 @@ export default function HomeClient() {
     }
 
     // Focus Mode 탭이고 타이머가 실행 중이면 확인 모달
-    if (tab.type === 'focus' && tab.timerState?.isRunning) {
-      setConfirmModal({
-        isOpen: true,
-        title: t('focus.endTimer'),
-        message: t('focus.endTimerMessage'),
-        onConfirm: () => {
-          closeTab()
-          setConfirmModal(prev => ({ ...prev, isOpen: false }))
-        },
-        variant: 'warning',
-      })
-    } else {
-      // 바로 닫기
-      closeTab()
-    }
+    // if (tab.type === 'focus' && tab.timerState?.isRunning) {
+    //   setConfirmModal({
+    //     isOpen: true,
+    //     title: t('focus.endTimer'),
+    //     message: t('focus.endTimerMessage'),
+    //     onConfirm: () => {
+    //       closeTab()
+    //       setConfirmModal(prev => ({ ...prev, isOpen: false }))
+    //     },
+    //     variant: 'warning',
+    //   })
+    // } else {
+    //   // 바로 닫기
+    //   closeTab()
+    // }
+
+    // 확인 없이 바로 닫기
+    closeTab()
   }
 
   // Focus Mode 탭 타이머 컨트롤
