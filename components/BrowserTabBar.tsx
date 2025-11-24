@@ -51,11 +51,11 @@ export default function BrowserTabBar({
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
               className={`
-                relative flex items-center gap-2 px-4 py-2.5 min-w-[120px] max-w-[200px]
-                transition-all border-r border-border cursor-pointer
+                relative flex items-center gap-2 px-4 py-2 min-w-[120px] max-w-[200px]
+                transition-all cursor-pointer border-0
                 ${
                   isActive
-                    ? "bg-background dark:bg-background text-foreground dark:text-foreground border-b-2 border-b-primary-500"
+                    ? "bg-background dark:bg-background text-foreground dark:text-foreground"
                     : "bg-surface-secondary dark:bg-surface-secondary text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                 }
               `}
@@ -82,7 +82,7 @@ export default function BrowserTabBar({
                 <button
                   onClick={(e) => handleCloseClick(e, tab.id)}
                   className="flex-shrink-0 p-1 hover:bg-zinc-300 dark:hover:bg-zinc-700 rounded transition-colors"
-                  title={t('browserTab.closeTab')}
+                  title={t("browserTab.closeTab")}
                 >
                   <svg
                     className="w-3.5 h-3.5"
