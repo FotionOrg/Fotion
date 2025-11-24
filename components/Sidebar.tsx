@@ -142,8 +142,30 @@ export default function Sidebar({
 
         {/* 하단 영역 */}
         <div className="border-t border-border">
+          {/* 단축키 정보 - Settings 위로 이동 */}
+          {onShowShortcuts && (
+            <div className="p-2">
+              <button
+                onClick={onShowShortcuts}
+                className="w-full flex items-center justify-center gap-2 px-2 py-1.5 rounded-lg text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              >
+                <span className="text-base">⌨️</span>
+                <span className="text-xs font-medium">{t("showShortcuts")}</span>
+                <div className="flex items-center gap-0.5 ml-1">
+                  <kbd className="px-1.5 py-0.5 text-[10px] font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded border border-zinc-200 dark:border-zinc-700 shadow-sm">
+                    ⌘
+                  </kbd>
+                  <span className="text-[10px] text-zinc-400 dark:text-zinc-600">/</span>
+                  <kbd className="px-1.5 py-0.5 text-[10px] font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded border border-zinc-200 dark:border-zinc-700 shadow-sm">
+                    ?
+                  </kbd>
+                </div>
+              </button>
+            </div>
+          )}
+
           {/* Settings 탭 */}
-          <div className="p-2">
+          <div className="p-2 border-t border-border">
             <button
               onClick={() => handleOpenTab("settings")}
               className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-left ${
@@ -159,30 +181,6 @@ export default function Sidebar({
               )}
             </button>
           </div>
-
-          {/* 단축키 정보 */}
-          {onShowShortcuts && (
-            <div className="p-2 border-t border-border">
-              <button
-                onClick={onShowShortcuts}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">⌨️</span>
-                  <span className="text-sm font-medium">{t("showShortcuts")}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <kbd className="px-2 py-1 text-xs font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded border border-zinc-200 dark:border-zinc-700 shadow-sm">
-                    ⌘
-                  </kbd>
-                  <span className="text-zinc-400 dark:text-zinc-600">/</span>
-                  <kbd className="px-2 py-1 text-xs font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded border border-zinc-200 dark:border-zinc-700 shadow-sm">
-                    ?
-                  </kbd>
-                </div>
-              </button>
-            </div>
-          )}
         </div>
       </aside>
     </>
