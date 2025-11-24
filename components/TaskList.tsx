@@ -1,7 +1,7 @@
 'use client'
 
 import { Task } from '@/types'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { getTaskColorClasses, TASK_COLORS } from '@/lib/colors'
 import { useTranslations } from 'next-intl'
 
@@ -26,6 +26,23 @@ export default function TaskList({
 }: TaskListProps) {
   const t = useTranslations()
   const [colorPickerTaskId, setColorPickerTaskId] = useState<string | null>(null)
+  const colorPickerRef = useRef<HTMLDivElement>(null)
+
+  // 외부 클릭 감지하여 컬러피커 닫기
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (colorPickerRef.current && !colorPickerRef.current.contains(event.target as Node)) {
+        setColorPickerTaskId(null)
+      }
+    }
+
+    if (colorPickerTaskId) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside)
+      }
+    }
+  }, [colorPickerTaskId])
 
   // Task Queue에 없는 Task만 필터링
   const availableTasks = tasks.filter(task => !queuedTaskIds.includes(task.id))
@@ -55,22 +72,19 @@ export default function TaskList({
     <div className="h-full flex flex-col bg-background">
       {/* 헤더 */}
       <div className="p-4 border-b border-border">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-foreground">{t('task.taskList')}</h2>
-          <div className="flex gap-2">
-            <button
-              onClick={onConnectExternal}
-              className="px-3 py-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 transition-colors"
-            >
-              {t('task.externalConnect')}
-            </button>
-            <button
-              onClick={onCreateTask}
-              className="px-3 py-1.5 text-xs font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors"
-            >
-              + {t('task.newTask')}
-            </button>
-          </div>
+        <div className="flex items-center justify-end gap-2 mb-4">
+          <button
+            onClick={onConnectExternal}
+            className="px-3 py-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 transition-colors"
+          >
+            {t('task.externalConnect')}
+          </button>
+          <button
+            onClick={onCreateTask}
+            className="px-3 py-1.5 text-xs font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors"
+          >
+            + {t('task.newTask')}
+          </button>
         </div>
 
         {/* 섹션 탭 */}
@@ -186,30 +200,30 @@ export default function TaskList({
 
                         {/* 색상 버튼 */}
                         {onUpdateTask && (
-                          <div className="relative">
+                          <div className="relative" ref={isColorPickerOpen ? colorPickerRef : null}>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation()
                                 setColorPickerTaskId(isColorPickerOpen ? null : task.id)
                               }}
-                              className={`opacity-0 group-hover:opacity-100 p-2 rounded-lg transition-all ${colorClasses.bg} hover:opacity-90`}
+                              className={`opacity-0 group-hover:opacity-100 p-2 rounded-lg transition-all cursor-pointer ${colorClasses.bg} hover:opacity-90`}
                               title="Change color"
                             >
-                              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2z" clipRule="evenodd" />
+                              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 22C6.49 22 2 17.51 2 12S6.49 2 12 2s10 4.04 10 9c0 3.31-2.69 6-6 6h-1.77c-.28 0-.5.22-.5.5 0 .12.05.23.13.33.41.47.64 1.06.64 1.67A2.5 2.5 0 0112 22zm0-18c-4.41 0-8 3.59-8 8s3.59 8 8 8c.28 0 .5-.22.5-.5a.54.54 0 00-.14-.35c-.41-.46-.63-1.05-.63-1.65a2.5 2.5 0 012.5-2.5H16c2.21 0 4-1.79 4-4 0-3.86-3.59-7-8-7z"/><circle cx="6.5" cy="11.5" r="1.5"/><circle cx="9.5" cy="7.5" r="1.5"/><circle cx="14.5" cy="7.5" r="1.5"/><circle cx="17.5" cy="11.5" r="1.5"/>
                               </svg>
                             </button>
 
                             {/* 색상 픽커 */}
                             {isColorPickerOpen && (
-                              <div className="absolute top-full right-0 mt-2 p-3 bg-white dark:bg-zinc-900 rounded-lg shadow-xl border border-border z-50 grid grid-cols-6 gap-2"
+                              <div className="absolute top-full right-0 mt-2 p-4 bg-surface rounded-lg shadow-xl border border-border z-50 grid grid-cols-4 gap-3 min-w-[200px]"
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 {TASK_COLORS.map(color => (
                                   <button
                                     key={color.name}
                                     onClick={() => handleColorChange(task.id, color.name)}
-                                    className={`w-8 h-8 rounded-md ${color.bg} hover:scale-110 transition-transform ${
+                                    className={`w-10 h-10 rounded-lg cursor-pointer ${color.bg} hover:scale-110 transition-transform ${
                                       task.color === color.name ? 'ring-2 ring-offset-2 ring-zinc-400 dark:ring-zinc-600' : ''
                                     }`}
                                     title={color.label}

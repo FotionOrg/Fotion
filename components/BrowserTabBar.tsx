@@ -40,7 +40,7 @@ export default function BrowserTabBar({
   };
 
   return (
-    <div className="bg-surface-secondary dark:bg-surface border-b border-border">
+    <div className="bg-surface-secondary dark:bg-surface">
       {/* 탭들 - 좌측 정렬 */}
       <div className="flex items-start overflow-x-auto">
         {tabs.map((tab) => {

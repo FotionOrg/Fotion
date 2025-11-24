@@ -7,8 +7,6 @@ import { useEffect, useState, useRef } from 'react'
 interface FocusModeTabProps {
   timerState: TimerState
   task: Task | null
-  onPause: () => void
-  onResume: () => void
   onStop: () => void
   onToggleFullscreen: () => void
   isFullscreen: boolean
@@ -27,8 +25,6 @@ const MUSIC_TRACKS = [
 function FocusModeTab({
   timerState,
   task,
-  onPause,
-  onResume,
   onStop,
   onToggleFullscreen,
   isFullscreen,
@@ -244,28 +240,13 @@ function FocusModeTab({
 
           {/* 컨트롤 버튼 */}
           <div className="flex items-center justify-center gap-6 mt-8">
-            {/* 일시Stop/Play */}
-            <button
-              onClick={timerState.isRunning ? onPause : onResume}
-              className="w-20 h-20 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all backdrop-blur-md shadow-lg hover:scale-110"
-            >
-              {timerState.isRunning ? (
-                <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
-                </svg>
-              ) : (
-                <svg className="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              )}
-            </button>
-
-            {/* Stop */}
+            {/* 종료 버튼 */}
             <button
               onClick={onStop}
-              className="w-20 h-20 bg-red-500/30 hover:bg-red-500/40 rounded-full flex items-center justify-center transition-all backdrop-blur-md shadow-lg hover:scale-110"
+              className="w-24 h-24 bg-red-500/30 hover:bg-red-500/40 rounded-full flex items-center justify-center transition-all backdrop-blur-md shadow-lg hover:scale-110 border-2 border-red-400/50"
+              title="집중 모드 종료"
             >
-              <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6 6h12v12H6z" />
               </svg>
             </button>
@@ -274,7 +255,7 @@ function FocusModeTab({
             <button
               onClick={onToggleFullscreen}
               className="w-20 h-20 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all backdrop-blur-md shadow-lg hover:scale-110"
-              title={isFullscreen ? '전체화면 End' : '전체화면'}
+              title={isFullscreen ? '전체화면 종료' : '전체화면'}
             >
               {isFullscreen ? (
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>

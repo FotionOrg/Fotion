@@ -101,6 +101,26 @@ export default function HomeClient() {
 
   // Focus Mode 탭 생성
   const handleFocusStart = async (taskId: string, mode: TimerMode, duration?: number, providedTask?: Task) => {
+    // 이미 집중 모드 탭이 있는지 체크
+    const existingFocusTab = tabs.find(t => t.type === 'focus')
+    if (existingFocusTab) {
+      // 경고 메시지 표시
+      setConfirmModal({
+        isOpen: true,
+        title: t('focus.sessionAlreadyExists') || '진행 중인 세션이 있습니다',
+        message: t('focus.sessionAlreadyExistsMessage') || '이미 진행 중인 집중 세션이 있습니다.\n기존 세션을 종료하고 새로운 세션을 시작하시겠습니까?',
+        variant: 'warning',
+        onConfirm: () => {
+          // 기존 세션 종료
+          handleTabClose(existingFocusTab.id)
+          setConfirmModal({ ...confirmModal, isOpen: false })
+          // 새 세션 시작을 위해 다시 모달 열기
+          setTimeout(() => setIsFocusModalOpen(true), 100)
+        },
+      })
+      return
+    }
+
     // providedTask가 있으면 사용 (Quick Start), 없으면 tasks에서 검색
     const task = providedTask || tasks.find(t => t.id === taskId)
     if (!task) {
@@ -228,22 +248,6 @@ export default function HomeClient() {
         }
       }
       return tab
-    }))
-  }
-
-  const handleTimerPause = (tabId: string) => {
-    updateTabTimerState(tabId, prev => ({
-      ...prev,
-      isRunning: false,
-      elapsedTime: Date.now() - prev.startTime,
-    }))
-  }
-
-  const handleTimerResume = (tabId: string) => {
-    updateTabTimerState(tabId, prev => ({
-      ...prev,
-      isRunning: true,
-      startTime: Date.now() - prev.elapsedTime,
     }))
   }
 
@@ -542,8 +546,6 @@ export default function HomeClient() {
             <FocusModeTab
               timerState={activeTab.timerState}
               task={tasks.find(t => t.id === activeTab.taskId) || null}
-              onPause={() => handleTimerPause(activeTab.id)}
-              onResume={() => handleTimerResume(activeTab.id)}
               onStop={() => handleTimerStop(activeTab.id)}
               onToggleFullscreen={() => handleToggleFullscreen(activeTab.id)}
               isFullscreen={fullscreenTabId === activeTab.id}
@@ -566,6 +568,7 @@ export default function HomeClient() {
         onOpenTasksTab={() => handleOpenTab('tasks')}
         onOpenSettingsTab={() => handleOpenTab('settings')}
         onCreateTask={handleTaskCreate}
+        hasFocusSession={tabs.some(t => t.type === 'focus')}
       />
 
       {/* Task 생성 모달 */}

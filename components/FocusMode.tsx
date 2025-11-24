@@ -7,8 +7,6 @@ interface FocusModeProps {
   isActive: boolean
   timerState: TimerState
   task: Task | null
-  onPause: () => void
-  onResume: () => void
   onStop: () => void
   onChangeTask: () => void
 }
@@ -17,8 +15,6 @@ export default function FocusMode({
   isActive,
   timerState,
   task,
-  onPause,
-  onResume,
   onStop,
   onChangeTask,
 }: FocusModeProps) {
@@ -158,28 +154,12 @@ export default function FocusMode({
           )}
 
           <div className="flex items-center justify-center gap-4">
-            {/* 일시Stop/Play */}
-            <button
-              onClick={timerState.isRunning ? onPause : onResume}
-              className="w-16 h-16 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors backdrop-blur-sm"
-            >
-              {timerState.isRunning ? (
-                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
-                </svg>
-              ) : (
-                <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              )}
-            </button>
-
-            {/* Stop */}
+            {/* 종료 버튼 */}
             <button
               onClick={handleExitClick}
-              className="w-16 h-16 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors backdrop-blur-sm"
+              className="w-20 h-20 bg-red-500/30 hover:bg-red-500/40 rounded-full flex items-center justify-center transition-colors backdrop-blur-sm border-2 border-red-400/50"
             >
-              <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6 6h12v12H6z" />
               </svg>
             </button>

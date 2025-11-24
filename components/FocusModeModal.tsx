@@ -22,6 +22,7 @@ interface FocusModeModalProps {
   onCreateTask?: (
     taskData: Omit<Task, "id" | "createdAt" | "updatedAt">
   ) => Promise<Task>; // Quick Start용 task 생성
+  hasFocusSession?: boolean; // 이미 집중 세션이 있는지
 }
 
 export default function FocusModeModal({
@@ -34,6 +35,7 @@ export default function FocusModeModal({
   onOpenTasksTab,
   onOpenSettingsTab,
   onCreateTask,
+  hasFocusSession = false,
 }: FocusModeModalProps) {
   const t = useTranslations();
   const [searchQuery, setSearchQuery] = useState("");
@@ -249,7 +251,7 @@ export default function FocusModeModal({
                       onOpenTasksTab();
                       onClose();
                     }}
-                    className="w-full px-4 py-3 bg-surface-secondary hover:bg-zinc-100 dark:hover:bg-zinc-700 border-2 border-border rounded-lg transition-colors text-left"
+                    className="w-full px-4 py-3 bg-surface-secondary hover:bg-zinc-100 dark:hover:bg-zinc-700 border-2 border-border rounded-lg transition-colors text-left cursor-pointer"
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">📝</span>
@@ -326,22 +328,32 @@ export default function FocusModeModal({
         </div>
 
         {/* 푸터 */}
-        <div className="p-6 pt-0 shrink-0 flex gap-3">
-          <button
-            onClick={onClose}
-            className="flex-1 py-3 px-4 bg-surface-secondary hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors font-medium text-foreground"
-          >
-            {t("common.cancel")}
-          </button>
-          <button
-            onClick={handleStart}
-            disabled={
-              queuedTasks.length === 0 ? !quickStartTitle.trim() : !selectedTask
-            }
-            className="flex-1 py-3 px-4 bg-primary-600 hover:bg-primary-700 disabled:bg-zinc-300 dark:disabled:bg-zinc-700 text-white rounded-lg transition-colors font-medium disabled:cursor-not-allowed"
-          >
-            {t("common.start")}
-          </button>
+        <div className="p-6 pt-0 shrink-0">
+          {hasFocusSession && (
+            <div className="mb-3 px-4 py-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+              <p className="text-sm text-yellow-800 dark:text-yellow-300">
+                ⚠️ {t("focus.sessionAlreadyExistsWarning") || "이미 진행 중인 집중 세션이 있습니다. 기존 세션을 먼저 종료해주세요."}
+              </p>
+            </div>
+          )}
+          <div className="flex gap-3">
+            <button
+              onClick={onClose}
+              className="flex-1 py-3 px-4 bg-surface-secondary hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors font-medium text-foreground cursor-pointer"
+            >
+              {t("common.cancel")}
+            </button>
+            <button
+              onClick={handleStart}
+              disabled={
+                hasFocusSession ||
+                (queuedTasks.length === 0 ? !quickStartTitle.trim() : !selectedTask)
+              }
+              className="flex-1 py-3 px-4 bg-primary-600 hover:bg-primary-700 disabled:bg-zinc-300 dark:disabled:bg-zinc-700 text-white rounded-lg transition-colors font-medium cursor-pointer disabled:cursor-not-allowed"
+            >
+              {t("common.start")}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -382,7 +394,7 @@ function TaskItem({
   return (
     <button
       onClick={onSelect}
-      className={`w-full p-3 rounded-lg border-2 transition-all text-left ${
+      className={`w-full p-3 rounded-lg border-2 transition-all text-left cursor-pointer ${
         colorClasses.bgLight
       } ${
         isSelected
